@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'home/home_screen.dart';
 import 'discover/discover_screen.dart';
 import 'favorites/favorites_screen.dart';
-import 'chat/chat_list_screen.dart';
+import 'activities/activities_screen.dart';
 import 'profile/profile_screen.dart';
 
 class MainNavigationScreen extends StatefulWidget {
@@ -21,7 +21,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     const HomeScreen(),
     const DiscoverScreen(),
     const FavoritesScreen(),
-    const ChatListScreen(),
+    const ActivitiesScreen(),
     const ProfileScreen(),
   ];
 
@@ -65,8 +65,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             label: 'Favoris',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.chat_bubble_outline),
-            activeIcon: Icon(Icons.chat_bubble),
+            icon: Icon(Icons.forum_outlined),
+            activeIcon: Icon(Icons.forum),
             label: 'Chat',
           ),
           BottomNavigationBarItem(

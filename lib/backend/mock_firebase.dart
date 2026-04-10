@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'dart:math' as math;
 
 class MockFirebase extends ChangeNotifier {
   static final MockFirebase _instance = MockFirebase._internal();
@@ -20,6 +21,7 @@ class MockFirebase extends ChangeNotifier {
 
   List<String> favoriteIds = [];
   List<String> recentSearches = [];
+  Map<String, dynamic>? _authenticatedUser;
 
   List<dynamic> get allProducts => _products;
   List<dynamic> get promotions => _promotions;
@@ -58,6 +60,22 @@ class MockFirebase extends ChangeNotifier {
       try {
         final u1 = _users.firstWhere((u) => u['id'] == 'u1');
         favoriteIds = List<String>.from(u1['favorites'] ?? []);
+        
+        // Initialize addresses if not present
+        if (u1['addresses'] == null) {
+          u1['addresses'] = [
+            {
+              "id": "addr_1",
+              "label": "Maison",
+              "fullName": "Falcon Thought",
+              "street": "Quartier Bastos, Rue 1234",
+              "city": "Yaoundé",
+              "region": "Centre",
+              "phone": "+237 699 123 456",
+              "isDefault": true
+            }
+          ];
+        }
       } catch (e) {
         favoriteIds = [];
       }
@@ -105,6 +123,53 @@ class MockFirebase extends ChangeNotifier {
     } catch (e) {
       return null;
     }
+  }
+
+  Future<List<dynamic>> getVendors() async {
+    await _delay();
+    return List.from(_vendors);
+  }
+
+  Future<List<dynamic>> getSuggestedTailors() async {
+    await _delay();
+    if (_vendors.isEmpty) return [];
+
+    // 1. Get all vendors with their publication count
+    List<Map<String, dynamic>> vendorsWithCount = _vendors.map((v) {
+      final count = _products.where((p) => p['vendorId'] == v['id']).length;
+      return {...(v as Map<String, dynamic>), 'publicationCount': count};
+    }).toList();
+
+    // 2. Sort by publication count desc
+    vendorsWithCount.sort((a, b) => (b['publicationCount'] as int).compareTo(a['publicationCount'] as int));
+
+    // 3. Take top 3
+    final List<dynamic> result = [];
+    final int topCount = vendorsWithCount.length < 3 ? vendorsWithCount.length : 3;
+    for (int i = 0; i < topCount; i++) {
+      result.add(vendorsWithCount[i]);
+    }
+
+    // 4. From the rest (or all if we want duplicates? No, usually distinct), pick 2 random
+    final List<dynamic> remaining = vendorsWithCount.where((v) => !result.contains(v['id'])).toList(); // Bug fix: check against ID
+    
+    if (remaining.isNotEmpty) {
+      final random = math.Random();
+      final int randCount = remaining.length < 2 ? remaining.length : 2;
+      
+      // Shuffle remaining and take 2
+      remaining.shuffle(random);
+      for (int i = 0; i < randCount; i++) {
+        result.add(remaining[i]);
+      }
+    }
+
+    return result;
+  }
+
+  Future<List<dynamic>> getFavoriteVendors() async {
+    await _delay();
+    return _vendors.where((v) => favoriteIds.contains(v['id'].toString())).toList();
   }
 
   Future<List<dynamic>> getReviewsByProductId(String productId) async {
@@ -194,10 +259,77 @@ class MockFirebase extends ChangeNotifier {
   }
 
   // --- AUTH / USER ---
-  Map<String, dynamic>? get currentUser => _users.cast<Map<String, dynamic>?>().firstWhere(
+  Map<String, dynamic>? get currentUser => _authenticatedUser ?? _users.cast<Map<String, dynamic>?>().firstWhere(
     (u) => u?['id'] == 'u1', 
     orElse: () => null
   );
+
+  bool get isAuthenticated => _authenticatedUser != null;
+
+  Future<Map<String, dynamic>> signIn(String email, String password) async {
+    await _delay();
+    
+    // Simulation: Error for specific email to test "Login - Error.jpg"
+    if (email == 'error@kouture.com') {
+      throw Exception('Identifiants invalides. Veuillez réessayer.');
+    }
+
+    try {
+      final user = _users.firstWhere(
+        (u) => u['email'] == email && u['password'] == password,
+      );
+      _authenticatedUser = Map<String, dynamic>.from(user);
+      notifyListeners();
+      return _authenticatedUser!;
+    } catch (e) {
+      throw Exception('Email ou mot de passe incorrect.');
+    }
+  }
+
+  Future<Map<String, dynamic>> signUp({
+    required String fullName,
+    required String email,
+    required String phone,
+    required String password,
+  }) async {
+    await _delay();
+
+    // Simulation: Email already exists
+    if (_users.any((u) => u['email'] == email)) {
+      throw Exception('Cet email est déjà utilisé par un autre compte.');
+    }
+
+    final newUser = {
+      'id': 'u${DateTime.now().millisecondsSinceEpoch}',
+      'name': fullName,
+      'email': email,
+      'phone': phone,
+      'password': password,
+      'avatar': 'https://ui-avatars.com/api/?name=${Uri.encodeComponent(fullName)}&background=FF8C8C&color=fff',
+      'favorites': [],
+      'addresses': [],
+      'preferences': {},
+    };
+
+    // Note: In a real app, we'd add it to the list, but here we'll just return it
+    // and wait for OTP verification to "officially" add/log in.
+    return newUser;
+  }
+
+  Future<bool> verifyOtp(String code) async {
+    await _delay();
+    // Simulate valid OTP (any 6 digit code for mock)
+    if (code.length == 6) {
+      // In a real mock flow, we'd log the user in here
+      return true;
+    }
+    return false;
+  }
+
+  void logout() {
+    _authenticatedUser = null;
+    notifyListeners();
+  }
 
   Future<Map<String, dynamic>?> getUser(String id) async {
     await _delay();
@@ -287,6 +419,64 @@ class MockFirebase extends ChangeNotifier {
       final tags = (p['tags'] as List?)?.map((t) => t.toString().toLowerCase()).toList() ?? [];
       return name.contains(q) || tags.any((t) => t.contains(q));
     }).toList();
+  }
+
+  Future<List<dynamic>> getRecommendedProducts() async {
+    await _delay();
+    final user = currentUser;
+    if (user == null || user['preferences'] == null) {
+      return _products.where((p) => p['isFeatured'] == true).toList();
+    }
+
+    final prefs = user['preferences'] as Map<String, dynamic>;
+    final stylePref = (prefs['styles'] as List?)?.map((s) => s.toString().toLowerCase()).toList() ?? [];
+    final materialPref = (prefs['materials'] as List?)?.map((m) => m.toString().toLowerCase()).toList() ?? [];
+    final occasionPref = (prefs['occasions'] as List?)?.map((o) => o.toString().toLowerCase()).toList() ?? [];
+
+    // Scoring system per product
+    List<Map<String, dynamic>> scoredProducts = _products.map((p) {
+      int score = 0;
+      final tags = (p['tags'] as List?)?.map((t) => t.toString().toLowerCase()).toList() ?? [];
+      final category = p['category'].toString().toLowerCase();
+
+      // Style scoring
+      for (var s in stylePref) {
+        if (tags.contains(s) || category.contains(s)) score += 3;
+      }
+      
+      // Material scoring
+      for (var m in materialPref) {
+        if (tags.contains(m) || p['description'].toString().toLowerCase().contains(m)) score += 2;
+      }
+
+      // Occasion scoring
+      for (var o in occasionPref) {
+        if (tags.contains(o)) score += 5; // Heavy weight on occasion
+      }
+
+      return {...(p as Map<String, dynamic>), '_score': score};
+    }).toList();
+
+    // Sort by score and return top results
+    scoredProducts.sort((a, b) => (b['_score'] as int).compareTo(a['_score'] as int));
+    
+    // Filter out items with very low score if there are enough high score items
+    final results = scoredProducts.where((p) => p['_score'] > 0).toList();
+    if (results.isEmpty) return _products.where((p) => p['isFeatured'] == true).toList();
+    
+    return results;
+  }
+
+  Future<void> saveUserPreferences(Map<String, dynamic> preferences) async {
+    await _delay();
+    final user = currentUser;
+    if (user != null) {
+      final currentPrefs = Map<String, dynamic>.from(user['preferences'] ?? {});
+      preferences.forEach((key, value) {
+        currentPrefs[key] = value;
+      });
+      await updateUser('u1', {'preferences': currentPrefs});
+    }
   }
 
   // --- CART ---
@@ -448,8 +638,102 @@ class MockFirebase extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<List<dynamic>> getChatList() async {
+    await _delay();
+    return [
+      {
+        'id': 'chat1',
+        'name': 'Maison de Couture X',
+        'avatar': 'https://images.unsplash.com/photo-1558171813-36e0ab20d8dc?w=200',
+        'lastMessage': 'Votre commande est prête!',
+        'time': '10:30',
+        'unread': 2,
+      },
+      {
+        'id': 'chat2',
+        'name': 'Tailleur Elite',
+        'avatar': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200',
+        'lastMessage': 'Pouvez-vous confirmer vos mesures?',
+        'time': 'Hier',
+        'unread': 0,
+      },
+    ];
+  }
+
   Future<List<dynamic>> getProductsByVendor(String vendorId) async {
     await _delay();
     return _products.where((p) => p['vendorId'] == vendorId).toList();
+  }
+
+  // --- ADDRESSES ---
+
+  Future<List<Map<String, dynamic>>> getAddresses() async {
+    await _delay();
+    final user = currentUser;
+    if (user == null) return [];
+    return List<Map<String, dynamic>>.from(user['addresses'] ?? []);
+  }
+
+  Future<void> addAddress(Map<String, dynamic> address) async {
+    await _delay();
+    final user = currentUser;
+    if (user == null) return;
+
+    final addresses = List<Map<String, dynamic>>.from(user['addresses'] ?? []);
+    
+    // Assign unique ID
+    address['id'] = 'addr_${DateTime.now().millisecondsSinceEpoch}';
+
+    // If it's the first address or set as default, handle default logic
+    if (addresses.isEmpty) {
+      address['isDefault'] = true;
+    } else if (address['isDefault'] == true) {
+      for (var a in addresses) {
+        a['isDefault'] = false;
+      }
+    } else {
+      address['isDefault'] = false;
+    }
+
+    addresses.add(address);
+    user['addresses'] = addresses;
+    
+    notifyListeners();
+    _saveToDisk();
+  }
+
+  Future<void> deleteAddress(String id) async {
+    await _delay();
+    final user = currentUser;
+    if (user == null) return;
+
+    final addresses = List<Map<String, dynamic>>.from(user['addresses'] ?? []);
+    final wasDefault = addresses.any((a) => a['id'] == id && (a['isDefault'] ?? false));
+    
+    addresses.removeWhere((a) => a['id'] == id);
+
+    // If we deleted the default address and there are others left, make the first one default
+    if (wasDefault && addresses.isNotEmpty) {
+      addresses[0]['isDefault'] = true;
+    }
+
+    user['addresses'] = addresses;
+    notifyListeners();
+    _saveToDisk();
+  }
+
+  Future<void> setDefaultAddress(String id) async {
+    await _delay();
+    final user = currentUser;
+    if (user == null) return;
+
+    final addresses = List<Map<String, dynamic>>.from(user['addresses'] ?? []);
+    for (var a in addresses) {
+      a['isDefault'] = (a['id'] == id);
+    }
+
+    user['addresses'] = addresses;
+    notifyListeners();
+    _saveToDisk();
   }
 }

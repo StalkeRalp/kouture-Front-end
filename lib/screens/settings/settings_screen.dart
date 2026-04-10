@@ -16,9 +16,9 @@ class SettingsScreen extends StatelessWidget {
   static const String routeName = '/settings';
 
   static const Color _salmon = Color(0xFFFF8C8C);
-  static const Color _darkNavy = Color(0xFF0D0D26);
-  static const Color _sectionBg = Color(0xFF0D0D26); 
-  static const Color _sectionText = Colors.white; 
+  static const Color _secondaryPink = Color(0xFFFDECEC); 
+  static const Color _sectionBg = Color(0xFFFDECEC); 
+  static const Color _sectionText = Color(0xFF0D0D26); 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,8 +67,8 @@ class SettingsScreen extends StatelessWidget {
             ),
             _buildDivider(),
             _buildListItem(
-              'Payment methods',
-              onTap: () => Navigator.pushNamed(context, PaymentMethodScreen.routeName),
+              'Shipping Addresses',
+              onTap: () => Navigator.pushNamed(context, '/addresses'),
             ),
             _buildDivider(),
             _buildListItem(
@@ -109,44 +109,6 @@ class SettingsScreen extends StatelessWidget {
             ),
             _buildDivider(),
             
-            const SizedBox(height: 30),
-            Center(
-              child: GestureDetector(
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: const Text('Delete Account', style: TextStyle(fontWeight: FontWeight.bold)),
-                      content: const Text('Are you sure you want to delete your account? This action cannot be undone.'),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text('Cancel', style: TextStyle(color: Colors.black87)),
-                        ),
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text('Delete', style: TextStyle(color: Colors.red)),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  decoration: BoxDecoration(
-                    color: _sectionBg,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Text(
-                    'Delete My Account',
-                    style: TextStyle(
-                      color: Color(0xFFE57373),
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ),
-            ),
             const SizedBox(height: 30),
             
             // Footer

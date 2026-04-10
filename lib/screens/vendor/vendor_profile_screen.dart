@@ -93,6 +93,25 @@ class VendorProfileScreen extends StatelessWidget {
           ),
         ),
         Positioned(
+          top: 50,
+          right: 10,
+          child: AnimatedBuilder(
+            animation: MockFirebase(),
+            builder: (context, _) {
+              final isFav = MockFirebase().isFavorite(vendor['id'].toString());
+              return IconButton(
+                icon: ContainerCircle(
+                  child: Icon(
+                    isFav ? Icons.favorite : Icons.favorite_border,
+                    color: isFav ? _salmon : Colors.black,
+                  ),
+                ),
+                onPressed: () => MockFirebase().toggleFavorite(vendor['id'].toString()),
+              );
+            },
+          ),
+        ),
+        Positioned(
           bottom: -40,
           left: 24,
           child: Container(

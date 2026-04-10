@@ -65,9 +65,9 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/onboarding/
     - lib/backend/
-    - "disign/IConOM (1).ico"
-    - "disign/IConMTN (2).ico"
+    - disign/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

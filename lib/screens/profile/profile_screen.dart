@@ -114,8 +114,7 @@ class ProfileScreen extends StatelessWidget {
                     children: [
                       _buildMenuTile(context, Icons.analytics_outlined, 'Statistiques', '/order-analytics'),
                       _buildMenuTile(context, Icons.chat_bubble_outline, 'Messages', '/chat-list'),
-                      _buildMenuTile(context, Icons.notifications_outlined, 'Notifications', '/notifications'),
-                      _buildMenuTile(context, Icons.payment_outlined, 'Méthodes de paiement', '/payment-methods'),
+                      _buildMenuTile(context, Icons.location_on_outlined, 'Mes Adresses', '/addresses'),
                       _buildMenuTile(context, Icons.help_outline, 'Aide & Support', '/help'),
                     ],
                   ),

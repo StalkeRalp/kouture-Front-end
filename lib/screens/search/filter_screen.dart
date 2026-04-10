@@ -16,6 +16,8 @@ class _FilterScreenState extends State<FilterScreen> {
   static const Color _salmon = Color(0xFFFF8C8C);
   
   late RangeValues _currentRangeValues;
+  late TextEditingController _minPriceController;
+  late TextEditingController _maxPriceController;
   late List<String> _selectedCategories;
   late List<String> _selectedSizes;
   late String? _selectedColor;
@@ -30,11 +32,22 @@ class _FilterScreenState extends State<FilterScreen> {
     super.initState();
     final init = widget.initialFilters;
     _currentRangeValues = init?['priceRange'] ?? const RangeValues(0, 150000);
+    
+    _minPriceController = TextEditingController(text: _currentRangeValues.start.round().toString());
+    _maxPriceController = TextEditingController(text: _currentRangeValues.end.round().toString());
+    
     _selectedCategories = List<String>.from(init?['categories'] ?? []);
     _selectedSizes = List<String>.from(init?['sizes'] ?? []);
     _selectedColor = init?['color'];
     
     _loadMetadata();
+  }
+
+  @override
+  void dispose() {
+    _minPriceController.dispose();
+    _maxPriceController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadMetadata() async {
@@ -54,9 +67,24 @@ class _FilterScreenState extends State<FilterScreen> {
   void _resetFilters() {
     setState(() {
       _currentRangeValues = const RangeValues(0, 150000);
+      _minPriceController.text = '0';
+      _maxPriceController.text = '150000';
       _selectedCategories = [];
       _selectedSizes = [];
       _selectedColor = null;
+    });
+  }
+
+  void _syncSliderFromText() {
+    double min = double.tryParse(_minPriceController.text) ?? 0;
+    double max = double.tryParse(_maxPriceController.text) ?? 200000;
+    
+    if (min < 0) min = 0;
+    if (max > 200000) max = 200000;
+    if (min > max) min = max;
+
+    setState(() {
+      _currentRangeValues = RangeValues(min, max);
     });
   }
 
@@ -105,11 +133,38 @@ class _FilterScreenState extends State<FilterScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildSectionTitle('Tranche de prix'),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                Expanded(
+                  child: _buildPriceInput(
+                    controller: _minPriceController,
+                    label: 'Min (XAF)',
+                    onChanged: (val) => _syncSliderFromText(),
+                  ),
+                ),
+                const SizedBox(width: 15),
+                Container(
+                  height: 1,
+                  width: 10,
+                  color: Colors.grey,
+                ),
+                const SizedBox(width: 15),
+                Expanded(
+                  child: _buildPriceInput(
+                    controller: _maxPriceController,
+                    label: 'Max (XAF)',
+                    onChanged: (val) => _syncSliderFromText(),
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(height: 10),
             RangeSlider(
               values: _currentRangeValues,
+              min: 0,
               max: 200000,
-              divisions: 20,
+              divisions: 40,
               activeColor: _salmon,
               inactiveColor: Colors.grey.shade200,
               labels: RangeLabels(
@@ -119,15 +174,10 @@ class _FilterScreenState extends State<FilterScreen> {
               onChanged: (values) {
                 setState(() {
                   _currentRangeValues = values;
+                  _minPriceController.text = values.start.round().toString();
+                  _maxPriceController.text = values.end.round().toString();
                 });
               },
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('${_currentRangeValues.start.round()} XAF', style: TextStyle(color: Colors.grey.shade600)),
-                Text('${_currentRangeValues.end.round()} XAF', style: TextStyle(color: Colors.grey.shade600)),
-              ],
             ),
             
             if (_categories.isNotEmpty) ...[
@@ -151,7 +201,7 @@ class _FilterScreenState extends State<FilterScreen> {
                         }
                       });
                     },
-                    selectedColor: _salmon.withValues(alpha: 0.2),
+                    selectedColor: _salmon.withOpacity(0.2),
                     checkmarkColor: _salmon,
                     backgroundColor: Colors.grey.shade50,
                     labelStyle: TextStyle(
@@ -162,7 +212,7 @@ class _FilterScreenState extends State<FilterScreen> {
                 }).toList(),
               ),
             ],
-
+            
             if (_sizes.isNotEmpty) ...[
               const SizedBox(height: 30),
               _buildSectionTitle('Tailles'),
@@ -184,7 +234,7 @@ class _FilterScreenState extends State<FilterScreen> {
                         }
                       });
                     },
-                    selectedColor: _salmon.withValues(alpha: 0.2),
+                    selectedColor: _salmon.withOpacity(0.2),
                     backgroundColor: Colors.grey.shade50,
                     labelStyle: TextStyle(
                       color: isSelected ? _salmon : Colors.black87,
@@ -271,6 +321,33 @@ class _FilterScreenState extends State<FilterScreen> {
           child: const Text('Appliquer les filtres', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         ),
       ),
+    );
+  }
+
+  Widget _buildPriceInput({
+    required TextEditingController controller,
+    required String label,
+    required Function(String) onChanged,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+        const SizedBox(height: 6),
+        TextField(
+          controller: controller,
+          keyboardType: TextInputType.number,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+          onChanged: onChanged,
+          decoration: InputDecoration(
+            isDense: true,
+            filled: true,
+            fillColor: Colors.grey[100],
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          ),
+        ),
+      ],
     );
   }
 

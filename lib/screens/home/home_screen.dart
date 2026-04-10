@@ -4,6 +4,7 @@ import '../settings/settings_screen.dart';
 import '../../backend/mock_firebase.dart';
 import '../search/product_search_delegate.dart';
 import '../notifications/notifications_screen.dart';
+import '../vendor/vendor_profile_screen.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -25,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _productsFuture = MockFirebase().getProducts();
+    _productsFuture = MockFirebase().getRecommendedProducts();
   }
 
   // 
@@ -66,7 +67,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(height: 20),
                     _buildHeroBanner(),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 25),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: _buildSectionHeader('Nouveautés'),
+                    ),
+                    const SizedBox(height: 15),
+                    _buildHorizontalScroll(),
+                    const SizedBox(height: 25),
                     //  Dots indicateur 
                     _buildBannerDots(),
                     const SizedBox(height: 25),
@@ -76,7 +84,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(height: 15),
                     _buildCategories(),
-                    const SizedBox(height: 25),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: _buildSectionHeader('Top Tendances'),
@@ -86,6 +93,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: _buildProductGrid(),
                     ),
+                    const SizedBox(height: 25),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: _buildSectionHeader('Tailleurs recommandés'),
+                    ),
+                    const SizedBox(height: 15),
+                    _buildTailorSuggestions(),
                     const SizedBox(height: 30),
                   ],
                 ),
@@ -216,6 +230,66 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
       ],
+    );
+  }
+
+  Widget _buildHorizontalScroll() {
+    final List<Map<String, String>> featured = [
+      {'name': 'Nouveautés', 'image': 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=400'},
+      {'name': 'Promotions', 'image': 'https://images.unsplash.com/photo-1441984967741-21338c2b42bc?w=400'},
+      {'name': 'Élite',      'image': 'https://images.unsplash.com/photo-1479064566235-aa2742b96a46?w=400'},
+      {'name': 'Tradition',  'image': 'https://images.unsplash.com/photo-1544441893-675973e31985?w=400'},
+      {'name': 'Mariage',    'image': 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=400'},
+    ];
+
+    return SizedBox(
+      height: 110,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        itemCount: featured.length,
+        itemBuilder: (context, index) {
+          return GestureDetector(
+            onTap: () => Navigator.pushNamed(context, '/discover'),
+            child: Container(
+              width: 160,
+              margin: const EdgeInsets.only(right: 12),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                image: DecorationImage(
+                  image: NetworkImage(featured[index]['image']!),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [
+                      Colors.black.withOpacity(0.6),
+                      Colors.transparent,
+                    ],
+                  ),
+                ),
+                padding: const EdgeInsets.all(12),
+                child: Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Text(
+                    featured[index]['name']!,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -447,7 +521,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // 
   Widget _buildCategories() {
     return SizedBox(
-      height: 105,
+      height: 110,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -475,12 +549,143 @@ class _HomeScreenState extends State<HomeScreen> {
                   Text(
                     _categories[index]['name']!,
                     style: const TextStyle(fontSize: 12, color: Colors.black87),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildTailorSuggestions() {
+    return FutureBuilder<List<dynamic>>(
+      future: MockFirebase().getSuggestedTailors(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const SizedBox(
+            height: 170,
+            child: Center(child: CircularProgressIndicator(color: _salmon)),
+          );
+        }
+        
+        final tailors = snapshot.data ?? [];
+        if (tailors.isEmpty) return const SizedBox();
+
+        return SizedBox(
+          height: 170,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            itemCount: tailors.length,
+            itemBuilder: (context, index) {
+              final tailor = tailors[index];
+              return _buildTailorCard(tailor);
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildTailorCard(Map<String, dynamic> tailor) {
+    return GestureDetector(
+      onTap: () => Navigator.pushNamed(context, VendorProfileScreen.routeName, arguments: tailor['id']),
+      child: Container(
+        width: 140,
+        margin: const EdgeInsets.only(right: 16, bottom: 10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            Expanded(
+              flex: 3,
+              child: Stack(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                      image: DecorationImage(
+                        image: NetworkImage(tailor['coverImage'] ?? ''),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: AnimatedBuilder(
+                      animation: MockFirebase(),
+                      builder: (context, _) {
+                        final bool isFav = MockFirebase().isFavorite(tailor['id'].toString());
+                        return GestureDetector(
+                          onTap: () => MockFirebase().toggleFavorite(tailor['id'].toString()),
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              isFav ? Icons.favorite : Icons.favorite_border,
+                              color: isFav ? _salmon : Colors.grey,
+                              size: 16,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Text(
+                      tailor['name'] ?? '',
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.star, color: Colors.amber, size: 10),
+                        const SizedBox(width: 2),
+                        Text(
+                          '${tailor['rating']}',
+                          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          '${tailor['publicationCount']} pub.',
+                          style: TextStyle(fontSize: 10, color: Colors.grey[600]),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

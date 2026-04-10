@@ -226,7 +226,7 @@ class DiscoverScreen extends StatelessWidget {
 
 
     return SizedBox(
-      height: 100,
+      height: 115,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: categories.length,
@@ -254,6 +254,8 @@ class DiscoverScreen extends StatelessWidget {
                   Text(
                     categories[index]['name']!,
                     style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey[800]),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),

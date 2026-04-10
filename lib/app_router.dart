@@ -20,6 +20,7 @@ import 'screens/product_detail/product_images_screen.dart';
 import 'screens/reviews/reviews_screen.dart';
 import 'screens/reviews/add_review_screen.dart';
 import 'screens/favorites/favorites_screen.dart';
+import 'screens/favorites/favoritesTailor_screen.dart';
 import 'screens/cart/cart_screen.dart';
 import 'screens/cart/cart_summary_screen.dart';
 import 'screens/payment/payment_method_screen.dart';
@@ -31,7 +32,6 @@ import 'screens/payment/payment_success_screen.dart';
 import 'screens/payment/payment_failure_screen.dart';
 import 'screens/order/checkout_screen.dart';
 import 'screens/order/order_confirmation_screen.dart';
-import 'screens/order/orders_list_screen.dart';
 import 'screens/order/order_detail_screen.dart';
 import 'screens/order/order_analytics_screen.dart';
 import 'screens/tracking/tracking_screen.dart';
@@ -39,7 +39,7 @@ import 'screens/address/address_list_screen.dart';
 import 'screens/address/add_address_screen.dart';
 import 'screens/notifications/notifications_screen.dart';
 import 'screens/notifications/notification_settings_screen.dart';
-import 'screens/chat/chat_list_screen.dart';
+import 'screens/activities/activities_screen.dart';
 import 'screens/chat/chat_detail_screen.dart';
 import 'screens/vendor/vendor_profile_screen.dart';
 import 'screens/vendor/vendor_products_screen.dart';
@@ -59,7 +59,7 @@ import 'screens/settings/measurements_screen.dart';
 class AppRouter {
   AppRouter._();
 
-  static const String initial = MainNavigationScreen.routeName; // Bypass splash for dev
+  static const String initial = SplashScreen.routeName;
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     final builder = _routes[settings.name];
@@ -100,6 +100,7 @@ class AppRouter {
     ReviewsScreen.routeName:             (_, args) => ReviewsScreen(product: args as Map<String, dynamic>),
     AddReviewScreen.routeName:           (_, args) => AddReviewScreen(product: args as Map<String, dynamic>),
     FavoritesScreen.routeName:           (_, __) => const FavoritesScreen(),
+    FavoritesTailorScreen.routeName:     (_, __) => const FavoritesTailorScreen(),
     CartScreen.routeName:                (_, __) => const CartScreen(),
     CartSummaryScreen.routeName:         (_, __) => const CartSummaryScreen(),
     PaymentMethodScreen.routeName:       (_, __) => const PaymentMethodScreen(),
@@ -111,7 +112,7 @@ class AppRouter {
     PaymentFailureScreen.routeName:      (_, __) => const PaymentFailureScreen(),
     CheckoutScreen.routeName:            (_, __) => const CheckoutScreen(),
     OrderConfirmationScreen.routeName:   (_, __) => const OrderConfirmationScreen(),
-    OrdersListScreen.routeName:          (_, __) => const OrdersListScreen(),
+    '/orders':                           (_, __) => const ActivitiesScreen(initialTabIndex: 1),
     OrderDetailScreen.routeName:         (_, __) => const OrderDetailScreen(),
     OrderAnalyticsScreen.routeName:      (_, __) => const OrderAnalyticsScreen(),
     TrackingScreen.routeName:            (_, __) => const TrackingScreen(),
@@ -119,12 +120,13 @@ class AppRouter {
     AddAddressScreen.routeName:          (_, __) => const AddAddressScreen(),
     NotificationsScreen.routeName:       (_, __) => const NotificationsScreen(),
     NotificationSettingsScreen.routeName:(_, __) => const NotificationSettingsScreen(),
-    ChatListScreen.routeName:            (_, __) => const ChatListScreen(),
+    '/chat-list':                        (_, __) => const ActivitiesScreen(initialTabIndex: 0),
     ChatDetailScreen.routeName:          (_, __) => const ChatDetailScreen(),
     VendorProfileScreen.routeName:       (_, __) => const VendorProfileScreen(),
     VendorProductsScreen.routeName:      (_, __) => const VendorProductsScreen(),
     ProfileScreen.routeName:             (_, __) => const ProfileScreen(),
     MainNavigationScreen.routeName:      (_, __) => const MainNavigationScreen(),
+    ActivitiesScreen.routeName:          (_, args) => ActivitiesScreen(initialTabIndex: args as int? ?? 0),
     ProductInfoScreen.routeName:         (_, args) => ProductInfoScreen(product: args as Map<String, dynamic>),
     EditProfileScreen.routeName:         (_, __) => const EditProfileScreen(),
     SettingsScreen.routeName:            (_, __) => const SettingsScreen(),

@@ -136,7 +136,7 @@ class _CartSummaryScreenState extends State<CartSummaryScreen> {
             ),
           ),
           TextButton(
-            onPressed: () => Navigator.pushNamed(context, '/address-list'),
+            onPressed: () => Navigator.pushNamed(context, '/addresses'),
             child: const Text('Modifier', style: TextStyle(color: _salmon)),
           ),
         ],
