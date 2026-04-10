@@ -1,0 +1,612 @@
+{
+  "vendors": [
+    {
+      "id": "v1",
+      "name": "Boutique Elegance",
+      "description": "Spécialiste de la mode africaine moderne et chic pour femmes.",
+      "avatar": "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=200&q=80",
+      "coverImage": "https://images.unsplash.com/photo-1558171813-36e0ab20d8dc?w=800&q=80",
+      "rating": 4.8,
+      "totalReviews": 142,
+      "location": "Yaoundé, Cameroun",
+      "phone": "+237 699 001 122",
+      "isVerified": true,
+      "totalSales": 320
+    },
+    {
+      "id": "v2",
+      "name": "Tailleur Du Roi",
+      "description": "Costumes sur mesure et tenues de cérémonie pour hommes exigeants.",
+      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80",
+      "coverImage": "https://images.unsplash.com/photo-1490114538077-0a7f8cb49891?w=800&q=80",
+      "rating": 4.9,
+      "totalReviews": 98,
+      "location": "Douala, Cameroun",
+      "phone": "+237 677 334 455",
+      "isVerified": true,
+      "totalSales": 210
+    },
+    {
+      "id": "v3",
+      "name": "L'Artisan",
+      "description": "Maître artisan en tenues traditionnelles africaines et bazin brodé.",
+      "avatar": "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=200&q=80",
+      "coverImage": "https://images.unsplash.com/photo-1464699908537-0954e50791ee?w=800&q=80",
+      "rating": 4.7,
+      "totalReviews": 76,
+      "location": "Bafoussam, Cameroun",
+      "phone": "+237 655 778 899",
+      "isVerified": false,
+      "totalSales": 145
+    },
+    {
+      "id": "v4",
+      "name": "Kamer Street",
+      "description": "Mode urbaine africaine pour les jeunes tendances.",
+      "avatar": "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=200&q=80",
+      "coverImage": "https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=800&q=80",
+      "rating": 4.5,
+      "totalReviews": 204,
+      "location": "Douala, Cameroun",
+      "phone": "+237 690 112 233",
+      "isVerified": true,
+      "totalSales": 580
+    },
+    {
+      "id": "v5",
+      "name": "Maison Chic",
+      "description": "Accessoires et bijoux artisanaux africains de haute gamme.",
+      "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&q=80",
+      "coverImage": "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=800&q=80",
+      "rating": 4.6,
+      "totalReviews": 130,
+      "location": "Yaoundé, Cameroun",
+      "phone": "+237 677 556 677",
+      "isVerified": true,
+      "totalSales": 265
+    }
+  ],
+
+  "categories": [
+    { "id": "c1", "name": "Robes",        "image": "https://images.unsplash.com/photo-1515347619252-7e0520696781?w=300&q=80", "productCount": 34 },
+    { "id": "c2", "name": "Costumes",     "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&q=80", "productCount": 21 },
+    { "id": "c3", "name": "Traditionnel", "image": "https://images.unsplash.com/photo-1583759136431-e5f0d8bbfb4f?w=300&q=80", "productCount": 47 },
+    { "id": "c4", "name": "Streetwear",   "image": "https://images.unsplash.com/photo-1552346154-21d32810aba3?w=300&q=80", "productCount": 58 },
+    { "id": "c5", "name": "Accessoires",  "image": "https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?w=300&q=80", "productCount": 63 },
+    { "id": "c6", "name": "Chaussures",   "image": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&q=80", "productCount": 29 },
+    { "id": "c7", "name": "Sacs",         "image": "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=300&q=80", "productCount": 41 },
+    { "id": "c8", "name": "Enfants",      "image": "https://images.unsplash.com/photo-1471286174890-9c112ffca5b4?w=300&q=80", "productCount": 19 }
+  ],
+
+  "products": [
+    {
+      "id": "p1",
+      "name": "Robe Ankara Premium",
+      "description": "Robe légère en tissu Ankara, idéale pour toutes occasions. Confectionnée avec des motifs vibrants et des couleurs qui traversent les saisons.",
+      "price": 25000,
+      "oldPrice": 32000,
+      "currency": "XAF",
+      "vendorId": "v1",
+      "vendorName": "Boutique Elegance",
+      "images": [
+        "https://images.unsplash.com/photo-1515347619252-7e0520696781?w=600&q=80",
+        "https://images.unsplash.com/photo-1496217590455-aa63a8350eea?w=600&q=80",
+        "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=600&q=80"
+      ],
+      "category": "Robes",
+      "categoryId": "c1",
+      "sizes": ["XS", "S", "M", "L", "XL"],
+      "colors": ["#FF6600", "#003399", "#009900"],
+      "stock": 15,
+      "rating": 4.7,
+      "totalReviews": 38,
+      "isFeatured": true,
+      "isNew": false,
+      "discount": 22,
+      "tags": ["ankara", "femme", "robe", "africain"]
+    },
+    {
+      "id": "p2",
+      "name": "Costume Sur Mesure",
+      "description": "Costume en lin coupe moderne pour événements habillés. Veste et pantalon inclus, finitions impeccables. Tenu élégant adapté aux cérémonies et réunions professionnelles.",
+      "price": 75000,
+      "oldPrice": null,
+      "currency": "XAF",
+      "vendorId": "v2",
+      "vendorName": "Tailleur Du Roi",
+      "images": [
+        "https://images.unsplash.com/photo-1594938298598-f21ee852ef76?w=600&q=80",
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80",
+        "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=600&q=80"
+      ],
+      "category": "Costumes",
+      "categoryId": "c2",
+      "sizes": ["S", "M", "L", "XL", "XXL"],
+      "colors": ["#1A1A1A", "#4A4A4A", "#003366"],
+      "stock": 8,
+      "rating": 4.9,
+      "totalReviews": 55,
+      "isFeatured": true,
+      "isNew": false,
+      "discount": 0,
+      "tags": ["costume", "homme", "élégant", "cérémonie"]
+    },
+    {
+      "id": "p3",
+      "name": "Ensemble Bazin Riche",
+      "description": "Ensemble traditionnel africain en bazin de haute qualité avec broderies soignées à la main. Disponible en plusieurs coloris vibrants.",
+      "price": 45000,
+      "oldPrice": 55000,
+      "currency": "XAF",
+      "vendorId": "v3",
+      "vendorName": "L'Artisan",
+      "images": [
+        "https://images.unsplash.com/photo-1583759136431-e5f0d8bbfb4f?w=600&q=80",
+        "https://images.unsplash.com/photo-1612198188060-c7c2a3b66eae?w=600&q=80",
+        "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=600&q=80"
+      ],
+      "category": "Traditionnel",
+      "categoryId": "c3",
+      "sizes": ["S", "M", "L", "XL"],
+      "colors": ["#FFD700", "#8B0000", "#006400"],
+      "stock": 12,
+      "rating": 4.6,
+      "totalReviews": 29,
+      "isFeatured": false,
+      "isNew": true,
+      "discount": 18,
+      "tags": ["bazin", "traditionnel", "broderie", "africain"]
+    },
+    {
+      "id": "p4",
+      "name": "Bomber Jacket Kamer",
+      "description": "Bomber jacket streetwear inspiré des couleurs du Cameroun. Coupe oversize tendance, doublure satinée confortable.",
+      "price": 32000,
+      "oldPrice": 40000,
+      "currency": "XAF",
+      "vendorId": "v4",
+      "vendorName": "Kamer Street",
+      "images": [
+        "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&q=80",
+        "https://images.unsplash.com/photo-1548126032-079a0fb0099d?w=600&q=80",
+        "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600&q=80"
+      ],
+      "category": "Streetwear",
+      "categoryId": "c4",
+      "sizes": ["S", "M", "L", "XL", "XXL"],
+      "colors": ["#1A1A1A", "#006400", "#CC0000"],
+      "stock": 25,
+      "rating": 4.5,
+      "totalReviews": 72,
+      "isFeatured": true,
+      "isNew": false,
+      "discount": 20,
+      "tags": ["bomber", "streetwear", "jacket", "kamer"]
+    },
+    {
+      "id": "p5",
+      "name": "Sac à Main Raphia Tressé",
+      "description": "Sac à main artisanal en raphia tressé, entièrement fait à la main par des artisans locaux. Élégant et durable.",
+      "price": 18000,
+      "oldPrice": null,
+      "currency": "XAF",
+      "vendorId": "v5",
+      "vendorName": "Maison Chic",
+      "images": [
+        "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&q=80",
+        "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&q=80",
+        "https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?w=600&q=80"
+      ],
+      "category": "Sacs",
+      "categoryId": "c7",
+      "sizes": ["unique"],
+      "colors": ["#C19A6B", "#8B4513", "#F5DEB3"],
+      "stock": 20,
+      "rating": 4.8,
+      "totalReviews": 44,
+      "isFeatured": false,
+      "isNew": true,
+      "discount": 0,
+      "tags": ["sac", "raphia", "artisanal", "femme"]
+    },
+    {
+      "id": "p6",
+      "name": "Sneakers Wax Edition",
+      "description": "Sneakers lifestyle en cuir véritable avec empiècements en tissu wax. Edition limitée, numérotée.",
+      "price": 55000,
+      "oldPrice": 65000,
+      "currency": "XAF",
+      "vendorId": "v4",
+      "vendorName": "Kamer Street",
+      "images": [
+        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80",
+        "https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?w=600&q=80",
+        "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=600&q=80"
+      ],
+      "category": "Chaussures",
+      "categoryId": "c6",
+      "sizes": ["39", "40", "41", "42", "43", "44", "45"],
+      "colors": ["#FFFFFF", "#1A1A1A", "#FF6600"],
+      "stock": 10,
+      "rating": 4.7,
+      "totalReviews": 31,
+      "isFeatured": true,
+      "isNew": true,
+      "discount": 15,
+      "tags": ["sneakers", "wax", "chaussures", "édition limitée"]
+    },
+    {
+      "id": "p7",
+      "name": "Collier Perles Royales",
+      "description": "Collier en perles de verre multicolores, fabriqué artisanalement selon les traditions du peuple Bamiléké.",
+      "price": 8500,
+      "oldPrice": null,
+      "currency": "XAF",
+      "vendorId": "v5",
+      "vendorName": "Maison Chic",
+      "images": [
+        "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600&q=80",
+        "https://images.unsplash.com/photo-1573408301185-9519f94816b5?w=600&q=80",
+        "https://images.unsplash.com/photo-1601821765780-754fa98637c1?w=600&q=80"
+      ],
+      "category": "Accessoires",
+      "categoryId": "c5",
+      "sizes": ["unique"],
+      "colors": ["#FFD700", "#CC0000", "#003399"],
+      "stock": 50,
+      "rating": 4.9,
+      "totalReviews": 87,
+      "isFeatured": false,
+      "isNew": false,
+      "discount": 0,
+      "tags": ["collier", "perles", "bijoux", "artisanal"]
+    },
+    {
+      "id": "p8",
+      "name": "Dashiki Enfant",
+      "description": "Tenue traditionnelle Dashiki pour enfants de 2 à 12 ans. Tissu léger et lavable en machine.",
+      "price": 12000,
+      "oldPrice": 15000,
+      "currency": "XAF",
+      "vendorId": "v3",
+      "vendorName": "L'Artisan",
+      "images": [
+        "https://images.unsplash.com/photo-1471286174890-9c112ffca5b4?w=600&q=80",
+        "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=600&q=80",
+        "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=600&q=80"
+      ],
+      "category": "Enfants",
+      "categoryId": "c8",
+      "sizes": ["2ans", "4ans", "6ans", "8ans", "10ans", "12ans"],
+      "colors": ["#FF6600", "#009900", "#FFCC00"],
+      "stock": 30,
+      "rating": 4.4,
+      "totalReviews": 18,
+      "isFeatured": false,
+      "isNew": false,
+      "discount": 20,
+      "tags": ["dashiki", "enfant", "traditionnel", "africain"]
+    },
+    {
+      "id": "p9",
+      "name": "Chemise Wax Slim Fit",
+      "description": "Chemise en tissu wax coupe slim fit, parfaite pour un look africain moderne au quotidien ou lors d'événements.",
+      "price": 15000,
+      "oldPrice": 18000,
+      "currency": "XAF",
+      "vendorId": "v1",
+      "vendorName": "Boutique Elegance",
+      "images": [
+        "https://images.unsplash.com/photo-1620012253295-c15cc3e65df4?w=600&q=80",
+        "https://images.unsplash.com/photo-1602810319428-019690571b5b?w=600&q=80",
+        "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?w=600&q=80"
+      ],
+      "category": "Traditionnel",
+      "categoryId": "c3",
+      "sizes": ["S", "M", "L", "XL"],
+      "colors": ["#003366", "#8B0000", "#006400"],
+      "stock": 18,
+      "rating": 4.6,
+      "totalReviews": 42,
+      "isFeatured": true,
+      "isNew": false,
+      "discount": 17,
+      "tags": ["chemise", "wax", "homme", "slim"]
+    },
+    {
+      "id": "p10",
+      "name": "Robe Kente Mariage",
+      "description": "Robe longue en tissu Kente tissé main, spécialement conçue pour les cérémonies de mariage et les événements de grande envergure.",
+      "price": 95000,
+      "oldPrice": 120000,
+      "currency": "XAF",
+      "vendorId": "v1",
+      "vendorName": "Boutique Elegance",
+      "images": [
+        "https://images.unsplash.com/photo-1609803384069-19f3e5a70b2f?w=600&q=80",
+        "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=600&q=80",
+        "https://images.unsplash.com/photo-1519741497674-611481863552?w=600&q=80"
+      ],
+      "category": "Robes",
+      "categoryId": "c1",
+      "sizes": ["XS", "S", "M", "L", "XL", "XXL"],
+      "colors": ["#FFD700", "#CC0000", "#003399"],
+      "stock": 5,
+      "rating": 5.0,
+      "totalReviews": 12,
+      "isFeatured": true,
+      "isNew": true,
+      "discount": 21,
+      "tags": ["kente", "mariage", "cérémonie", "robe", "luxe"]
+    }
+  ],
+
+  "banners": [
+    {
+      "id": "b1",
+      "title": "New Trend 2026",
+      "subtitle": "Découvrez la mode africaine moderne",
+      "buttonText": "SHOP NOW",
+      "image": "https://images.unsplash.com/photo-1523381235312-da112bc50553?w=800&q=80",
+      "targetCategoryId": "c4"
+    },
+    {
+      "id": "b2",
+      "title": "Bazin & Kente",
+      "subtitle": "Les tenues traditionnelles revisitées",
+      "buttonText": "DÉCOUVRIR",
+      "image": "https://images.unsplash.com/photo-1583759136431-e5f0d8bbfb4f?w=800&q=80",
+      "targetCategoryId": "c3"
+    },
+    {
+      "id": "b3",
+      "title": "Soldes jusqu'à -30%",
+      "subtitle": "Profitez des meilleures offres",
+      "buttonText": "EN PROFITER",
+      "image": "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800&q=80",
+      "targetCategoryId": null
+    },
+    {
+      "id": "b4",
+      "title": "Collection Mariage",
+      "subtitle": "Tenues exclusives pour votre grand jour",
+      "buttonText": "VOIR PLUS",
+      "image": "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&q=80",
+      "targetCategoryId": "c1"
+    },
+    {
+      "id": "b5",
+      "title": "Accessoires Artisanaux",
+      "subtitle": "Le savoir-faire africain à porter",
+      "buttonText": "EXPLORER",
+      "image": "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=800&q=80",
+      "targetCategoryId": "c5"
+    }
+  ],
+
+  "reviews": [
+    {
+      "id": "r1",
+      "productId": "p1",
+      "userId": "u2",
+      "userName": "Aminata K.",
+      "userAvatar": "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=100&q=80",
+      "rating": 5,
+      "comment": "Tissu de très bonne qualité ! La robe est magnifique, les couleurs sont exactement comme sur la photo. Livraison rapide.",
+      "date": "2026-03-15",
+      "likes": 12
+    },
+    {
+      "id": "r2",
+      "productId": "p1",
+      "userId": "u3",
+      "userName": "Carine N.",
+      "userAvatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80",
+      "rating": 4,
+      "comment": "Très belle robe, conforme à la description. Je recommande vivement cette boutique.",
+      "date": "2026-02-28",
+      "likes": 7
+    },
+    {
+      "id": "r3",
+      "productId": "p2",
+      "userId": "u4",
+      "userName": "Patrick M.",
+      "userAvatar": "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=100&q=80",
+      "rating": 5,
+      "comment": "Costume parfait, coupe impeccable. Le tailleur a bien pris mes mesures et le résultat est excellent.",
+      "date": "2026-03-01",
+      "likes": 20
+    },
+    {
+      "id": "r4",
+      "productId": "p4",
+      "userId": "u5",
+      "userName": "Kevin T.",
+      "userAvatar": "https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?w=100&q=80",
+      "rating": 4,
+      "comment": "Super bomber, qualité au rendez-vous. Le délai de livraison était un peu long mais ça vaut le coup.",
+      "date": "2026-01-20",
+      "likes": 9
+    },
+    {
+      "id": "r5",
+      "productId": "p6",
+      "userId": "u6",
+      "userName": "Darius E.",
+      "userAvatar": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&q=80",
+      "rating": 5,
+      "comment": "Les sneakers sont incroyables. L'édition wax est vraiment unique, j'ai eu plein de compliments !",
+      "date": "2026-02-14",
+      "likes": 34
+    }
+  ],
+
+  "users": [
+    {
+      "id": "u1",
+      "name": "Falcon Thought",
+      "email": "falcon@kamermarket.cm",
+      "phone": "+237 699 123 456",
+      "avatar": "https://i.pravatar.cc/150?u=falcon",
+      "address": {
+        "street": "Quartier Bastos, Rue 1234",
+        "city": "Yaoundé",
+        "country": "Cameroun",
+        "postalCode": "00237"
+      },
+      "favorites": ["p1", "p4", "p6"],
+      "paymentMethods": [
+        { "type": "orange_money", "number": "+237 699 123 456", "isDefault": true },
+        { "type": "mobile_money", "number": "+237 677 654 321", "isDefault": false }
+      ],
+      "createdAt": "2025-06-01"
+    }
+  ],
+
+  "orders": [
+    {
+      "id": "o1",
+      "userId": "u1",
+      "status": "delivered",
+      "items": [
+        { "productId": "p1", "productName": "Robe Ankara Premium", "qty": 1, "price": 25000, "size": "M", "image": "https://images.unsplash.com/photo-1515347619252-7e0520696781?w=300&q=80" },
+        { "productId": "p5", "productName": "Sac à Main Raphia Tressé", "qty": 1, "price": 18000, "size": "unique", "image": "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=300&q=80" }
+      ],
+      "subTotal": 43000,
+      "shipping": 2500,
+      "total": 45500,
+      "currency": "XAF",
+      "paymentMethod": "orange_money",
+      "paymentStatus": "paid",
+      "deliveryAddress": "Quartier Bastos, Yaoundé",
+      "createdAt": "2026-02-10",
+      "deliveredAt": "2026-02-13",
+      "trackingCode": "KM-2026-00123"
+    },
+    {
+      "id": "o2",
+      "userId": "u1",
+      "status": "processing",
+      "items": [
+        { "productId": "p4", "productName": "Bomber Jacket Kamer", "qty": 1, "price": 32000, "size": "L", "image": "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=300&q=80" }
+      ],
+      "subTotal": 32000,
+      "shipping": 2500,
+      "total": 34500,
+      "currency": "XAF",
+      "paymentMethod": "mobile_money",
+      "paymentStatus": "paid",
+      "deliveryAddress": "Quartier Bastos, Yaoundé",
+      "createdAt": "2026-03-28",
+      "deliveredAt": null,
+      "trackingCode": "KM-2026-00456"
+    }
+  ],
+
+  "notifications": [
+    {
+      "id": "n1",
+      "userId": "u1",
+      "type": "order",
+      "title": "Commande livrée !",
+      "message": "Votre commande #KM-2026-00123 a bien été livrée. Donnez votre avis !",
+      "isRead": false,
+      "icon": "delivery",
+      "createdAt": "2026-02-13T14:30:00"
+    },
+    {
+      "id": "n2",
+      "userId": "u1",
+      "type": "promo",
+      "title": "Soldes spéciales — jusqu'à -30%",
+      "message": "Profitez de nos offres exceptionnelles sur toute la collection Traditionnel ce week-end.",
+      "isRead": false,
+      "icon": "promo",
+      "createdAt": "2026-03-25T09:00:00"
+    },
+    {
+      "id": "n3",
+      "userId": "u1",
+      "type": "chat",
+      "title": "Nouveau message de Tailleur Du Roi",
+      "message": "Votre costume est prêt pour l'essayage. Pouvez-vous passer en boutique ?",
+      "isRead": true,
+      "icon": "chat",
+      "createdAt": "2026-03-20T11:15:00"
+    },
+    {
+      "id": "n4",
+      "userId": "u1",
+      "type": "order",
+      "title": "Paiement confirmé",
+      "message": "Votre paiement Orange Money de 34 500 XAF a été confirmé pour la commande #KM-2026-00456.",
+      "isRead": true,
+      "icon": "payment",
+      "createdAt": "2026-03-28T16:45:00"
+    }
+  ],
+
+  "chats": [
+    {
+      "id": "ch1",
+      "participants": ["u1", "v2"],
+      "vendorName": "Tailleur Du Roi",
+      "vendorAvatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80",
+      "lastMessage": "Votre costume est prêt pour l'essayage.",
+      "lastMessageAt": "2026-03-20T11:15:00",
+      "unreadCount": 1,
+      "messages": [
+        { "id": "m1", "senderId": "u1", "text": "Bonjour, je voudrais commander un costume sur mesure.", "sentAt": "2026-03-18T10:00:00" },
+        { "id": "m2", "senderId": "v2", "text": "Bonjour ! Bien sûr, pouvez-vous me donner vos mensurations ?", "sentAt": "2026-03-18T10:05:00" },
+        { "id": "m3", "senderId": "u1", "text": "Tour de poitrine 95cm, tour de taille 80cm, hauteur 178cm.", "sentAt": "2026-03-18T10:10:00" },
+        { "id": "m4", "senderId": "v2", "text": "Parfait ! Votre costume sera prêt dans 5 jours. 75 000 XAF, paiement à la livraison.", "sentAt": "2026-03-18T10:20:00" },
+        { "id": "m5", "senderId": "v2", "text": "Votre costume est prêt pour l'essayage. Pouvez-vous passer en boutique ?", "sentAt": "2026-03-20T11:15:00" }
+      ]
+    },
+    {
+      "id": "ch2",
+      "participants": ["u1", "v1"],
+      "vendorName": "Boutique Elegance",
+      "vendorAvatar": "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=100&q=80",
+      "lastMessage": "Merci pour votre achat ! 😊",
+      "lastMessageAt": "2026-02-13T15:00:00",
+      "unreadCount": 0,
+      "messages": [
+        { "id": "m6", "senderId": "u1", "text": "Est-ce que la robe ankara est disponible en taille S ?", "sentAt": "2026-02-10T08:00:00" },
+        { "id": "m7", "senderId": "v1", "text": "Oui, la taille S est disponible ! Je vous la réserve.", "sentAt": "2026-02-10T08:30:00" },
+        { "id": "m8", "senderId": "v1", "text": "Merci pour votre achat ! 😊", "sentAt": "2026-02-13T15:00:00" }
+      ]
+    }
+  ],
+
+  "paymentMethods": [
+    {
+      "id": "pm1",
+      "type": "orange_money",
+      "label": "Orange Money",
+      "icon": "orange_money",
+      "color": "#FF6600",
+      "instructions": "Composez *150# sur votre téléphone Orange et suivez les instructions pour valider le paiement.",
+      "isAvailable": true
+    },
+    {
+      "id": "pm2",
+      "type": "mobile_money",
+      "label": "Mobile Money (MTN)",
+      "icon": "mobile_money",
+      "color": "#FFCC00",
+      "instructions": "Composez *126# sur votre téléphone MTN et suivez les instructions pour valider le paiement.",
+      "isAvailable": true
+    },
+    {
+      "id": "pm3",
+      "type": "card",
+      "label": "Carte Bancaire",
+      "icon": "credit_card",
+      "color": "#003399",
+      "instructions": "Paiement sécurisé par carte Visa ou Mastercard via notre passerelle de paiement certifiée.",
+      "isAvailable": true
+    }
+  ]
+}
