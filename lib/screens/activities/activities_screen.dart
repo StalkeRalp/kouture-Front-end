@@ -31,10 +31,11 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
         return Scaffold(
           backgroundColor: Colors.white,
           appBar: AppBar(
+            automaticallyImplyLeading: false,
             title: Text(
               _containerIndex == 0 ? Translator.t('messages').toUpperCase() : Translator.t('orders').toUpperCase(),
               style: const TextStyle(
-                color: _navy, 
+                color: Color(0xFF0D0D26), 
                 fontWeight: FontWeight.bold, 
                 fontSize: 16, 
                 letterSpacing: 1.5
@@ -43,12 +44,6 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
             backgroundColor: Colors.white,
             elevation: 0,
             centerTitle: true,
-            leading: Navigator.canPop(context) 
-              ? IconButton(
-                  icon: const Icon(Icons.chevron_left, color: _navy),
-                  onPressed: () => Navigator.pop(context),
-                )
-              : null,
           ),
           body: Column(
             children: [

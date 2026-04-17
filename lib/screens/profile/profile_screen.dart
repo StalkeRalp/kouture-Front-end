@@ -31,6 +31,7 @@ class ProfileScreen extends StatelessWidget {
             backgroundColor: Colors.white,
             elevation: 0,
             centerTitle: true,
+            automaticallyImplyLeading: false,
             title: Text(Translator.t('profile'), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
             actions: [
               IconButton(

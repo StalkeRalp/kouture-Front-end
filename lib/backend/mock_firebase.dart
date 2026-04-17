@@ -31,6 +31,10 @@ class MockFirebase extends ChangeNotifier {
   Map<String, dynamic>? _pendingUser;
 
   static const String _sessionKey = 'auth_session_id';
+  static const String _dbUsersKey = 'mock_db_users';
+  static const String _dbCartKey = 'mock_db_cart';
+  static const String _dbOrdersKey = 'mock_db_orders';
+  static const String _dbSearchesKey = 'mock_db_searches';
 
   List<dynamic> get allProducts => _products;
   List<dynamic> get promotions => _promotions;
@@ -54,16 +58,23 @@ class MockFirebase extends ChangeNotifier {
         _promotions = List<dynamic>.from(dbData['promotions'] ?? []);
       }
       
-      // Load users & promotions from users.json
-      try {
-        final usersStr = await rootBundle.loadString('lib/backend/users.json');
-        final uData = jsonDecode(usersStr);
-        if (uData is Map) {
-          _users = List<dynamic>.from(uData['users'] ?? []);
-          _promotions = List<dynamic>.from(uData['promotions'] ?? []);
+      // Load custom data if it exists, otherwise from db/users.json
+      final prefs = await SharedPreferences.getInstance();
+      
+      final usersStrPrefs = prefs.getString(_dbUsersKey);
+      if (usersStrPrefs != null) {
+         _users = List<dynamic>.from(jsonDecode(usersStrPrefs));
+      } else {
+        try {
+          final usersStr = await rootBundle.loadString('lib/backend/users.json');
+          final uData = jsonDecode(usersStr);
+          if (uData is Map) {
+            _users = List<dynamic>.from(uData['users'] ?? []);
+            _promotions = List<dynamic>.from(uData['promotions'] ?? []);
+          }
+        } catch (e) {
+          // ignore if missing or malformed
         }
-      } catch (e) {
-        // ignore if missing or malformed
       }
 
       try {
@@ -105,8 +116,23 @@ class MockFirebase extends ChangeNotifier {
         debugPrint('MockFirebase Session Restore Error: $e');
       }
 
-      // Seed orders for testing if empty
-      _seedOrders();
+      final cartStr = prefs.getString(_dbCartKey);
+      if (cartStr != null) {
+        _cartItems = List<Map<String, dynamic>>.from(jsonDecode(cartStr).map((x) => Map<String, dynamic>.from(x)));
+      }
+
+      final ordersStr = prefs.getString(_dbOrdersKey);
+      if (ordersStr != null) {
+        List<dynamic> parsedOrders = jsonDecode(ordersStr);
+        _orders = parsedOrders.map((e) => Map<String, dynamic>.from(e)).toList();
+      } else {
+        _seedOrders();
+      }
+
+      final searchesStr = prefs.getString(_dbSearchesKey);
+      if (searchesStr != null) {
+        recentSearches = List<String>.from(jsonDecode(searchesStr));
+      }
 
       _isInitialized = true;
     } catch (e) {
@@ -439,17 +465,15 @@ class MockFirebase extends ChangeNotifier {
     }
   }
 
-  void _saveToDisk() {
+  void _saveToDisk() async {
     try {
-      // Use relative path which is safer for local dev
-      final file = File('lib/backend/users.json');
-      final data = {
-        'users': _users,
-        'promotions': _promotions,
-      };
-      file.writeAsStringSync(jsonEncode(data));
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(_dbUsersKey, jsonEncode(_users));
+      await prefs.setString(_dbCartKey, jsonEncode(_cartItems));
+      await prefs.setString(_dbOrdersKey, jsonEncode(_orders));
+      await prefs.setString(_dbSearchesKey, jsonEncode(recentSearches));
     } catch (e) {
-      // Silently fail persistence for local sessions
+      debugPrint('Persistence Error: $e');
     }
   }
 
@@ -478,16 +502,19 @@ class MockFirebase extends ChangeNotifier {
       recentSearches.removeLast();
     }
     notifyListeners();
+    _saveToDisk();
   }
 
   void clearRecentSearches() {
     recentSearches.clear();
     notifyListeners();
+    _saveToDisk();
   }
 
   void removeRecentSearch(String query) {
     recentSearches.remove(query);
     notifyListeners();
+    _saveToDisk();
   }
 
   Future<List<dynamic>> searchProducts(String query) async {
@@ -612,11 +639,13 @@ class MockFirebase extends ChangeNotifier {
       });
     }
     notifyListeners();
+    _saveToDisk();
   }
 
   void removeFromCart(String cartItemId) {
     _cartItems.removeWhere((item) => item['id'] == cartItemId);
     notifyListeners();
+    _saveToDisk();
   }
 
   void updateCartQuantity(String cartItemId, int delta) {
@@ -626,6 +655,7 @@ class MockFirebase extends ChangeNotifier {
       if (newQty > 0) {
         _cartItems[index]['quantity'] = newQty;
         notifyListeners();
+        _saveToDisk();
       } else {
         removeFromCart(cartItemId);
       }
@@ -710,6 +740,7 @@ class MockFirebase extends ChangeNotifier {
     };
     _orders.insert(0, newOrder);
     notifyListeners();
+    _saveToDisk();
   }
 
   Future<Map<String, dynamic>?> getOrderById(String id) async {
@@ -726,6 +757,7 @@ class MockFirebase extends ChangeNotifier {
       if (_orders[i]['id'] == orderId) {
         _orders[i]['status'] = newStatus;
         notifyListeners();
+        _saveToDisk();
         break;
       }
     }

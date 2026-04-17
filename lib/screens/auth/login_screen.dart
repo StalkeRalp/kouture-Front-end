@@ -73,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
         
         if (mounted) {
           setState(() => _isLoading = false);
-          Navigator.pushReplacementNamed(context, MainNavigationScreen.routeName);
+          Navigator.pushNamedAndRemoveUntil(context, MainNavigationScreen.routeName, (route) => false);
         }
       } catch (e) {
         if (mounted) {

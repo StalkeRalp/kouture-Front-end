@@ -55,9 +55,9 @@ class _SplashScreenState extends State<SplashScreen>
     Future.delayed(const Duration(seconds: 3), () {
       if (mounted) {
         if (MockFirebase().isAuthenticated) {
-          Navigator.pushReplacementNamed(context, MainNavigationScreen.routeName);
+          Navigator.pushNamedAndRemoveUntil(context, MainNavigationScreen.routeName, (route) => false);
         } else {
-          Navigator.pushReplacementNamed(context, OnboardingScreen.routeName);
+          Navigator.pushNamedAndRemoveUntil(context, OnboardingScreen.routeName, (route) => false);
         }
       }
     });

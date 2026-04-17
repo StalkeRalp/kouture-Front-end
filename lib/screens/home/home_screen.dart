@@ -737,9 +737,9 @@ class _HomeScreenState extends State<HomeScreen> {
               itemCount: products.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                mainAxisSpacing: 18,
+                mainAxisSpacing: 25,
                 crossAxisSpacing: 14,
-                childAspectRatio: 0.68,
+                childAspectRatio: 0.6,
               ),
               itemBuilder: (context, index) {
                 final p = products[index] as Map<String, dynamic>;

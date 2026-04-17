@@ -116,7 +116,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
             await MockFirebase().signIn('falcon@kouture.com', 'kouture2024');
           }
           if (mounted) {
-            Navigator.pushReplacementNamed(context, MainNavigationScreen.routeName);
+            Navigator.pushNamedAndRemoveUntil(context, MainNavigationScreen.routeName, (route) => false);
           }
         } else {
           setState(() => _errorMessage = 'Code invalide. Veuillez réessayer.');

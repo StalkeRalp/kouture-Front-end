@@ -6,6 +6,7 @@ import 'discover/discover_screen.dart';
 import 'favorites/favorites_screen.dart';
 import 'activities/activities_screen.dart';
 import 'profile/profile_screen.dart';
+import '../widgets/curved_nav_bar.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   final int initialIndex;
@@ -45,48 +46,45 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     return AnimatedBuilder(
       animation: MockFirebase(),
       builder: (context, _) {
-        return Scaffold(
-          body: IndexedStack(
-            index: _selectedIndex,
-            children: _screens,
-          ),
-          bottomNavigationBar: BottomNavigationBar(
-            currentIndex: _selectedIndex,
-            onTap: _onItemTapped,
-            backgroundColor: Colors.white,
-            selectedItemColor: const Color(0xFFFF8C8C),
-            unselectedItemColor: Colors.grey[400],
-            type: BottomNavigationBarType.fixed,
-            elevation: 10,
-            selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-            unselectedLabelStyle: const TextStyle(fontSize: 12),
-            items: [
-              BottomNavigationBarItem(
-                icon: const Icon(Icons.home_outlined),
-                activeIcon: const Icon(Icons.home),
-                label: Translator.t('home'),
-              ),
-              BottomNavigationBarItem(
-                icon: const Icon(Icons.grid_view_outlined),
-                activeIcon: const Icon(Icons.grid_view_rounded),
-                label: Translator.t('shop'),
-              ),
-              BottomNavigationBarItem(
-                icon: const Icon(Icons.favorite_outline),
-                activeIcon: const Icon(Icons.favorite),
-                label: Translator.t('favorites'),
-              ),
-              BottomNavigationBarItem(
-                icon: const Icon(Icons.forum_outlined),
-                activeIcon: const Icon(Icons.forum),
-                label: Translator.t('activities'),
-              ),
-              BottomNavigationBarItem(
-                icon: const Icon(Icons.person_outline),
-                activeIcon: const Icon(Icons.person),
-                label: Translator.t('profile'),
-              ),
-            ],
+        return PopScope(
+          canPop: false,
+          child: Scaffold(
+            body: IndexedStack(
+              index: _selectedIndex,
+              children: _screens,
+            ),
+            extendBody: true, // Pour que le contenu aille derrière la bulle flottante
+            bottomNavigationBar: CurvedNavBar(
+              currentIndex: _selectedIndex,
+              onTap: _onItemTapped,
+              items: [
+                NavItem(
+                  label: Translator.t('home'),
+                  icon: Icons.home_outlined,
+                  activeIcon: Icons.home,
+                ),
+                NavItem(
+                  label: Translator.t('shop'),
+                  icon: Icons.grid_view_outlined,
+                  activeIcon: Icons.grid_view_rounded,
+                ),
+                NavItem(
+                  label: Translator.t('favorites'),
+                  icon: Icons.favorite_outline,
+                  activeIcon: Icons.favorite,
+                ),
+                NavItem(
+                  label: Translator.t('activities'),
+                  icon: Icons.forum_outlined,
+                  activeIcon: Icons.forum,
+                ),
+                NavItem(
+                  label: Translator.t('profile'),
+                  icon: Icons.person_outline,
+                  activeIcon: Icons.person,
+                ),
+              ],
+            ),
           ),
         );
       },
