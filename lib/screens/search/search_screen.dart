@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../backend/mock_firebase.dart';
+import '../../backend/translator.dart';
 import 'search_results_screen.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -33,48 +34,48 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.chevron_left, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: TextField(
-          controller: _searchController,
-          focusNode: _focusNode,
-          onSubmitted: _onSearch,
-          decoration: InputDecoration(
-            hintText: 'Rechercher un produit...',
-            hintStyle: TextStyle(color: Colors.grey[400]),
-            border: InputBorder.none,
+    return AnimatedBuilder(
+      animation: MockFirebase(),
+      builder: (context, _) {
+        final recent = MockFirebase().recentSearches;
+        
+        return Scaffold(
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(Icons.chevron_left, color: Colors.black),
+              onPressed: () => Navigator.pop(context),
+            ),
+            title: TextField(
+              controller: _searchController,
+              focusNode: _focusNode,
+              onSubmitted: _onSearch,
+              decoration: InputDecoration(
+                hintText: Translator.t('search_products_hint'),
+                hintStyle: TextStyle(color: Colors.grey[400]),
+                border: InputBorder.none,
+              ),
+            ),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.close, color: Colors.grey),
+                onPressed: () => _searchController.clear(),
+              ),
+            ],
           ),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.close, color: Colors.grey),
-            onPressed: () => _searchController.clear(),
-          ),
-        ],
-      ),
-      body: AnimatedBuilder(
-        animation: MockFirebase(),
-        builder: (context, _) {
-          final recent = MockFirebase().recentSearches;
-          
-          return ListView(
+          body: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             children: [
               if (recent.isNotEmpty) ...[
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Recherches récentes', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                    Text(Translator.t('recent_searches'), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                     TextButton(
                       onPressed: () => MockFirebase().clearRecentSearches(),
-                      child: const Text('Tout effacer', style: TextStyle(color: _salmon, fontSize: 13)),
+                      child: Text(Translator.t('clear_all'), style: const TextStyle(color: _salmon, fontSize: 13)),
                     ),
                   ],
                 ),
@@ -106,7 +107,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 const SizedBox(height: 30),
               ],
               
-              const Text('Tags populaires', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              Text(Translator.t('popular_tags'), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
               const SizedBox(height: 15),
               Wrap(
                 spacing: 12,
@@ -127,9 +128,9 @@ class _SearchScreenState extends State<SearchScreen> {
                 )).toList(),
               ),
             ],
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }

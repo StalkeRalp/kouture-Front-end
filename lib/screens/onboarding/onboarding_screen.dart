@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
+import '../../backend/translator.dart';
+import '../auth/login_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -15,30 +17,30 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   double _scrollOffset = 0.0;
   int _currentPage = 0;
 
-  final List<OnboardingData> _pages = [
+  List<OnboardingData> get _pages => [
     OnboardingData(
-      title: 'Héritage Artisanal',
-      description: 'Découvrez l\'excellence du travail local. Nos artisans transforment les étoffes les plus nobles en chefs-d\'œuvre uniques.',
+      title: Translator.t('onb_title_1'),
+      description: Translator.t('onb_desc_1'),
       color: const Color(0xFFFF8C8C),
       icon: Icons.auto_awesome,
       assetPath: 'assets/onboarding/tailor_artisan.png',
-      tag: 'SAVOIR FAIRE',
+      tag: Translator.t('onb_tag_1'),
     ),
     OnboardingData(
-      title: 'Précision & Passion',
-      description: 'Chaque point raconte une histoire. Accédez à la qualité supérieure du sur-mesure authentiquement africain.',
+      title: Translator.t('onb_title_2'),
+      description: Translator.t('onb_desc_2'),
       color: const Color(0xFF0D0D26),
       icon: Icons.gesture_rounded,
       assetPath: 'assets/onboarding/stitch_detail.png',
-      tag: 'ART ET PASSION',
+      tag: Translator.t('onb_tag_2'),
     ),
     OnboardingData(
-      title: 'Afrique Élégante',
-      description: 'Portez votre culture avec fierté. Une coupe moderne et parfaite, conçue pour valoriser votre silhouette et votre héritage.',
+      title: Translator.t('onb_title_3'),
+      description: Translator.t('onb_desc_3'),
       color: const Color(0xFFFF8C8C),
       icon: Icons.straighten_rounded,
       assetPath: 'assets/onboarding/perfect_fit_model.png',
-      tag: 'COUPES PARFAITES',
+      tag: Translator.t('onb_tag_3'),
     ),
   ];
 
@@ -109,7 +111,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               borderRadius: BorderRadius.circular(40),
               boxShadow: [
                 BoxShadow(
-                  color: page.color.withOpacity(0.15),
+                  color: page.color.withValues(alpha: 0.15),
                   blurRadius: 30,
                   offset: const Offset(0, 20),
                 ),
@@ -139,7 +141,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         end: Alignment.bottomCenter,
                         colors: [
                           Colors.transparent,
-                          Colors.black.withOpacity(0.3),
+                          Colors.black.withValues(alpha: 0.3),
                         ],
                       ),
                     ),
@@ -160,7 +162,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
-                    color: page.color.withOpacity(0.1),
+                    color: page.color.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(30),
                   ),
                   child: Text(
@@ -226,56 +228,37 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           ),
         ),
         const SizedBox(height: 32),
-        Row(
-          children: [
-            Expanded(
-              child: TextButton(
-                onPressed: () => _pageController.jumpToPage(_pages.length - 1),
+        if (_currentPage < _pages.length - 1)
+          Center(
+            child: TextButton(
+              onPressed: () => _pageController.jumpToPage(_pages.length - 1),
+              child: Text(
+                Translator.t('skip'),
+                style: TextStyle(color: Colors.grey[400], fontWeight: FontWeight.bold, letterSpacing: 2),
+              ),
+            ),
+          )
+        else
+          Center(
+            child: SizedBox(
+              height: 64,
+              width: 220,
+              child: ElevatedButton(
+                onPressed: () => Navigator.pushReplacementNamed(context, LoginScreen.routeName),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF0D0D26),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                  elevation: 10,
+                  shadowColor: const Color(0xFF0D0D26).withValues(alpha: 0.3),
+                ),
                 child: Text(
-                  'PASSER',
-                  style: TextStyle(color: Colors.grey[400], fontWeight: FontWeight.bold, letterSpacing: 2),
+                  Translator.t('start'),
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, letterSpacing: 1.5),
                 ),
               ),
             ),
-            const SizedBox(width: 16),
-            Expanded(
-              flex: 2,
-              child: SizedBox(
-                height: 64,
-                child: ElevatedButton(
-                  onPressed: () {
-                    if (_currentPage < _pages.length - 1) {
-                      _pageController.nextPage(
-                        duration: const Duration(milliseconds: 600),
-                        curve: Curves.easeInOutQuart,
-                      );
-                    } else {
-                      Navigator.pushReplacementNamed(context, '/login');
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF0D0D26),
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-                    elevation: 10,
-                    shadowColor: const Color(0xFF0D0D26).withOpacity(0.3),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        _currentPage == _pages.length - 1 ? 'COMMENCER' : 'SUIVANT',
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, letterSpacing: 1.5),
-                      ),
-                      const SizedBox(width: 8),
-                      const Icon(Icons.arrow_forward_ios, size: 16),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
       ],
     );
   }
@@ -290,7 +273,7 @@ class _BogolanBackgroundPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = const Color(0xFF0D0D26).withOpacity(0.03) // Very subtle
+      ..color = const Color(0xFF0D0D26).withValues(alpha: 0.03) // Very subtle
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.0;
 

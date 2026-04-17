@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../backend/translator.dart';
 import '../payment/payment_processing_screen.dart';
 
 class CardPaymentScreen extends StatefulWidget {
@@ -25,7 +26,7 @@ class _CardPaymentScreenState extends State<CardPaymentScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Carte Bancaire', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(Translator.t('bank_card_title'), style: const TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
@@ -43,17 +44,17 @@ class _CardPaymentScreenState extends State<CardPaymentScreen> {
               _buildCreditCardPreview(),
               const SizedBox(height: 40),
               
-              _buildTextField('Nom sur la carte', _nameController, Icons.person_outline),
+              _buildTextField(Translator.t('card_name'), _nameController, Icons.person_outline),
               const SizedBox(height: 20),
               
-              _buildTextField('Numéro de carte', _cardNumberController, Icons.credit_card, keyboardType: TextInputType.number),
+              _buildTextField(Translator.t('card_number'), _cardNumberController, Icons.credit_card, keyboardType: TextInputType.number),
               const SizedBox(height: 20),
               
               Row(
                 children: [
-                   Expanded(child: _buildTextField('Expiration', _expiryController, Icons.calendar_today_outlined, hint: 'MM/YY')),
+                   Expanded(child: _buildTextField(Translator.t('expiry'), _expiryController, Icons.calendar_today_outlined, hint: 'MM/YY')),
                    const SizedBox(width: 20),
-                   Expanded(child: _buildTextField('CVV', _cvvController, Icons.lock_outline, obscure: true)),
+                   Expanded(child: _buildTextField(Translator.t('cvv'), _cvvController, Icons.lock_outline, obscure: true)),
                 ],
               ),
               
@@ -74,8 +75,8 @@ class _CardPaymentScreenState extends State<CardPaymentScreen> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                     elevation: 0,
                   ),
-                  child: const Text('PAYER MAINTENANT', 
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 1.1)),
+                  child: Text(Translator.t('pay_now'), 
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 1.1)),
                 ),
               ),
             ],
@@ -91,13 +92,13 @@ class _CardPaymentScreenState extends State<CardPaymentScreen> {
       width: double.infinity,
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [_darkNavy, _darkNavy.withOpacity(0.8)],
+          colors: [_darkNavy, _darkNavy.withValues(alpha: 0.8)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(25),
         boxShadow: [
-          BoxShadow(color: _darkNavy.withOpacity(0.3), blurRadius: 15, offset: const Offset(0, 10)),
+          BoxShadow(color: _darkNavy.withValues(alpha: 0.3), blurRadius: 15, offset: const Offset(0, 10)),
         ],
       ),
       padding: const EdgeInsets.all(25),
@@ -114,23 +115,23 @@ class _CardPaymentScreenState extends State<CardPaymentScreen> {
           const Spacer(),
           const Text('•••• •••• •••• ••••', style: TextStyle(color: Colors.white, fontSize: 22, letterSpacing: 2)),
           const SizedBox(height: 20),
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('TITULAIRE', style: TextStyle(color: Colors.white54, fontSize: 10)),
-                  SizedBox(height: 4),
-                  Text('FALCON THOUGHT', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                  Text(Translator.t('cardholder'), style: const TextStyle(color: Colors.white54, fontSize: 10)),
+                  const SizedBox(height: 4),
+                  const Text('FALCON THOUGHT', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                 ],
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text('EXP', style: TextStyle(color: Colors.white54, fontSize: 10)),
-                  SizedBox(height: 4),
-                  Text('12/28', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                  Text(Translator.t('expiry'), style: const TextStyle(color: Colors.white54, fontSize: 10)),
+                  const SizedBox(height: 4),
+                  const Text('12/28', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                 ],
               ),
             ],
@@ -158,7 +159,7 @@ class _CardPaymentScreenState extends State<CardPaymentScreen> {
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide.none),
             focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: const BorderSide(color: _salmon, width: 1.5)),
           ),
-          validator: (value) => (value == null || value.isEmpty) ? 'Champ requis' : null,
+          validator: (value) => (value == null || value.isEmpty) ? Translator.t('required_field') : null,
         ),
       ],
     );

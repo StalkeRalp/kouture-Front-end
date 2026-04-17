@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../backend/mock_firebase.dart';
+import '../../backend/translator.dart';
 
 class AddReviewScreen extends StatefulWidget {
   final Map<String, dynamic> product;
@@ -19,7 +20,7 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
   Future<void> _submitReview() async {
     if (_rating == 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a rating')),
+        SnackBar(content: Text(Translator.t('select_rating_error'))),
       );
       return;
     }
@@ -50,12 +51,12 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: const Icon(Icons.check_circle, color: Color(0xFFFF8C8C), size: 64),
-        content: const Column(
+        content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('Thank You!', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-            SizedBox(height: 10),
-            Text('Your review has been submitted successfully.', textAlign: TextAlign.center),
+            Text(Translator.t('thank_you'), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+            const SizedBox(height: 10),
+            Text(Translator.t('review_submitted'), textAlign: TextAlign.center),
           ],
         ),
         actions: [
@@ -70,39 +71,44 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text('Add Review', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, size: 20),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildProductHeader(),
-            const SizedBox(height: 40),
-            const Center(
-              child: Text('What is your rate?', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+    return AnimatedBuilder(
+      animation: MockFirebase(),
+      builder: (context, _) {
+        return Scaffold(
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            title: Text(Translator.t('add_review'), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+            centerTitle: true,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back_ios_new, size: 20),
+              onPressed: () => Navigator.pop(context),
             ),
-            const SizedBox(height: 20),
-            _buildStarRating(),
-            const SizedBox(height: 40),
-            const Text('Please write your opinion', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-            const SizedBox(height: 12),
-            _buildCommentField(),
-            const SizedBox(height: 30),
-            _buildPhotoSection(),
-            const SizedBox(height: 40),
-            _buildSubmitButton(),
-          ],
-        ),
-      ),
+          ),
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildProductHeader(),
+                const SizedBox(height: 40),
+                Center(
+                  child: Text(Translator.t('what_is_rate'), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                ),
+                const SizedBox(height: 20),
+                _buildStarRating(),
+                const SizedBox(height: 40),
+                Text(Translator.t('write_opinion'), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                const SizedBox(height: 12),
+                _buildCommentField(),
+                const SizedBox(height: 30),
+                _buildPhotoSection(),
+                const SizedBox(height: 40),
+                _buildSubmitButton(),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -166,10 +172,10 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
       controller: _commentController,
       maxLines: 6,
       decoration: InputDecoration(
-        hintText: 'Enter your opinion here...',
+        hintText: Translator.t('enter_opinion_hint'),
         hintStyle: TextStyle(color: Colors.grey[400], fontSize: 14),
         filled: true,
-        fillColor: const Color(0xFFFF8C8C).withOpacity(0.05),
+        fillColor: const Color(0xFFFF8C8C).withValues(alpha: 0.05),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
           borderSide: BorderSide.none,
@@ -186,8 +192,8 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text('Add Photo', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-            Text('(Optional)', style: TextStyle(color: Colors.grey[500], fontSize: 12)),
+            Text(Translator.t('add_photo'), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            Text(Translator.t('optional'), style: TextStyle(color: Colors.grey[500], fontSize: 12)),
           ],
         ),
         const SizedBox(height: 12),
@@ -195,9 +201,9 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
           width: 90,
           height: 90,
           decoration: BoxDecoration(
-            color: const Color(0xFFFF8C8C).withOpacity(0.05),
+            color: const Color(0xFFFF8C8C).withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: const Color(0xFFFF8C8C).withOpacity(0.1)),
+            border: Border.all(color: const Color(0xFFFF8C8C).withValues(alpha: 0.1)),
           ),
           child: const Icon(Icons.add_a_photo_outlined, color: Color(0xFFFF8C8C)),
         ),
@@ -218,9 +224,9 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
         ),
         child: _isSubmitting
             ? const CircularProgressIndicator(color: Colors.white)
-            : const Text(
-                'SUBMIT REVIEW',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, letterSpacing: 1.2),
+            : Text(
+                Translator.t('submit_review'),
+                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, letterSpacing: 1.2),
               ),
       ),
     );

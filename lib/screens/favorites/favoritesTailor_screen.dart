@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../backend/mock_firebase.dart';
+import '../../backend/translator.dart';
 import '../vendor/vendor_profile_screen.dart';
 
 class FavoritesTailorScreen extends StatelessWidget {
@@ -16,19 +17,24 @@ class FavoritesTailorScreen extends StatelessWidget {
       return _buildBody(context);
     }
 
-    return Scaffold(
-      backgroundColor: Colors.grey[50],
-      appBar: AppBar(
-        title: const Text('Mes Couturiers Favoris', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.chevron_left, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
-      body: _buildBody(context),
+    return AnimatedBuilder(
+      animation: MockFirebase(),
+      builder: (context, _) {
+        return Scaffold(
+          backgroundColor: Colors.grey[50],
+          appBar: AppBar(
+            title: Text(Translator.t('favorites_tailors'), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+            backgroundColor: Colors.white,
+            elevation: 0,
+            centerTitle: true,
+            leading: IconButton(
+              icon: const Icon(Icons.chevron_left, color: Colors.black),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ),
+          body: _buildBody(context),
+        );
+      },
     );
   }
 
@@ -70,10 +76,13 @@ class FavoritesTailorScreen extends StatelessWidget {
         children: [
           Icon(Icons.person_outline, size: 80, color: Colors.grey[300]),
           const SizedBox(height: 20),
-          const Text('Aucun couturier favori.', 
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey)),
+          Text(
+            Translator.t('no_favorite_tailors'), 
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey),
+          ),
           const SizedBox(height: 10),
-          Text('Suivez vos couturiers préférés pour les retrouver ici !', 
+          Text(
+            Translator.t('follow_tailors_subtext'), 
             style: TextStyle(color: Colors.grey[600]),
             textAlign: TextAlign.center,
           ),
@@ -86,7 +95,7 @@ class FavoritesTailorScreen extends StatelessWidget {
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
               ),
-              child: const Text('RETOUR', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+              child: Text(Translator.t('back').toUpperCase(), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
             ),
           ],
         ],
@@ -102,7 +111,7 @@ class FavoritesTailorScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),

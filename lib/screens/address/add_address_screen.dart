@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../backend/mock_firebase.dart';
+import '../../backend/translator.dart';
 
 class AddAddressScreen extends StatefulWidget {
   const AddAddressScreen({super.key});
@@ -58,7 +59,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
         Navigator.pop(context); // Pop loading
         Navigator.pop(context); // Go back to list
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Adresse ajoutée avec succès')),
+          SnackBar(content: Text(Translator.t('address_added_success'))),
         );
       }
     }
@@ -69,7 +70,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Nouvelle Adresse', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        title: Text(Translator.t('new_address'), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
@@ -78,117 +79,122 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Type d\'adresse',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-              const SizedBox(height: 12),
-              Row(
+      body: AnimatedBuilder(
+        animation: MockFirebase(),
+        builder: (context, _) {
+          return SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildTypeChip('Maison', Icons.home_filled),
-                  const SizedBox(width: 12),
-                  _buildTypeChip('Travail', Icons.work),
-                  const SizedBox(width: 12),
-                  _buildTypeChip('Autre', Icons.location_on),
-                ],
-              ),
-              const SizedBox(height: 32),
-              _buildTextField(
-                controller: _nameController,
-                label: 'Nom Complet',
-                hint: 'ex: Jean Dupont',
-                icon: Icons.person_outline,
-              ),
-              const SizedBox(height: 20),
-              _buildTextField(
-                controller: _phoneController,
-                label: 'Téléphone',
-                hint: 'ex: +237 600 000 000',
-                icon: Icons.phone_android_outlined,
-                keyboardType: TextInputType.phone,
-              ),
-              const SizedBox(height: 20),
-              _buildTextField(
-                controller: _streetController,
-                label: 'Adresse / Rue',
-                hint: 'ex: Rue de la Paix, Bastos',
-                icon: Icons.map_outlined,
-              ),
-              const SizedBox(height: 20),
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildTextField(
-                      controller: _cityController,
-                      label: 'Ville',
-                      hint: 'ex: Yaoundé',
-                    ),
+                  Text(
+                    Translator.t('address_type'),
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
-                  const SizedBox(width: 20),
-                  Expanded(
-                    child: _buildTextField(
-                      controller: _regionController,
-                      label: 'Région',
-                      hint: 'ex: Centre',
-                    ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      _buildTypeChip('Maison', Translator.t('home'), Icons.home_filled),
+                      const SizedBox(width: 12),
+                      _buildTypeChip('Travail', Translator.t('work'), Icons.work),
+                      const SizedBox(width: 12),
+                      _buildTypeChip('Autre', Translator.t('other'), Icons.location_on),
+                    ],
                   ),
-                ],
-              ),
+                  const SizedBox(height: 32),
+                  _buildTextField(
+                    controller: _nameController,
+                    label: Translator.t('full_name'),
+                    hint: Translator.t('full_name_hint'),
+                    icon: Icons.person_outline,
+                  ),
+                  const SizedBox(height: 20),
+                  _buildTextField(
+                    controller: _phoneController,
+                    label: Translator.t('phone'),
+                    hint: Translator.t('phone_hint'),
+                    icon: Icons.phone_android_outlined,
+                    keyboardType: TextInputType.phone,
+                  ),
+                  const SizedBox(height: 20),
+                  _buildTextField(
+                    controller: _streetController,
+                    label: Translator.t('street_address'),
+                    hint: Translator.t('street_hint'),
+                    icon: Icons.map_outlined,
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildTextField(
+                          controller: _cityController,
+                          label: Translator.t('city'),
+                          hint: Translator.t('city_hint'),
+                        ),
+                      ),
+                      const SizedBox(width: 20),
+                      Expanded(
+                        child: _buildTextField(
+                          controller: _regionController,
+                          label: Translator.t('region'),
+                          hint: Translator.t('region_hint'),
+                        ),
+                      ),
+                    ],
+                  ),
               const SizedBox(height: 32),
-              SwitchListTile(
-                contentPadding: EdgeInsets.zero,
-                title: const Text(
-                  'Définir comme adresse par défaut',
-                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
-                ),
-                subtitle: const Text('Utilisée automatiquement lors du paiement'),
-                value: _isDefault,
-                onChanged: (val) => setState(() => _isDefault = val),
-                activeColor: _salmon,
-              ),
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(
+                      Translator.t('set_as_default'),
+                      style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
+                    ),
+                    subtitle: Text(Translator.t('set_as_default_desc')),
+                    value: _isDefault,
+                    onChanged: (val) => setState(() => _isDefault = val),
+                    activeColor: _salmon,
+                  ),
               const SizedBox(height: 48),
-              ElevatedButton(
-                onPressed: _saveAddress,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: _salmon,
-                  foregroundColor: Colors.white,
-                  minimumSize: const Size(double.infinity, 56),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                  elevation: 0,
-                ),
-                child: const Text(
-                  'ENREGISTRER L\'ADRESSE',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-                ),
+                  ElevatedButton(
+                    onPressed: _saveAddress,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: _salmon,
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size(double.infinity, 56),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      elevation: 0,
+                    ),
+                    child: Text(
+                      Translator.t('save_address'),
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
 
-  Widget _buildTypeChip(String label, IconData icon) {
-    final isSelected = _label == label;
+  Widget _buildTypeChip(String internalLabel, String displayLabel, IconData icon) {
+    final isSelected = _label == internalLabel;
     return ChoiceChip(
       label: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 16, color: isSelected ? Colors.white : Colors.grey),
           const SizedBox(width: 6),
-          Text(label),
+          Text(displayLabel),
         ],
       ),
       selected: isSelected,
       onSelected: (selected) {
-        if (selected) setState(() => _label = label);
+        if (selected) setState(() => _label = internalLabel);
       },
       selectedColor: _salmon,
       labelStyle: TextStyle(
@@ -250,7 +256,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
           ),
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Ce champ est requis';
+              return Translator.t('field_required');
             }
             return null;
           },

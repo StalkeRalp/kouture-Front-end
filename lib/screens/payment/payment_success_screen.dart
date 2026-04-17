@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../backend/mock_firebase.dart';
+import '../../backend/translator.dart';
+import '../order/order_confirmation_screen.dart';
 
 class PaymentSuccessScreen extends StatelessWidget {
   const PaymentSuccessScreen({super.key});
@@ -7,53 +10,58 @@ class PaymentSuccessScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color salmon = const Color(0xFFFF8C8C);
+    const Color salmon = Color(0xFFFF8C8C);
     
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Spacer(),
-              Container(
-                width: 120,
-                height: 120,
-                decoration: BoxDecoration(
-                  color: Colors.green.withOpacity(0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(Icons.check_circle_outline, size: 80, color: Colors.green),
+    return AnimatedBuilder(
+      animation: MockFirebase(),
+      builder: (context, _) {
+        return Scaffold(
+          backgroundColor: Colors.white,
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Spacer(),
+                  Container(
+                    width: 120,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      color: Colors.green.withValues(alpha: 0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.check_circle_outline, size: 80, color: Colors.green),
+                  ),
+                  const SizedBox(height: 40),
+                  Text(
+                    Translator.t('order_success'),
+                    style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFF0D0D26)),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    Translator.t('order_success_desc'),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.grey[600], fontSize: 16, height: 1.5),
+                  ),
+                  const Spacer(),
+                  _buildActionButton(
+                    label: Translator.t('view_my_order'),
+                    onPressed: () => Navigator.pushReplacementNamed(context, OrderConfirmationScreen.routeName),
+                    color: const Color(0xFF0D0D26),
+                  ),
+                  const SizedBox(height: 15),
+                  _buildActionButton(
+                    label: Translator.t('return_home'),
+                    onPressed: () => Navigator.of(context).popUntil((route) => route.isFirst),
+                    color: salmon,
+                  ),
+                ],
               ),
-              const SizedBox(height: 40),
-              const Text(
-                'Commande Réussie !',
-                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFF0D0D26)),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Votre commande #KT-2026-88 a été enregistrée avec succès. Vous recevrez une notification très bientôt.',
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey[600], fontSize: 16, height: 1.5),
-              ),
-              const Spacer(),
-              _buildActionButton(
-                label: 'VOIR MA COMMANDE',
-                onPressed: () => Navigator.pushReplacementNamed(context, '/orders'),
-                color: const Color(0xFF0D0D26),
-              ),
-              const SizedBox(height: 15),
-              _buildActionButton(
-                label: 'RETOUR À L\'ACCUEIL',
-                onPressed: () => Navigator.of(context).popUntil((route) => route.isFirst),
-                color: salmon,
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../backend/mock_firebase.dart';
+import '../../backend/translator.dart';
+import '../../widgets/auth_background.dart';
+import 'login_screen.dart';
+import 'otp_verification_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -102,7 +106,7 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
           await Future.delayed(const Duration(seconds: 2));
           
           if (mounted) {
-            Navigator.pushReplacementNamed(context, '/otp-verification');
+            Navigator.pushReplacementNamed(context, OtpVerificationScreen.routeName);
           }
         }
       } catch (e) {
@@ -126,9 +130,10 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
         statusBarIconBrightness: Brightness.dark,
       ),
       child: Scaffold(
-        backgroundColor: Colors.white,
-        body: SafeArea(
-          child: SingleChildScrollView(
+        backgroundColor: Colors.transparent,
+        body: AuthBackground(
+          child: SafeArea(
+            child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: FadeTransition(
               opacity: _fadeAnimation,
@@ -139,9 +144,9 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                   children: [
                     const SizedBox(height: 40),
                     
-                    const Text(
-                      'Create an account',
-                      style: TextStyle(
+                    Text(
+                      Translator.t('create_account'),
+                      style: const TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.w900,
                         color: Color(0xFF0D0D26),
@@ -150,7 +155,7 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      _errorMessage ?? 'Join the world of premium tailoring.',
+                      _errorMessage ?? Translator.t('search_hint').replaceFirst('...', ''),
                       style: TextStyle(
                         fontSize: 16,
                         color: _errorMessage != null ? Colors.red : Colors.grey[600],
@@ -160,49 +165,49 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                     
                     const SizedBox(height: 32),
                     
-                    _buildFieldLabel('Full Name'),
+                    _buildFieldLabel(Translator.t('full_name')),
                     _buildTextField(
                       controller: _fullNameController,
-                      hint: 'Enter your full name',
-                      validator: (value) => value == null || value.isEmpty ? 'Required' : null,
+                      hint: Translator.t('full_name'),
+                      validator: (value) => value == null || value.isEmpty ? 'Requis' : null,
                     ),
                     
                     const SizedBox(height: 20),
                     
-                    _buildFieldLabel('Email'),
+                    _buildFieldLabel(Translator.t('email')),
                     _buildTextField(
                       controller: _emailController,
-                      hint: 'Enter your email address',
+                      hint: Translator.t('email'),
                       keyboardType: TextInputType.emailAddress,
-                      validator: (value) => value == null || !value.contains('@') ? 'Invalid email' : null,
+                      validator: (value) => value == null || !value.contains('@') ? 'Email invalide' : null,
                     ),
 
                     const SizedBox(height: 20),
 
-                    _buildFieldLabel('Phone Number'),
+                    _buildFieldLabel(Translator.t('help_support')),
                     _buildTextField(
                       controller: _phoneController,
-                      hint: 'Enter your phone number',
+                      hint: Translator.t('help_support'),
                       keyboardType: TextInputType.phone,
-                      validator: (value) => value == null || value.length < 8 ? 'Invalid number' : null,
+                      validator: (value) => value == null || value.length < 8 ? 'Numéro invalide' : null,
                     ),
                     
                     const SizedBox(height: 20),
                     
-                    _buildFieldLabel('Password'),
+                    _buildFieldLabel(Translator.t('password')),
                     _buildTextField(
                       controller: _passwordController,
-                      hint: 'Create a password',
+                      hint: Translator.t('password'),
                       isPassword: true,
-                      validator: (value) => value == null || value.length < 6 ? 'Too short' : null,
+                      validator: (value) => value == null || value.length < 6 ? 'Trop court' : null,
                     ),
 
                     const SizedBox(height: 20),
 
-                    _buildFieldLabel('Confirm Password'),
+                    _buildFieldLabel(Translator.t('confirm_password')),
                     _buildTextField(
                       controller: _confirmPasswordController,
-                      hint: 'Confirm your password',
+                      hint: Translator.t('confirm_password'),
                       isPassword: true,
                       isConfirm: true,
                       validator: (value) => value != _passwordController.text ? 'Mismatch' : null,
@@ -227,7 +232,7 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(
-                            'I agree to the Terms & Conditions and Privacy Policy',
+                            Translator.t('agree_terms'),
                             style: TextStyle(color: Colors.grey[600], fontSize: 13),
                           ),
                         ),
@@ -256,9 +261,9 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                                 width: 20,
                                 child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                               )
-                            : const Text(
-                                'Create Account',
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                            : Text(
+                                Translator.t('register'),
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                               ),
                       ),
                     ),
@@ -271,7 +276,7 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                         const Expanded(child: Divider()),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Text('Or', style: TextStyle(color: Colors.grey[400], fontSize: 12)),
+                          child: Text('OU', style: TextStyle(color: Colors.grey[400], fontSize: 12)),
                         ),
                         const Expanded(child: Divider()),
                       ],
@@ -280,7 +285,7 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                     const SizedBox(height: 32),
                     
                     _buildSocialButton(
-                      label: 'Join with Google',
+                      label: 'Google',
                       icon: Icons.g_mobiledata,
                       color: const Color(0xFFDB4437),
                     ),
@@ -291,12 +296,12 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('Already have an account? ', style: TextStyle(color: Colors.grey[600], fontSize: 14)),
+                          Text('${Translator.t('already_have_account')} ', style: TextStyle(color: Colors.grey[600], fontSize: 14)),
                           GestureDetector(
-                            onTap: () => Navigator.pushReplacementNamed(context, '/login'),
-                            child: const Text(
-                              'Login',
-                              style: TextStyle(
+                            onTap: () => Navigator.pushReplacementNamed(context, LoginScreen.routeName),
+                            child: Text(
+                              Translator.t('login_now'),
+                              style: const TextStyle(
                                 color: Color(0xFF0D0D26),
                                 fontWeight: FontWeight.bold,
                                 fontSize: 14,
@@ -315,36 +320,39 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildSuccessOverlay() {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(24),
-              decoration: const BoxDecoration(
-                color: Color(0xFFF1FFF1),
-                shape: BoxShape.circle,
+      backgroundColor: Colors.transparent,
+      body: AuthBackground(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(24),
+                decoration: const BoxDecoration(
+                  color: Color(0xFFF1FFF1),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.check_circle_rounded, size: 80, color: Colors.green),
               ),
-              child: const Icon(Icons.check_circle_rounded, size: 80, color: Colors.green),
-            ),
-            const SizedBox(height: 32),
-            const Text(
-              'Account Created!',
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFF0D0D26)),
-            ),
-            const SizedBox(height: 12),
-            const Text(
-              'We have sent a verification code to you.',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16, color: Colors.grey),
-            ),
-          ],
+              const SizedBox(height: 32),
+              const Text(
+                'Account Created!',
+                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFF0D0D26)),
+              ),
+              const SizedBox(height: 12),
+              const Text(
+                'We have sent a verification code to you.',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+            ],
+          ),
         ),
       ),
     );

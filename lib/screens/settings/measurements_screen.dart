@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import '../../backend/mock_firebase.dart';
+import '../../backend/translator.dart';
 
 class MeasurementsScreen extends StatefulWidget {
   const MeasurementsScreen({super.key});
@@ -15,7 +16,6 @@ class _MeasurementsScreenState extends State<MeasurementsScreen>
 
   static const Color _rose      = Color(0xFFFF8C8C);
   static const Color _roseLt    = Color(0xFFFFF5F5);
-  static const Color _roseMid   = Color(0xFFFFD6D6);
   static const Color _navy      = Color(0xFF0D0D26);
   static const Color _cream     = Color(0xFFFAFAF8);
   static const Color _border    = Color(0xFFEEECEF);
@@ -26,36 +26,28 @@ class _MeasurementsScreenState extends State<MeasurementsScreen>
   bool _isLoading = true;
 
   final Map<int, List<String>> _steps = {
-    0: ['Neck', 'Shoulder', 'Bust / Chest', 'Waist'],
-    1: ['Hips', 'Arm Length', 'Biceps', 'Wrist'],
-    2: ['Inseam', 'Thigh', 'Calf', 'Ankle'],
+    0: ['neck', 'shoulder', 'bust_chest', 'waist'],
+    1: ['hips', 'arm_length', 'biceps', 'wrist'],
+    2: ['inseam', 'thigh', 'calf', 'ankle'],
   };
 
   static const Set<String> _mandatoryFields = {
-    'Shoulder', 'Bust / Chest', 'Waist', 'Hips', 'Arm Length', 'Inseam'
+    'shoulder', 'bust_chest', 'waist', 'hips', 'arm_length', 'inseam'
   };
 
-  static const Map<String, String> _labels = {
-    'Neck': 'Cou', 'Shoulder': 'Épaules', 'Bust / Chest': 'Poitrine',
-    'Waist': 'Taille', 'Hips': 'Hanches', 'Arm Length': 'Bras',
-    'Biceps': 'Biceps', 'Wrist': 'Poignet', 'Inseam': 'Entrejambe',
-    'Thigh': 'Cuisse', 'Calf': 'Mollet', 'Ankle': 'Cheville',
-  };
-
-  // Adjusted Coordinates for the new Rounded Avatar
   static const Map<String, BodyZone> _bodyZones = {
-    'Neck':         BodyZone(cx: .50, cy: .140, region: BodyRegion.torso),
-    'Shoulder':     BodyZone(cx: .35, cy: .190, region: BodyRegion.torso),
-    'Bust / Chest': BodyZone(cx: .50, cy: .260, region: BodyRegion.torso),
-    'Waist':        BodyZone(cx: .50, cy: .340, region: BodyRegion.torso),
-    'Hips':         BodyZone(cx: .50, cy: .420, region: BodyRegion.torso),
-    'Arm Length':   BodyZone(cx: .72, cy: .300, region: BodyRegion.rightArm),
-    'Biceps':       BodyZone(cx: .28, cy: .280, region: BodyRegion.leftArm),
-    'Wrist':        BodyZone(cx: .76, cy: .380, region: BodyRegion.rightArm),
-    'Inseam':       BodyZone(cx: .50, cy: .580, region: BodyRegion.legs),
-    'Thigh':        BodyZone(cx: .42, cy: .500, region: BodyRegion.legs),
-    'Calf':         BodyZone(cx: .40, cy: .700, region: BodyRegion.legs),
-    'Ankle':        BodyZone(cx: .38, cy: .820, region: BodyRegion.legs),
+    'neck':         BodyZone(cx: .50, cy: .140, region: BodyRegion.torso),
+    'shoulder':     BodyZone(cx: .35, cy: .190, region: BodyRegion.torso),
+    'bust_chest':   BodyZone(cx: .50, cy: .260, region: BodyRegion.torso),
+    'waist':        BodyZone(cx: .50, cy: .340, region: BodyRegion.torso),
+    'hips':         BodyZone(cx: .50, cy: .420, region: BodyRegion.torso),
+    'arm_length':   BodyZone(cx: .72, cy: .300, region: BodyRegion.rightArm),
+    'biceps':       BodyZone(cx: .28, cy: .280, region: BodyRegion.leftArm),
+    'wrist':        BodyZone(cx: .76, cy: .380, region: BodyRegion.rightArm),
+    'inseam':       BodyZone(cx: .50, cy: .580, region: BodyRegion.legs),
+    'thigh':        BodyZone(cx: .42, cy: .500, region: BodyRegion.legs),
+    'calf':         BodyZone(cx: .40, cy: .700, region: BodyRegion.legs),
+    'ankle':        BodyZone(cx: .38, cy: .820, region: BodyRegion.legs),
   };
 
   final Map<String, TextEditingController> _controllers = {};
@@ -85,34 +77,19 @@ class _MeasurementsScreenState extends State<MeasurementsScreen>
   }
 
   void _initAnimations() {
-    _floatController = AnimationController(
-      vsync: this, duration: const Duration(milliseconds: 900),
-    );
+    _floatController = AnimationController(vsync: this, duration: const Duration(milliseconds: 900));
     _floatAnim = CurvedAnimation(parent: _floatController, curve: Curves.easeOut);
-
-    _jumpController = AnimationController(
-      vsync: this, duration: const Duration(milliseconds: 800),
-    );
+    _jumpController = AnimationController(vsync: this, duration: const Duration(milliseconds: 800));
     _jumpAnim = CurvedAnimation(parent: _jumpController, curve: Curves.elasticOut);
-
-    _breathController = AnimationController(
-      vsync: this, duration: const Duration(seconds: 4),
-    )..repeat(reverse: true);
-
-    _blinkController = AnimationController(
-      vsync: this, duration: const Duration(milliseconds: 150),
-    );
-    // Timer for random blinking
+    _breathController = AnimationController(vsync: this, duration: const Duration(seconds: 4))..repeat(reverse: true);
+    _blinkController = AnimationController(vsync: this, duration: const Duration(milliseconds: 150));
     _startRandomBlink();
 
     for (final step in _steps.values) {
       for (final field in step) {
         _controllers[field] = TextEditingController();
         _filled[field] = false;
-
-        _rippleControllers[field] = AnimationController(
-          vsync: this, duration: const Duration(milliseconds: 600),
-        );
+        _rippleControllers[field] = AnimationController(vsync: this, duration: const Duration(milliseconds: 600));
       }
     }
   }
@@ -132,11 +109,15 @@ class _MeasurementsScreenState extends State<MeasurementsScreen>
     final measurements = user?['measurements'] as Map<String, dynamic>? ?? {};
 
     measurements.forEach((key, value) {
-      if (_controllers.containsKey(key)) {
-        _controllers[key]!.text = value.toString();
+      String k = key.toLowerCase().replaceAll(' ', '_').replaceAll('/', '');
+      if (key == 'Bust / Chest') k = 'bust_chest';
+      if (key == 'Arm Length') k = 'arm_length';
+
+      if (_controllers.containsKey(k)) {
+        _controllers[k]!.text = value.toString();
         final hasVal = value.toString().isNotEmpty;
-        _filled[key] = hasVal;
-        if (hasVal) _updateRegionFill(key);
+        _filled[k] = hasVal;
+        if (hasVal) _updateRegionFill(k);
       }
     });
 
@@ -204,11 +185,11 @@ class _MeasurementsScreenState extends State<MeasurementsScreen>
     
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: const Row(
+        content: Row(
           children: [
-            Icon(Icons.check_circle, color: Colors.white, size: 20),
-            SizedBox(width: 12),
-            Text('Mesures sauvegardées avec succès', style: TextStyle(fontWeight: FontWeight.w600)),
+            const Icon(Icons.check_circle, color: Colors.white, size: 20),
+            const SizedBox(width: 12),
+            Text(Translator.t('measurements_saved'), style: const TextStyle(fontWeight: FontWeight.w600)),
           ],
         ),
         backgroundColor: _navy,
@@ -246,25 +227,28 @@ class _MeasurementsScreenState extends State<MeasurementsScreen>
       );
     }
 
-    return Scaffold(
-      backgroundColor: _cream,
-      appBar: _buildAppBar(),
-      body: Column(
-        children: [
-          _buildStepIndicator(),
-          Expanded(
-            child: Row(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.45,
-                  child: _buildAvatarContainer(),
-                ),
-                Expanded(child: _buildFormPanel()),
-              ],
+    return AnimatedBuilder(
+      animation: MockFirebase(),
+      builder: (context, _) => Scaffold(
+        backgroundColor: _cream,
+        appBar: _buildAppBar(),
+        body: Column(
+          children: [
+            _buildStepIndicator(),
+            Expanded(
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.45,
+                    child: _buildAvatarContainer(),
+                  ),
+                  Expanded(child: _buildFormPanel()),
+                ],
+              ),
             ),
-          ),
-          _buildActionFooter(),
-        ],
+            _buildActionFooter(),
+          ],
+        ),
       ),
     );
   }
@@ -278,15 +262,13 @@ class _MeasurementsScreenState extends State<MeasurementsScreen>
         icon: const Icon(Icons.close_rounded, color: _navy),
         onPressed: () => Navigator.pop(context),
       ),
-      title: const Text('MESURES',
-          style: TextStyle(
-              fontSize: 14, fontWeight: FontWeight.w900,
-              color: _navy, letterSpacing: 3)),
+      title: Text(Translator.t('measurements_title'),
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: _navy, letterSpacing: 3)),
     );
   }
 
   Widget _buildStepIndicator() {
-    final titles = ['MORPHOLOGIE', 'EXTRÉMITÉS', 'JAMBES'];
+    final titles = [Translator.t('morphology'), Translator.t('extremities'), Translator.t('legs')];
     return Container(
       padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
       color: Colors.white,
@@ -306,7 +288,7 @@ class _MeasurementsScreenState extends State<MeasurementsScreen>
               height: 6,
               margin: EdgeInsets.only(right: i < 2 ? 8 : 0),
               decoration: BoxDecoration(
-                color: i <= _currentStep ? _rose : _border.withOpacity(0.5),
+                color: i <= _currentStep ? _rose : _border.withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
@@ -322,20 +304,12 @@ class _MeasurementsScreenState extends State<MeasurementsScreen>
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(40),
-        boxShadow: [
-          BoxShadow(color: _navy.withOpacity(0.04), blurRadius: 40, offset: const Offset(0, 20))
-        ],
+        boxShadow: [BoxShadow(color: _navy.withValues(alpha: 0.04), blurRadius: 40, offset: const Offset(0, 20))],
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(40),
         child: AnimatedBuilder(
-          animation: Listenable.merge([
-            ..._rippleControllers.values,
-            _floatController,
-            _jumpController,
-            _breathController,
-            _blinkController,
-          ]),
+          animation: Listenable.merge([..._rippleControllers.values, _floatController, _jumpController, _breathController, _blinkController]),
           builder: (context, _) => CustomPaint(
             painter: MeasurementsPainter(
               filled: Map.from(_filled),
@@ -374,7 +348,7 @@ class _MeasurementsScreenState extends State<MeasurementsScreen>
   }
 
   Widget _buildMeasurementCard(String key) {
-    final label = _labels[key] ?? key;
+    final label = Translator.t(key);
     final isFilled = _filled[key] ?? false;
     final isMandatory = _mandatoryFields.contains(key);
 
@@ -386,11 +360,7 @@ class _MeasurementsScreenState extends State<MeasurementsScreen>
         color: isFilled ? _roseLt : Colors.white,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: isFilled ? _rose : _border, width: 2),
-        boxShadow: isFilled ? [
-          BoxShadow(color: _rose.withOpacity(0.08), blurRadius: 20, offset: const Offset(0, 10))
-        ] : [
-          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4))
-        ],
+        boxShadow: isFilled ? [BoxShadow(color: _rose.withValues(alpha: 0.08), blurRadius: 20, offset: const Offset(0, 10))] : [BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 10, offset: const Offset(0, 4))],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -429,23 +399,16 @@ class _MeasurementsScreenState extends State<MeasurementsScreen>
   Widget _buildActionFooter() {
     return Container(
       padding: const EdgeInsets.fromLTRB(24, 24, 24, 48),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
-      ),
+      decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.vertical(top: Radius.circular(40))),
       child: Row(
         children: [
           if (_currentStep > 0) ...[
             SizedBox(
-              height: 64,
-              width: 64,
+              height: 64, width: 64,
               child: IconButton(
                 onPressed: _prev,
                 icon: const Icon(Icons.arrow_back_rounded, color: _muted),
-                style: IconButton.styleFrom(
-                  backgroundColor: _cream,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                ),
+                style: IconButton.styleFrom(backgroundColor: _cream, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
               ),
             ),
             const SizedBox(width: 16),
@@ -456,14 +419,11 @@ class _MeasurementsScreenState extends State<MeasurementsScreen>
               child: ElevatedButton(
                 onPressed: _next,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: _rose,
-                  foregroundColor: Colors.white,
-                  elevation: 0,
-                  shadowColor: _rose.withOpacity(0.5),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                  backgroundColor: _rose, foregroundColor: Colors.white, elevation: 0,
+                  shadowColor: _rose.withValues(alpha: 0.5), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                 ),
                 child: Text(
-                  _currentStep == 2 ? 'TERMINER' : 'SUIVANT',
+                  _currentStep == 2 ? Translator.t('finish') : Translator.t('next'),
                   style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 14, letterSpacing: 2),
                 ),
               ),
@@ -501,166 +461,91 @@ class MeasurementsPainter extends CustomPainter {
   static const Color darkNavy  = Color(0xFF0D0D26);
 
   const MeasurementsPainter({
-    required this.filled, required this.regionFill,
-    required this.rippleControllers, required this.bodyZones,
-    required this.activeFields, this.floatingField,
-    this.floatingValue, required this.floatProgress,
-    required this.jumpProgress, required this.breathProgress,
-    required this.blinkProgress,
+    required this.filled, required this.regionFill, required this.rippleControllers, required this.bodyZones, required this.activeFields, this.floatingField, this.floatingValue, required this.floatProgress, required this.jumpProgress, required this.breathProgress, required this.blinkProgress,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
-    final w = size.width;
-    final h = size.height;
-    
-    // Jump and Breath translations
+    final w = size.width; final h = size.height;
     final jumpY = -60 * jumpProgress;
     final breathScale = 1.0 + (0.015 * math.sin(breathProgress * math.pi));
-    
     canvas.save();
     canvas.translate(w * 0.5, h * 0.5 + jumpY);
     canvas.scale(breathScale, breathScale);
     canvas.translate(-w * 0.5, -h * 0.5);
-
     _drawFriendlyBody(canvas, w, h);
     _drawFriendlyFace(canvas, w, h);
     _drawMeasurementPoints(canvas, w, h);
-    
     canvas.restore();
-
     if (floatingField != null && floatProgress > 0) _drawValuePop(canvas, w, h);
   }
 
   void _drawFriendlyBody(Canvas canvas, double w, double h) {
     final bodyPaint = Paint()..color = skinColor;
-    final strokePaint = Paint()..color = darkNavy.withOpacity(0.1)..style = PaintingStyle.stroke..strokeWidth = 3;
-    final shadowPaint = Paint()..color = darkNavy.withOpacity(0.05);
-
-    // Torso (Rounded Bean Shape)
+    final strokePaint = Paint()..color = darkNavy.withValues(alpha: 0.1)..style = PaintingStyle.stroke..strokeWidth = 3;
     final torsoRect = Rect.fromCenter(center: Offset(w*0.5, h*0.35), width: w*0.35, height: h*0.35);
     final torsoPath = Path()..addRRect(RRect.fromRectAndRadius(torsoRect, Radius.circular(w*0.15)));
-    
-    // Draw Torso with Gradient if progress is made
     final torsoFill = regionFill[BodyRegion.torso] ?? 0;
     if (torsoFill > 0) {
-      final fillPaint = Paint()
-        ..shader = LinearGradient(
-          begin: Alignment.bottomCenter,
-          end: Alignment.topCenter,
-          colors: [accentRose, accentRose.withOpacity(0.2)],
-          stops: [torsoFill, torsoFill + 0.1],
-        ).createShader(torsoRect);
+      final fillPaint = Paint()..shader = LinearGradient(begin: Alignment.bottomCenter, end: Alignment.topCenter, colors: [accentRose, accentRose.withValues(alpha: 0.2)], stops: [torsoFill, torsoFill + 0.1]).createShader(torsoRect);
       canvas.drawPath(torsoPath, fillPaint);
     } else {
       canvas.drawPath(torsoPath, bodyPaint);
     }
     canvas.drawPath(torsoPath, strokePaint);
-
-    // Arms (Rounded Capsules)
-    final leftArmFill = regionFill[BodyRegion.leftArm] ?? 0;
-    final rightArmFill = regionFill[BodyRegion.rightArm] ?? 0;
-
-    _drawLimb(canvas, Offset(w*0.3, h*0.25), Offset(w*0.2, h*0.45), leftArmFill);
-    _drawLimb(canvas, Offset(w*0.7, h*0.25), Offset(w*0.8, h*0.45), rightArmFill);
-
-    // Legs (Rounded Capsules)
-    final legsFill = regionFill[BodyRegion.legs] ?? 0;
-    _drawLimb(canvas, Offset(w*0.42, h*0.5), Offset(w*0.38, h*0.85), legsFill);
-    _drawLimb(canvas, Offset(w*0.58, h*0.5), Offset(w*0.62, h*0.85), legsFill);
+    _drawLimb(canvas, Offset(w*0.3, h*0.25), Offset(w*0.2, h*0.45), regionFill[BodyRegion.leftArm] ?? 0);
+    _drawLimb(canvas, Offset(w*0.7, h*0.25), Offset(w*0.8, h*0.45), regionFill[BodyRegion.rightArm] ?? 0);
+    _drawLimb(canvas, Offset(w*0.42, h*0.5), Offset(w*0.38, h*0.85), regionFill[BodyRegion.legs] ?? 0);
+    _drawLimb(canvas, Offset(w*0.58, h*0.5), Offset(w*0.62, h*0.85), regionFill[BodyRegion.legs] ?? 0);
   }
 
   void _drawLimb(Canvas canvas, Offset start, Offset end, double fillProgress) {
     final limbPaint = Paint()..color = skinColor..strokeCap = StrokeCap.round..strokeWidth = 35;
-    final strokePaint = Paint()..color = darkNavy.withOpacity(0.1)..style = PaintingStyle.stroke..strokeWidth = 35..strokeCap = StrokeCap.round;
-    
+    final strokePaint = Paint()..color = darkNavy.withValues(alpha: 0.1)..style = PaintingStyle.stroke..strokeWidth = 35..strokeCap = StrokeCap.round;
     canvas.drawLine(start, end, strokePaint);
     canvas.drawLine(start, end, limbPaint);
-
     if (fillProgress > 0) {
-      final fillPaint = Paint()
-        ..color = accentRose.withOpacity(0.8)
-        ..strokeCap = StrokeCap.round
-        ..strokeWidth = 35;
-      final fillEnd = Offset(
-        start.dx + (end.dx - start.dx) * fillProgress,
-        start.dy + (end.dy - start.dy) * fillProgress,
-      );
-      canvas.drawLine(start, fillEnd, fillPaint);
+      final fillPaint = Paint()..color = accentRose.withValues(alpha: 0.8)..strokeCap = StrokeCap.round..strokeWidth = 35;
+      canvas.drawLine(start, Offset(start.dx + (end.dx - start.dx) * fillProgress, start.dy + (end.dy - start.dy) * fillProgress), fillPaint);
     }
   }
 
   void _drawFriendlyFace(Canvas canvas, double w, double h) {
     final facePaint = Paint()..color = darkNavy;
-    final headRect = Rect.fromCenter(center: Offset(w*0.5, h*0.1), width: w*0.22, height: h*0.14);
-    canvas.drawRRect(RRect.fromRectAndRadius(headRect, Radius.circular(w*0.08)), Paint()..color = skinColor);
-    
-    final eyeY = h * 0.1;
-    final eyeSize = 6.0 * (1 - blinkProgress);
-    
-    // Eyes
+    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromCenter(center: Offset(w*0.5, h*0.1), width: w*0.22, height: h*0.14), Radius.circular(w*0.08)), Paint()..color = skinColor);
+    final eyeY = h * 0.1; final eyeSize = 6.0 * (1 - blinkProgress);
     canvas.drawCircle(Offset(w*0.44, eyeY), eyeSize, facePaint);
     canvas.drawCircle(Offset(w*0.56, eyeY), eyeSize, facePaint);
-    
     if (blinkProgress > 0.5) {
       final blinkPaint = Paint()..color = darkNavy..style = PaintingStyle.stroke..strokeWidth = 2;
       canvas.drawLine(Offset(w*0.42, eyeY), Offset(w*0.46, eyeY), blinkPaint);
       canvas.drawLine(Offset(w*0.54, eyeY), Offset(w*0.58, eyeY), blinkPaint);
     }
-
-    // Smile
-    final smilePath = Path()
-      ..moveTo(w*0.47, h*0.13)
-      ..quadraticBezierTo(w*0.5, h*0.15, w*0.53, h*0.13);
-    canvas.drawPath(smilePath, Paint()..color = darkNavy..style = PaintingStyle.stroke..strokeWidth = 2..strokeCap = StrokeCap.round);
+    canvas.drawPath(Path()..moveTo(w*0.47, h*0.13)..quadraticBezierTo(w*0.5, h*0.15, w*0.53, h*0.13), Paint()..color = darkNavy..style = PaintingStyle.stroke..strokeWidth = 2..strokeCap = StrokeCap.round);
   }
 
   void _drawMeasurementPoints(Canvas canvas, double w, double h) {
     for (final field in bodyZones.keys) {
-      final zone = bodyZones[field]!;
-      final cx = w * zone.cx;
-      final cy = h * zone.cy;
+      final zone = bodyZones[field]!; final cx = w * zone.cx; final cy = h * zone.cy;
       final isFilled = filled[field] ?? false;
-      final isActive = activeFields.contains(field);
-
-      if (isActive) {
+      if (activeFields.contains(field)) {
         final ripple = rippleControllers[field]?.value ?? 0;
-        if (ripple > 0) {
-          canvas.drawCircle(Offset(cx, cy), 15 + 30 * ripple, Paint()..color = accentRose.withOpacity(0.3 * (1 - ripple)));
-        }
+        if (ripple > 0) canvas.drawCircle(Offset(cx, cy), 15 + 30 * ripple, Paint()..color = accentRose.withValues(alpha: 0.3 * (1 - ripple)));
         final pulse = 0.5 + 0.5 * math.sin(DateTime.now().millisecondsSinceEpoch / 400);
-        canvas.drawCircle(Offset(cx, cy), 10 + 4 * pulse, Paint()..color = accentRose.withOpacity(0.2));
+        canvas.drawCircle(Offset(cx, cy), 10 + 4 * pulse, Paint()..color = accentRose.withValues(alpha: 0.2));
       }
-
-      final pointPaint = Paint()..color = isFilled ? accentRose : Colors.white;
-      canvas.drawCircle(Offset(cx, cy), 6, pointPaint);
+      canvas.drawCircle(Offset(cx, cy), 6, Paint()..color = isFilled ? accentRose : Colors.white);
       canvas.drawCircle(Offset(cx, cy), 6, Paint()..color = isFilled ? Colors.white : accentRose..style = PaintingStyle.stroke..strokeWidth = 2);
     }
   }
 
   void _drawValuePop(Canvas canvas, double w, double h) {
-    final zone = bodyZones[floatingField];
-    if (zone == null) return;
-    final cx = w * zone.cx;
-    final cy = h * zone.cy;
-    final t = floatProgress;
-    
-    canvas.save();
-    canvas.translate(0, -60 * t);
-    
-    final paint = Paint()..color = darkNavy.withOpacity(1 - t);
-    final tp = TextPainter(
-      text: TextSpan(text: '$floatingValue cm', style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w900)),
-      textDirection: TextDirection.ltr,
-    )..layout();
-
-    final rrect = RRect.fromRectAndRadius(
-      Rect.fromCenter(center: Offset(cx, cy - 30), width: tp.width + 30, height: 40),
-      const Radius.circular(20)
-    );
-    canvas.drawRRect(rrect, paint);
+    final zone = bodyZones[floatingField]; if (zone == null) return;
+    final cx = w * zone.cx; final cy = h * zone.cy; final t = floatProgress;
+    canvas.save(); canvas.translate(0, -60 * t);
+    final tp = TextPainter(text: TextSpan(text: '$floatingValue cm', style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w900)), textDirection: TextDirection.ltr)..layout();
+    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromCenter(center: Offset(cx, cy - 30), width: tp.width + 30, height: 40), const Radius.circular(20)), Paint()..color = darkNavy.withValues(alpha: 1 - t));
     tp.paint(canvas, Offset(cx - tp.width/2, cy - 30 - tp.height/2));
-    
     canvas.restore();
   }
 

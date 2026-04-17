@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import '../../backend/translator.dart';
 import '../../backend/mock_firebase.dart';
-import '../payment/payment_processing_screen.dart';
+import '../address/address_list_screen.dart';
+import '../payment/orange_money_screen.dart';
+import '../payment/mobile_money_screen.dart';
+import '../payment/card_payment_screen.dart';
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
@@ -17,71 +21,69 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text('Confirmation Final', style: TextStyle(fontWeight: FontWeight.bold)),
-        leading: IconButton(
-          icon: const Icon(Icons.chevron_left),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
-      body: AnimatedBuilder(
-        animation: MockFirebase(),
-        builder: (context, _) {
-          final cartItems = MockFirebase().cartItems;
-          final subtotal = MockFirebase().cartSubtotal;
-          final shipping = MockFirebase().cartShipping;
-          final total = MockFirebase().cartTotal;
+    return AnimatedBuilder(
+      animation: MockFirebase(),
+      builder: (context, _) {
+        final cartItems = MockFirebase().cartItems;
+        final subtotal = MockFirebase().cartSubtotal;
+        final shipping = MockFirebase().cartShipping;
+        final total = MockFirebase().cartTotal;
 
-          if (cartItems.isEmpty) {
-            return const Center(child: Text('Votre panier est vide.'));
-          }
-
-          return Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // ─── RÉSUMÉ DES ARTICLES ───
-                      _buildSectionTitle('Articles'),
-                      const SizedBox(height: 15),
-                      ...cartItems.map((item) => _buildMiniProductItem(item)),
-                      
-                      const SizedBox(height: 30),
-                      
-                      // ─── ADRESSE DE LIVRAISON ───
-                      _buildSectionTitle('Adresse de Livraison'),
-                      const SizedBox(height: 15),
-                      _buildAddressCard(),
-                      
-                      const SizedBox(height: 30),
-                      
-                      // ─── MOYENS DE PAIEMENT ───
-                      _buildSectionTitle('Moyen de Paiement'),
-                      const SizedBox(height: 15),
-                      _buildPaymentMethods(),
-                      
-                      const SizedBox(height: 30),
-                      
-                      // ─── RÉSUMÉ DES PRIX ───
-                      _buildSectionTitle('Détails du Paiement'),
-                      const SizedBox(height: 15),
-                      _buildPriceSummary(subtotal, shipping, total),
-                    ],
-                  ),
+        return Scaffold(
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            title: Text(Translator.t('checkout_confirmation'), style: const TextStyle(fontWeight: FontWeight.bold)),
+            leading: IconButton(
+              icon: const Icon(Icons.chevron_left),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ),
+          body: cartItems.isEmpty
+              ? Center(child: Text(Translator.t('cart_empty')))
+              : Column(
+                  children: [
+                    Expanded(
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // ─── RÉSUMÉ DES ARTICLES ───
+                            _buildSectionTitle(Translator.t('articles')),
+                            const SizedBox(height: 15),
+                            ...cartItems.map((item) => _buildMiniProductItem(item)),
+                            
+                            const SizedBox(height: 30),
+                            
+                            // ─── ADRESSE DE LIVRAISON ───
+                            _buildSectionTitle(Translator.t('shipping_address')),
+                            const SizedBox(height: 15),
+                            _buildAddressCard(),
+                            
+                            const SizedBox(height: 30),
+                            
+                            // ─── MOYENS DE PAIEMENT ───
+                            _buildSectionTitle(Translator.t('payment_method')),
+                            const SizedBox(height: 15),
+                            _buildPaymentMethods(),
+                            
+                            const SizedBox(height: 30),
+                            
+                            // ─── RÉSUMÉ DES PRIX ───
+                            _buildSectionTitle(Translator.t('payment_details')),
+                            const SizedBox(height: 15),
+                            _buildPriceSummary(subtotal, shipping, total),
+                          ],
+                        ),
+                      ),
+                    ),
+                    
+                    // ─── BOUTON PAYER ───
+                    _buildBottomAction(total),
+                  ],
                 ),
-              ),
-              
-              // ─── BOUTON PAYER ───
-              _buildBottomAction(total),
-            ],
-          );
-        },
-      ),
+        );
+      },
     );
   }
 
@@ -91,7 +93,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     final methods = [
       {'id': 0, 'name': 'Orange Money', 'icon': Icons.phone_android, 'color': Colors.orange},
       {'id': 1, 'name': 'MTN MoMo', 'icon': Icons.smartphone, 'color': Colors.yellow[700]},
-      {'id': 2, 'name': 'Carte Bancaire', 'icon': Icons.credit_card, 'color': Colors.blue},
+      {'id': 2, 'name': Translator.t('credit_card'), 'icon': Icons.credit_card, 'color': Colors.blue},
     ];
 
     return Column(
@@ -103,7 +105,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             margin: const EdgeInsets.only(bottom: 10),
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: isSelected ? _salmon.withOpacity(0.1) : Colors.grey[50],
+              color: isSelected ? _salmon.withValues(alpha: 0.1) : Colors.grey[50],
               borderRadius: BorderRadius.circular(15),
               border: Border.all(color: isSelected ? _salmon : Colors.grey[200]!, width: isSelected ? 2 : 1),
             ),
@@ -150,7 +152,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(p['name'] ?? '', style: const TextStyle(fontWeight: FontWeight.w600)),
-                Text('Qté: ${item['quantity']} • Taille: ${item['size']}', 
+                Text('${Translator.t('quantity')}: ${item['quantity']} • ${Translator.t('size')}: ${item['size']}', 
                   style: TextStyle(color: Colors.grey[600], fontSize: 12)),
               ],
             ),
@@ -189,7 +191,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               ],
             ),
           ),
-          TextButton(onPressed: () => Navigator.pushNamed(context, '/addresses'), child: const Text('Modifier', style: TextStyle(color: _darkNavy))),
+          TextButton(onPressed: () => Navigator.pushNamed(context, AddressListScreen.routeName), child: Text(Translator.t('edit'), style: const TextStyle(color: _darkNavy))),
         ],
       ),
     );
@@ -204,14 +206,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       ),
       child: Column(
         children: [
-          _buildPriceRow('Sous-total', '$subtotal XAF', Colors.white70),
+          _buildPriceRow(Translator.t('subtotal'), '$subtotal XAF', Colors.white70),
           const SizedBox(height: 10),
-          _buildPriceRow('Livraison', '$shipping XAF', Colors.white70),
+          _buildPriceRow(Translator.t('shipping'), '$shipping XAF', Colors.white70),
           const Padding(
             padding: EdgeInsets.symmetric(vertical: 15),
             child: Divider(color: Colors.white24),
           ),
-          _buildPriceRow('TOTAL', '$total XAF', Colors.white, isBold: true),
+          _buildPriceRow(Translator.t('total'), '$total XAF', Colors.white, isBold: true),
         ],
       ),
     );
@@ -233,7 +235,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, -5)),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, -5)),
         ],
       ),
       child: SizedBox(
@@ -243,9 +245,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           onPressed: () {
             String route = '';
             switch (_selectedMethod) {
-              case 0: route = '/orange-money'; break;
-              case 1: route = '/mobile-money'; break;
-              case 2: route = '/card-payment'; break;
+              case 0: route = OrangeMoneyScreen.routeName; break;
+              case 1: route = MobileMoneyScreen.routeName; break;
+              case 2: route = CardPaymentScreen.routeName; break;
             }
             Navigator.pushNamed(context, route);
           },
@@ -258,7 +260,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('PAYER ${total.toStringAsFixed(0)} XAF', 
+              Text('${Translator.t('pay')} ${total.toStringAsFixed(0)} XAF', 
                 style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, letterSpacing: 1.1)),
               const SizedBox(width: 10),
               const Icon(Icons.security, size: 20),

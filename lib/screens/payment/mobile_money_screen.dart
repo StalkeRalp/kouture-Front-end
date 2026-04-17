@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../backend/translator.dart';
 import '../payment/payment_processing_screen.dart';
 
 class MobileMoneyScreen extends StatefulWidget {
@@ -42,20 +43,20 @@ class _MobileMoneyScreenState extends State<MobileMoneyScreen> {
                   width: 100,
                   height: 100,
                   decoration: BoxDecoration(
-                    color: _mtnYellow.withOpacity(0.1),
+                    color: _mtnYellow.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: const Icon(Icons.smartphone_outlined, size: 50, color: Colors.black87),
                 ),
               ),
               const SizedBox(height: 30),
-              const Text(
-                'Payer avec MoMo',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              Text(
+                Translator.t('pay_with_momo'),
+                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 10),
               Text(
-                'Entrez votre numéro MTN Mobile Money pour initier le paiement.',
+                Translator.t('momo_desc'),
                 style: TextStyle(color: Colors.grey[600], fontSize: 14),
               ),
               const SizedBox(height: 30),
@@ -63,7 +64,7 @@ class _MobileMoneyScreenState extends State<MobileMoneyScreen> {
                 controller: _phoneController,
                 keyboardType: TextInputType.phone,
                 decoration: InputDecoration(
-                  labelText: 'Numéro de téléphone',
+                  labelText: Translator.t('phone_number'),
                   hintText: 'ex: 670 00 00 00',
                   prefixIcon: const Icon(Icons.phone),
                   filled: true,
@@ -78,8 +79,8 @@ class _MobileMoneyScreenState extends State<MobileMoneyScreen> {
                   ),
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) return 'Veuillez entrer un numéro';
-                  if (value.length < 9) return 'Numéro invalide';
+                  if (value == null || value.isEmpty) return Translator.t('phone_required');
+                  if (value.length < 9) return Translator.t('invalid_number');
                   return null;
                 },
               ),
@@ -101,8 +102,8 @@ class _MobileMoneyScreenState extends State<MobileMoneyScreen> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                     elevation: 0,
                   ),
-                  child: const Text('CONFIRMER LE PAIEMENT', 
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  child: Text(Translator.t('confirm_payment'), 
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 ),
               ),
             ],
@@ -116,23 +117,23 @@ class _MobileMoneyScreenState extends State<MobileMoneyScreen> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: _mtnYellow.withOpacity(0.05),
+        color: _mtnYellow.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: _mtnYellow.withOpacity(0.2)),
+        border: Border.all(color: _mtnYellow.withValues(alpha: 0.2)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             children: [
-              Icon(Icons.info_outline, color: Colors.black54, size: 20),
-              SizedBox(width: 10),
-              Text('Instructions', style: TextStyle(fontWeight: FontWeight.bold)),
+              const Icon(Icons.info_outline, color: Colors.black54, size: 20),
+              const SizedBox(width: 10),
+              Text(Translator.t('instructions'), style: const TextStyle(fontWeight: FontWeight.bold)),
             ],
           ),
           const SizedBox(height: 12),
           Text(
-            '1. Validez la transaction sur votre téléphone.\n2. Composez le *126# si vous ne recevez pas de notification.\n3. Entrez votre code PIN pour confirmer.',
+            Translator.t('momo_instructions'),
             style: TextStyle(color: Colors.grey[800], fontSize: 13, height: 1.5),
           ),
         ],

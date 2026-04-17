@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../backend/mock_firebase.dart';
+import '../../backend/translator.dart';
+import '../../widgets/auth_background.dart';
+import '../main_navigation_screen.dart';
+import 'forgot_password_screen.dart';
+import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -68,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
         
         if (mounted) {
           setState(() => _isLoading = false);
-          Navigator.pushReplacementNamed(context, '/main-nav');
+          Navigator.pushReplacementNamed(context, MainNavigationScreen.routeName);
         }
       } catch (e) {
         if (mounted) {
@@ -89,9 +94,10 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
         statusBarIconBrightness: Brightness.dark,
       ),
       child: Scaffold(
-        backgroundColor: Colors.white,
-        body: SafeArea(
-          child: SingleChildScrollView(
+        backgroundColor: Colors.transparent,
+        body: AuthBackground(
+          child: SafeArea(
+            child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: FadeTransition(
               opacity: _fadeAnimation,
@@ -103,9 +109,9 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                     const SizedBox(height: 60),
                     
                     // 🏷️ Header Design matching Login.jpg
-                    const Text(
-                      'Login to your account',
-                      style: TextStyle(
+                    Text(
+                      Translator.t('welcome_back'),
+                      style: const TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.w900,
                         color: Color(0xFF0D0D26),
@@ -114,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      _errorMessage ?? 'It\'s great to see you again.',
+                      _errorMessage ?? Translator.t('search_hint').replaceFirst('...', ''),
                       style: TextStyle(
                         fontSize: 16,
                         color: _errorMessage != null ? Colors.red : Colors.grey[600],
@@ -125,14 +131,14 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                     const SizedBox(height: 48),
                     
                     // 📧 Email Field
-                    _buildFieldLabel('Email'),
+                    _buildFieldLabel(Translator.t('email')),
                     _buildTextField(
                       controller: _emailController,
-                      hint: 'Enter your email address',
+                      hint: Translator.t('email'),
                       keyboardType: TextInputType.emailAddress,
                       validator: (value) {
-                        if (value == null || value.isEmpty) return 'Email is required';
-                        if (!value.contains('@')) return 'Invalid email format';
+                        if (value == null || value.isEmpty) return 'L\'email est requis';
+                        if (!value.contains('@')) return 'Format d\'email invalide';
                         return null;
                       },
                     ),
@@ -140,13 +146,13 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                     const SizedBox(height: 24),
                     
                     // 🔒 Password Field
-                    _buildFieldLabel('Password'),
+                    _buildFieldLabel(Translator.t('password')),
                     _buildTextField(
                       controller: _passwordController,
-                      hint: 'Enter your password',
+                      hint: Translator.t('password'),
                       isPassword: true,
                       validator: (value) {
-                        if (value == null || value.isEmpty) return 'Password is required';
+                        if (value == null || value.isEmpty) return 'Le mot de passe est requis';
                         return null;
                       },
                     ),
@@ -157,14 +163,14 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                     Row(
                       children: [
                         Text(
-                          'Forgot your password? ',
+                          '${Translator.t('forgot_password')} ',
                           style: TextStyle(color: Colors.grey[600], fontSize: 13),
                         ),
                         GestureDetector(
-                          onTap: () => Navigator.pushNamed(context, '/forgot-password'),
-                          child: const Text(
-                            'Reset your password',
-                            style: TextStyle(
+                          onTap: () => Navigator.pushNamed(context, ForgotPasswordScreen.routeName),
+                          child: Text(
+                            Translator.t('retry'),
+                            style: const TextStyle(
                               color: Color(0xFF0D0D26),
                               fontWeight: FontWeight.bold,
                               fontSize: 13,
@@ -175,8 +181,45 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                       ],
                     ),
                     
-                    const SizedBox(height: 40),
-                    
+                    const SizedBox(height: 16),
+
+                    // 💡 Hint de simulation
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFFF3CD),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: const Color(0xFFFFD700).withValues(alpha: 0.5)),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.info_outline, size: 16, color: Color(0xFF856404)),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: RichText(
+                              text: const TextSpan(
+                                style: TextStyle(fontSize: 12, color: Color(0xFF664D03)),
+                                children: [
+                                  TextSpan(text: 'Simulation — Email : '),
+                                  TextSpan(
+                                    text: 'falcon@kouture.com',
+                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  TextSpan(text: '  •  MDP : '),
+                                  TextSpan(
+                                    text: 'kouture2024',
+                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 24),
+
                     // 🚀 Login Button (Signature Rose / Primary Style)
                     SizedBox(
                       width: double.infinity,
@@ -252,7 +295,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                             style: TextStyle(color: Colors.grey[600], fontSize: 14),
                           ),
                           GestureDetector(
-                            onTap: () => Navigator.pushNamed(context, '/register'),
+                            onTap: () => Navigator.pushNamed(context, RegisterScreen.routeName),
                             child: const Text(
                               'Join',
                               style: TextStyle(
@@ -274,8 +317,9 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildFieldLabel(String label) {
     return Padding(

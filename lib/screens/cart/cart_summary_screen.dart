@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../backend/mock_firebase.dart';
+import '../../backend/translator.dart';
+import '../discover/discover_screen.dart';
+import '../address/address_list_screen.dart';
+import '../payment/orange_money_screen.dart';
+import '../payment/mobile_money_screen.dart';
+import '../payment/card_payment_screen.dart';
 
 class CartSummaryScreen extends StatefulWidget {
   const CartSummaryScreen({super.key});
@@ -19,84 +25,82 @@ class _CartSummaryScreenState extends State<CartSummaryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: _lightBg,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.chevron_left, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text('Récapitulatif', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
-        centerTitle: true,
-      ),
-      body: AnimatedBuilder(
-        animation: MockFirebase(),
-        builder: (context, _) {
-          final items = MockFirebase().cartItems;
-          final subtotal = MockFirebase().cartSubtotal;
-          final shipping = MockFirebase().cartShipping;
-          final total = MockFirebase().cartTotal;
-          final user = MockFirebase().currentUser;
+    return AnimatedBuilder(
+      animation: MockFirebase(),
+      builder: (context, _) {
+        final items = MockFirebase().cartItems;
+        final subtotal = MockFirebase().cartSubtotal;
+        final shipping = MockFirebase().cartShipping;
+        final total = MockFirebase().cartTotal;
+        final user = MockFirebase().currentUser;
 
-          if (items.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.shopping_cart_outlined, size: 80, color: Colors.grey[300]),
-                  const SizedBox(height: 16),
-                  const Text('Votre panier est vide', style: TextStyle(fontSize: 18, color: Colors.grey)),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () => Navigator.pushNamed(context, '/discover'),
-                    style: ElevatedButton.styleFrom(backgroundColor: _salmon, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
-                    child: const Text('Explorer les produits', style: TextStyle(color: Colors.white)),
-                  ),
-                ],
-              ),
-            );
-          }
-
-          return Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+        return Scaffold(
+          backgroundColor: _lightBg,
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(Icons.chevron_left, color: Colors.black),
+              onPressed: () => Navigator.pop(context),
+            ),
+            title: Text(Translator.t('order_summary'), style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
+            centerTitle: true,
+          ),
+          body: items.isEmpty
+              ? Center(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      Icon(Icons.shopping_cart_outlined, size: 80, color: Colors.grey[300]),
                       const SizedBox(height: 16),
-                      // ─── Adresse de livraison ───
-                      _buildSectionTitle('Adresse de livraison'),
-                      const SizedBox(height: 12),
-                      _buildAddressCard(user),
-                      const SizedBox(height: 24),
-                      // ─── Articles ───
-                      _buildSectionTitle('Mes articles (${items.length})'),
-                      const SizedBox(height: 12),
-                      ...items.map((item) => _buildOrderItem(item)),
-                      const SizedBox(height: 24),
-                      // ─── Moyen de paiement ───
-                      _buildSectionTitle('Moyen de paiement'),
-                      const SizedBox(height: 12),
-                      _buildPaymentOptions(),
-                      const SizedBox(height: 24),
-                      // ─── Résumé ───
-                      _buildSectionTitle('Résumé'),
-                      const SizedBox(height: 12),
-                      _buildSummaryCard(subtotal, shipping, total),
-                      const SizedBox(height: 30),
+                      Text(Translator.t('cart_empty'), style: const TextStyle(fontSize: 18, color: Colors.grey)),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () => Navigator.pushNamed(context, DiscoverScreen.routeName),
+                        style: ElevatedButton.styleFrom(backgroundColor: _salmon, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
+                        child: Text(Translator.t('explore_products'), style: const TextStyle(color: Colors.white)),
+                      ),
                     ],
                   ),
+                )
+              : Column(
+                  children: [
+                    Expanded(
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 16),
+                            // ─── Adresse de livraison ───
+                            _buildSectionTitle(Translator.t('shipping_address')),
+                            const SizedBox(height: 12),
+                            _buildAddressCard(user),
+                            const SizedBox(height: 24),
+                            // ─── Articles ───
+                            _buildSectionTitle('${Translator.t('my_items')} (${items.length})'),
+                            const SizedBox(height: 12),
+                            ...items.map((item) => _buildOrderItem(item)),
+                            const SizedBox(height: 24),
+                            // ─── Moyen de paiement ───
+                            _buildSectionTitle(Translator.t('payment_method')),
+                            const SizedBox(height: 12),
+                            _buildPaymentOptions(),
+                            const SizedBox(height: 24),
+                            // ─── Résumé ───
+                            _buildSectionTitle(Translator.t('summary')),
+                            const SizedBox(height: 12),
+                            _buildSummaryCard(subtotal, shipping, total),
+                            const SizedBox(height: 30),
+                          ],
+                        ),
+                      ),
+                    ),
+                    _buildConfirmButton(context, total),
+                  ],
                 ),
-              ),
-              _buildConfirmButton(context, total),
-            ],
-          );
-        },
-      ),
+        );
+      },
     );
   }
 
@@ -115,13 +119,13 @@ class _CartSummaryScreenState extends State<CartSummaryScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 8)],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8)],
       ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(color: _salmon.withOpacity(0.1), shape: BoxShape.circle),
+            decoration: BoxDecoration(color: _salmon.withValues(alpha: 0.1), shape: BoxShape.circle),
             child: const Icon(Icons.location_on_outlined, color: _salmon, size: 22),
           ),
           const SizedBox(width: 14),
@@ -136,8 +140,8 @@ class _CartSummaryScreenState extends State<CartSummaryScreen> {
             ),
           ),
           TextButton(
-            onPressed: () => Navigator.pushNamed(context, '/addresses'),
-            child: const Text('Modifier', style: TextStyle(color: _salmon)),
+            onPressed: () => Navigator.pushNamed(context, AddressListScreen.routeName),
+            child: Text(Translator.t('edit'), style: const TextStyle(color: _salmon)),
           ),
         ],
       ),
@@ -157,7 +161,7 @@ class _CartSummaryScreenState extends State<CartSummaryScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 8)],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8)],
       ),
       child: Row(
         children: [
@@ -173,7 +177,7 @@ class _CartSummaryScreenState extends State<CartSummaryScreen> {
               children: [
                 Text(p['name'] ?? '', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14), maxLines: 1, overflow: TextOverflow.ellipsis),
                 const SizedBox(height: 4),
-                Text('Taille: ${item['size'] ?? '-'} · Qté: $qty', style: TextStyle(color: Colors.grey[600], fontSize: 12)),
+                Text('${Translator.t('size_label')}: ${item['size'] ?? '-'} · ${Translator.t('qty_label')}: $qty', style: TextStyle(color: Colors.grey[600], fontSize: 12)),
               ],
             ),
           ),
@@ -187,7 +191,7 @@ class _CartSummaryScreenState extends State<CartSummaryScreen> {
     final options = [
       {'icon': Icons.phone_android, 'name': 'Orange Money', 'color': Colors.orange},
       {'icon': Icons.phone_android, 'name': 'Mobile Money', 'color': Colors.yellow[800]},
-      {'icon': Icons.credit_card, 'name': 'Carte Bancaire', 'color': Colors.blue},
+      {'icon': Icons.credit_card, 'name': Translator.t('bank_card'), 'color': Colors.blue},
     ];
 
     return Column(
@@ -200,7 +204,7 @@ class _CartSummaryScreenState extends State<CartSummaryScreen> {
             margin: const EdgeInsets.only(bottom: 10),
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: selected ? _salmon.withOpacity(0.05) : Colors.white,
+              color: selected ? _salmon.withValues(alpha: 0.05) : Colors.white,
               borderRadius: BorderRadius.circular(14),
               border: Border.all(color: selected ? _salmon : Colors.grey[200]!, width: selected ? 2 : 1),
             ),
@@ -224,15 +228,15 @@ class _CartSummaryScreenState extends State<CartSummaryScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 8)],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8)],
       ),
       child: Column(
         children: [
-          _buildPriceRow('Sous-total', '${subtotal.toStringAsFixed(0)} XAF'),
+          _buildPriceRow(Translator.t('subtotal'), '${subtotal.toStringAsFixed(0)} XAF'),
           const SizedBox(height: 10),
-          _buildPriceRow('Livraison', '${shipping.toStringAsFixed(0)} XAF'),
+          _buildPriceRow(Translator.t('shipping'), '${shipping.toStringAsFixed(0)} XAF'),
           const Divider(height: 25),
-          _buildPriceRow('TOTAL', '${total.toStringAsFixed(0)} XAF', bold: true),
+          _buildPriceRow(Translator.t('total'), '${total.toStringAsFixed(0)} XAF', bold: true),
         ],
       ),
     );
@@ -249,7 +253,11 @@ class _CartSummaryScreenState extends State<CartSummaryScreen> {
   }
 
   Widget _buildConfirmButton(BuildContext context, double total) {
-    final paymentRoutes = ['/orange-money', '/mobile-money', '/card-payment'];
+    final paymentRoutes = [
+      OrangeMoneyScreen.routeName, 
+      MobileMoneyScreen.routeName, 
+      CardPaymentScreen.routeName
+    ];
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
       color: Colors.white,
@@ -269,7 +277,7 @@ class _CartSummaryScreenState extends State<CartSummaryScreen> {
               const Icon(Icons.lock_outline, color: Colors.white, size: 18),
               const SizedBox(width: 10),
               Text(
-                'Payer ${total.toStringAsFixed(0)} XAF',
+                '${Translator.t('pay')} ${total.toStringAsFixed(0)} XAF',
                 style: const TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.bold),
               ),
             ],

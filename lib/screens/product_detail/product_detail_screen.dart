@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import '../../backend/translator.dart';
 import '../../backend/mock_firebase.dart';
-import '../../widgets/product_card.dart';
-import './product_info_screen.dart';
 import '../reviews/reviews_screen.dart';
+import 'product_info_screen.dart';
+import 'product_images_screen.dart';
+import '../vendor/vendor_profile_screen.dart';
+import '../order/checkout_screen.dart';
+import '../../widgets/product_card.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final Map<String, dynamic> product;
@@ -30,7 +34,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     final productId = widget.product['id'].toString();
     _productFuture = MockFirebase().getProductById(productId);
 
-    // Initial default values from passed simple product
     final sizes = widget.product['sizes'] as List? ?? [];
     _selectedSize = sizes.isNotEmpty ? sizes[0].toString() : 'unique';
     
@@ -51,314 +54,321 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Map<String, dynamic>?>(
-      future: _productFuture,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Scaffold(body: Center(child: CircularProgressIndicator(color: _salmon)));
-        }
-        
-        final p = snapshot.data ?? widget.product;
-        
-        final images = p['images'] as List? ?? [];
-        final mainImage = images.isNotEmpty ? images[0] : '';
-        final price = p['price'] ?? 0;
-        final oldPrice = p['oldPrice'];
-        final currency = p['currency'] ?? 'XAF';
+    return AnimatedBuilder(
+      animation: MockFirebase(),
+      builder: (context, _) {
+        return FutureBuilder<Map<String, dynamic>?>(
+          future: _productFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Scaffold(body: Center(child: CircularProgressIndicator(color: _salmon)));
+            }
+            
+            final p = snapshot.data ?? widget.product;
+            
+            final images = p['images'] as List? ?? [];
+            final mainImage = images.isNotEmpty ? images[0] : '';
+            final price = p['price'] ?? 0;
+            final oldPrice = p['oldPrice'];
+            final currency = p['currency'] ?? 'XAF';
 
-        return Scaffold(
-          backgroundColor: Colors.white,
-          body: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // ─── Header Image ───
-                Stack(
+            return Scaffold(
+              backgroundColor: Colors.white,
+              body: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Hero(
-                      tag: '${widget.product['heroPrefix'] ?? ''}_product_${p['id']}',
-                      child: Image.network(
-                        mainImage,
-                        width: double.infinity,
-                        height: MediaQuery.of(context).size.height * 0.55,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    Stack(
                       children: [
-                        _buildCircleButton(
-                          icon: Icons.chevron_left,
-                          onTap: () => Navigator.pop(context),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(
+                              context, 
+                              ProductImagesScreen.routeName, 
+                              arguments: {
+                                'images': p['images'] ?? [mainImage],
+                                'initialIndex': 0,
+                              }
+                            );
+                          },
+                          child: Hero(
+                            tag: '${widget.product['heroPrefix'] ?? ''}_product_${p['id']}',
+                            child: Image.network(
+                              mainImage,
+                              width: double.infinity,
+                              height: MediaQuery.of(context).size.height * 0.55,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                         ),
-                        _buildCircleButton(
-                          icon: Icons.share_outlined,
-                          onTap: () {},
+                        SafeArea(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                _buildCircleButton(
+                                  icon: Icons.chevron_left,
+                                  onTap: () => Navigator.pop(context),
+                                ),
+                                _buildCircleButton(
+                                  icon: Icons.share_outlined,
+                                  onTap: () {},
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          bottom: 20,
+                          right: 20,
+                          child: _buildCircleButton(
+                            icon: MockFirebase().isFavorite(p['id'].toString()) ? Icons.favorite : Icons.favorite_border,
+                            color: MockFirebase().isFavorite(p['id'].toString()) ? _salmon : Colors.grey,
+                            onTap: () => MockFirebase().toggleFavorite(p['id'].toString()),
+                          ),
                         ),
                       ],
                     ),
-                  ),
-                ),
-                Positioned(
-                  bottom: 20,
-                  right: 20,
-                  child: AnimatedBuilder(
-                    animation: MockFirebase(),
-                    builder: (context, _) {
-                      final isFav = MockFirebase().isFavorite(p['id'].toString());
-                      return _buildCircleButton(
-                        icon: isFav ? Icons.favorite : Icons.favorite_border,
-                        color: isFav ? _salmon : Colors.grey,
-                        onTap: () => MockFirebase().toggleFavorite(p['id'].toString()),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
 
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Title & Category
-                  Text(
-                    p['name'] ?? '',
-                    style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '${p['category'] ?? ''} Shirt',
-                    style: TextStyle(color: Colors.grey[600], fontSize: 14),
-                  ),
-                  
-                  const SizedBox(height: 16),
-                  
-                  // Price & Rating
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Wrap(
-                              crossAxisAlignment: WrapCrossAlignment.center,
-                              spacing: 8,
-                              children: [
-                                Text(
-                                  '$price $currency',
-                                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: _salmon),
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  p['name'] ?? '',
+                                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                                 ),
-                                if (oldPrice != null)
-                                  Text(
-                                    '$oldPrice $currency',
-                                    style: TextStyle(
-                                      fontSize: 16, 
-                                      color: Colors.grey, 
-                                      decoration: TextDecoration.lineThrough
+                              ),
+                              _buildCartShortcut(context, p),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            '${p['category'] ?? ''} Shirt',
+                            style: TextStyle(color: Colors.grey[600], fontSize: 14),
+                          ),
+                          
+                          const SizedBox(height: 16),
+                          
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Wrap(
+                                      crossAxisAlignment: WrapCrossAlignment.center,
+                                      spacing: 8,
+                                      children: [
+                                        Text(
+                                          '$price $currency',
+                                          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: _salmon),
+                                        ),
+                                        if (oldPrice != null)
+                                          Text(
+                                            '$oldPrice $currency',
+                                            style: const TextStyle(
+                                              fontSize: 16, 
+                                              color: Colors.grey, 
+                                              decoration: TextDecoration.lineThrough
+                                            ),
+                                          ),
+                                        if (p['discount'] != null && p['discount'] > 0)
+                                          Text(
+                                            '${p['discount']}% OFF',
+                                            style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 14),
+                                          ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Wrap(
+                                      crossAxisAlignment: WrapCrossAlignment.center,
+                                      spacing: 4,
+                                      children: [
+                                        ...List.generate(5, (i) => Icon(
+                                          i < (p['rating']?.floor() ?? 0) ? Icons.star : Icons.star_border,
+                                          color: Colors.amber, size: 18,
+                                        )),
+                                        Text('(${p['totalReviews'] ?? 0})', style: TextStyle(color: Colors.grey[600], fontSize: 12)),
+                                        GestureDetector(
+                                          onTap: () => Navigator.pushNamed(context, ReviewsScreen.routeName, arguments: p),
+                                          child: Text(Translator.t('see_reviews'), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, decoration: TextDecoration.underline))
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                   Text('16hrs : 32mins', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.grey[800])),
+                                ],
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 25),
+
+                          GestureDetector(
+                            onTap: () => Navigator.pushNamed(context, VendorProfileScreen.routeName, arguments: p['vendorId']),
+                            child: Container(
+                              padding: const EdgeInsets.all(15),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[50],
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: Row(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 20,
+                                    backgroundImage: NetworkImage('https://i.pravatar.cc/150?u=${p['vendorId']}'), 
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(p['vendorName'] ?? Translator.t('vendor'), style: const TextStyle(fontWeight: FontWeight.bold)),
+                                        Text(Translator.t('official_shop'), style: TextStyle(color: Colors.grey[600], fontSize: 12)),
+                                      ],
                                     ),
                                   ),
-                                if (p['discount'] != null && p['discount'] > 0)
-                                  Text(
-                                    '${p['discount']}% OFF',
-                                    style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 14),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                    decoration: BoxDecoration(
+                                      color: _salmon.withValues(alpha: 0.1),
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Text(Translator.t('visit'), style: const TextStyle(color: _salmon, fontWeight: FontWeight.bold, fontSize: 12)),
                                   ),
-                              ],
+                                ],
+                              ),
                             ),
-                            const SizedBox(height: 8),
-                            Wrap(
-                              crossAxisAlignment: WrapCrossAlignment.center,
-                              spacing: 4,
+                          ),
+
+                          const SizedBox(height: 25),
+
+                          Text(Translator.t('select_quantity'), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                          const SizedBox(height: 12),
+                          _buildQuantitySelector(),
+
+                          const SizedBox(height: 25),
+
+                          if ((p['sizes'] as List?)?.isNotEmpty ?? false) ...[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                ...List.generate(5, (i) => Icon(
-                                  i < (p['rating']?.floor() ?? 0) ? Icons.star : Icons.star_border,
-                                  color: Colors.amber, size: 18,
-                                )),
-                                Text('(${p['totalReviews'] ?? 0})', style: TextStyle(color: Colors.grey[600], fontSize: 12)),
-                                GestureDetector(
-                                  onTap: () => Navigator.pushNamed(context, ReviewsScreen.routeName, arguments: p),
-                                  child: const Text('See Reviews', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, decoration: TextDecoration.underline))
-                                ),
+                                Text('${Translator.t('select_size')}: $_selectedSize', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                               ],
                             ),
+                            const SizedBox(height: 12),
+                            _buildSizeSelector(p['sizes'] as List),
                           ],
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      // Time indicator (Mock)
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                           Text('16hrs : 32mins', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.grey[800])),
-                        ],
-                      ),
-                    ],
-                  ),
 
-                  const SizedBox(height: 25),
+                          const SizedBox(height: 25),
 
-                  // Vendor Section
-                  GestureDetector(
-                    onTap: () => Navigator.pushNamed(context, '/vendor-profile', arguments: p['vendorId']),
-                    child: Container(
-                      padding: const EdgeInsets.all(15),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[50],
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 20,
-                            backgroundImage: NetworkImage('https://i.pravatar.cc/150?u=${p['vendorId']}'), 
+                          if ((p['colors'] as List?)?.isNotEmpty ?? false) ...[
+                            Text('${Translator.t('select_color')}: ${_selectedColor != null ? "Selected" : "None"}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                            const SizedBox(height: 12),
+                            _buildColorSelector(p['colors'] as List),
+                          ],
+
+                          const SizedBox(height: 30),
+
+                          Row(
+                            children: [
+                              Expanded(
+                                child: ElevatedButton.icon(
+                                  onPressed: () {
+                                    MockFirebase().addToCart(p, size: _selectedSize, color: _selectedColor, quantity: _quantity);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text(Translator.t('added_to_cart')), duration: const Duration(seconds: 1)),
+                                    );
+                                  },
+                                  icon: const Icon(Icons.shopping_cart_outlined),
+                                  label: Text(Translator.t('add_to_cart')),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: _darkNavy,
+                                    foregroundColor: Colors.white,
+                                    minimumSize: const Size(0, 55),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 15),
+                              Expanded(
+                                child: ElevatedButton.icon(
+                                  onPressed: () {
+                                    MockFirebase().addToCart(
+                                      p,
+                                      quantity: _quantity,
+                                      size: _selectedSize,
+                                      color: _selectedColor,
+                                    );
+                                    Navigator.pushNamed(context, CheckoutScreen.routeName);
+                                  },
+                                  icon: const Icon(Icons.shopping_bag_outlined),
+                                  label: Text(Translator.t('buy_now')),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: _salmon,
+                                    foregroundColor: Colors.white,
+                                    minimumSize: const Size(0, 55),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(p['vendorName'] ?? 'Vendeur', style: const TextStyle(fontWeight: FontWeight.bold)),
-                                Text('Boutique Officielle', style: TextStyle(color: Colors.grey[600], fontSize: 12)),
-                              ],
-                            ),
+
+                          const SizedBox(height: 30),
+
+                          _buildExpandableTile(
+                            Translator.t('product_details'), 
+                            onTap: () => Navigator.pushNamed(
+                              context, 
+                              ProductInfoScreen.routeName, 
+                              arguments: p
+                            )
                           ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                            decoration: BoxDecoration(
-                              color: _salmon.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: const Text('Visiter', style: TextStyle(color: _salmon, fontWeight: FontWeight.bold, fontSize: 12)),
+                          const Divider(),
+                          _buildExpandableTile(
+                            Translator.t('specifications'), 
+                            subtitle: p['description']?.toString(),
+                            onTap: () => Navigator.pushNamed(
+                              context, 
+                              ProductInfoScreen.routeName, 
+                              arguments: p
+                            )
                           ),
+                          
+                          const SizedBox(height: 40),
+
+                          _buildReviewsSection(p['id'].toString()),
+
+                          const SizedBox(height: 40),
+
+                          Text(Translator.t('similar_products'), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                          const SizedBox(height: 15),
+                          _buildSimilarProducts(p['id'].toString()),
                         ],
                       ),
                     ),
-                  ),
-
-                  // Select Quantity
-                  const Text('Select Quantity', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                  const SizedBox(height: 12),
-                  _buildQuantitySelector(),
-
-                  const SizedBox(height: 25),
-
-                  // Select Size
-                  if ((p['sizes'] as List?)?.isNotEmpty ?? false) ...[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Select Size: $_selectedSize', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    _buildSizeSelector(p['sizes'] as List),
                   ],
-
-                  const SizedBox(height: 25),
-
-                  // Select Color
-                  if ((p['colors'] as List?)?.isNotEmpty ?? false) ...[
-                    Text('Select Color: ${_selectedColor != null ? "Selected" : "None"}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                    const SizedBox(height: 12),
-                    _buildColorSelector(p['colors'] as List),
-                  ],
-
-                  const SizedBox(height: 30),
-
-                  // Action Buttons
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          onPressed: () {
-                            MockFirebase().addToCart(p, size: _selectedSize, color: _selectedColor, quantity: _quantity);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Added to cart!'), duration: Duration(seconds: 1)),
-                            );
-                          },
-                          icon: const Icon(Icons.shopping_cart_outlined),
-                          label: const Text('Add to cart'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: _darkNavy,
-                            foregroundColor: Colors.white,
-                            minimumSize: const Size(0, 55),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 15),
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          onPressed: () {
-                            // Add to cart with selected options
-                            MockFirebase().addToCart(
-                              p,
-                              quantity: _quantity,
-                              size: _selectedSize,
-                              color: _selectedColor,
-                            );
-                            // Go directly to checkout
-                            Navigator.pushNamed(context, '/checkout');
-                          },
-                          icon: const Icon(Icons.shopping_bag_outlined),
-                          label: const Text('Buy now'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: _salmon,
-                            foregroundColor: Colors.white,
-                            minimumSize: const Size(0, 55),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 30),
-
-                  // Expandables
-                  _buildExpandableTile(
-                    'Product Details', 
-                    onTap: () => Navigator.pushNamed(
-                      context, 
-                      ProductInfoScreen.routeName, 
-                      arguments: p
-                    )
-                  ),
-                  const Divider(),
-                  _buildExpandableTile(
-                    'Specifications', 
-                    subtitle: p['description'],
-                    onTap: () => Navigator.pushNamed(
-                      context, 
-                      ProductInfoScreen.routeName, 
-                      arguments: p
-                    )
-                  ),
-                  
-                  const SizedBox(height: 40),
-
-                  // Reviews Selection
-                  _buildReviewsSection(p['id'].toString()),
-
-                  const SizedBox(height: 40),
-
-                  // Similar Products
-                  const Text('Similar Products', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-                  const SizedBox(height: 15),
-                  _buildSimilarProducts(p['id'].toString()),
-                ],
+                ),
               ),
-            ),
-          ],
-        ),
-      ),
-    );
-        },
+            );
+          },
+        );
+      },
     );
   }
 
@@ -504,10 +514,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Reviews', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                Text(Translator.t('reviews'), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                 TextButton(
                   onPressed: () => Navigator.pushNamed(context, ReviewsScreen.routeName, arguments: widget.product),
-                  child: const Text('View All', style: TextStyle(color: _salmon, fontWeight: FontWeight.bold)),
+                  child: Text(Translator.t('view_all'), style: const TextStyle(color: _salmon, fontWeight: FontWeight.bold)),
                 ),
               ],
             ),
@@ -569,7 +579,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       builder: (context, snapshot) {
         if (!snapshot.hasData || snapshot.data == null) return const SizedBox();
         
-        // Robust filtering and uniqueness
         final allProducts = snapshot.data as List<dynamic>;
         final seenIds = <String>{};
         final products = <dynamic>[];
@@ -609,14 +618,37 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               onFavoriteTap: () {},
               onAddToCartTap: () {
                 MockFirebase().addToCart(p);
-                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Added to cart!'), duration: Duration(seconds: 1)),
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(Translator.t('added_to_cart')), duration: const Duration(seconds: 1)),
                 );
               },
             );
           },
         );
       },
+    );
+  }
+  Widget _buildCartShortcut(BuildContext context, Map<String, dynamic> p) {
+    return Container(
+      decoration: BoxDecoration(
+        color: _salmon.withValues(alpha: 0.1),
+        shape: BoxShape.circle,
+      ),
+      child: IconButton(
+        icon: const Icon(Icons.add_shopping_cart, color: _salmon, size: 20),
+        onPressed: () {
+          MockFirebase().addToCart(p, size: _selectedSize, color: _selectedColor, quantity: _quantity);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(Translator.t('added_to_cart')), 
+              duration: const Duration(seconds: 1),
+              backgroundColor: _darkNavy,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            ),
+          );
+        },
+      ),
     );
   }
 }

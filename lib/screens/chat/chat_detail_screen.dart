@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../backend/mock_firebase.dart';
+import '../../backend/translator.dart';
 
 class ChatDetailScreen extends StatefulWidget {
   const ChatDetailScreen({super.key});
@@ -23,50 +24,50 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     final String vendorName = args['vendorName'] ?? 'Couturier';
     final String vendorAvatar = args['vendorAvatar'] ?? 'https://i.pravatar.cc/150?u=vendor';
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Row(
-          children: [
-            CircleAvatar(backgroundImage: NetworkImage(vendorAvatar), radius: 18),
-            const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    return AnimatedBuilder(
+      animation: MockFirebase(),
+      builder: (context, _) {
+        return Scaffold(
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            title: Row(
               children: [
-                Text(vendorName, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                const Text('En ligne', style: TextStyle(fontSize: 11, color: Colors.green)),
+                CircleAvatar(backgroundImage: NetworkImage(vendorAvatar), radius: 18),
+                const SizedBox(width: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(vendorName, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    Text(Translator.t('online'), style: const TextStyle(fontSize: 11, color: Colors.green)),
+                  ],
+                ),
               ],
             ),
-          ],
-        ),
-        actions: [
-          IconButton(icon: const Icon(Icons.videocam_outlined), onPressed: () {}),
-          IconButton(icon: const Icon(Icons.call_outlined), onPressed: () {}),
-        ],
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: AnimatedBuilder(
-              animation: MockFirebase(),
-              builder: (context, _) {
-                final messages = MockFirebase().getChatMessages(chatId);
-                return ListView.builder(
+            actions: [
+              IconButton(icon: const Icon(Icons.videocam_outlined), onPressed: () {}),
+              IconButton(icon: const Icon(Icons.call_outlined), onPressed: () {}),
+            ],
+          ),
+          body: Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
                   controller: _scrollController,
                   padding: const EdgeInsets.all(20),
-                  itemCount: messages.length,
+                  itemCount: MockFirebase().getChatMessages(chatId).length,
                   itemBuilder: (context, index) {
+                    final messages = MockFirebase().getChatMessages(chatId);
                     final msg = messages[index];
                     final isMe = msg['senderId'] == 'u1';
                     return _buildMessageBubble(msg['text'], msg['time'], isMe);
                   },
-                );
-              },
-            ),
+                ),
+              ),
+              _buildInputArea(chatId),
+            ],
           ),
-          _buildInputArea(chatId),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -103,7 +104,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
       padding: EdgeInsets.fromLTRB(20, 10, 10, 30 + MediaQuery.of(context).viewInsets.bottom),
       decoration: BoxDecoration(
         color: Colors.white,
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, -5))],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, -5))],
       ),
       child: Row(
         children: [
@@ -113,7 +114,11 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
               decoration: BoxDecoration(color: Colors.grey[50], borderRadius: BorderRadius.circular(30)),
               child: TextField(
                 controller: _msgController,
-                decoration: const InputDecoration(hintText: 'Écrire un message...', border: InputBorder.none, contentPadding: EdgeInsets.symmetric(vertical: 12)),
+                decoration: InputDecoration(
+                  hintText: Translator.t('type_message_hint'),
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                ),
               ),
             ),
           ),

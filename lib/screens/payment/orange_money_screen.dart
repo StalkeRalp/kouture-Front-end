@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../backend/translator.dart';
 import '../payment/payment_processing_screen.dart';
 
 class OrangeMoneyScreen extends StatefulWidget {
@@ -42,20 +43,20 @@ class _OrangeMoneyScreenState extends State<OrangeMoneyScreen> {
                   width: 100,
                   height: 100,
                   decoration: BoxDecoration(
-                    color: _orange.withOpacity(0.1),
+                    color: _orange.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: const Icon(Icons.phone_android_outlined, size: 50, color: _orange),
                 ),
               ),
               const SizedBox(height: 30),
-              const Text(
-                'Payer avec Orange Money',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              Text(
+                Translator.t('pay_with_orange_money'),
+                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 10),
               Text(
-                'Entrez votre numéro Orange Money pour initier le paiement.',
+                Translator.t('orange_money_desc'),
                 style: TextStyle(color: Colors.grey[600], fontSize: 14),
               ),
               const SizedBox(height: 30),
@@ -63,8 +64,8 @@ class _OrangeMoneyScreenState extends State<OrangeMoneyScreen> {
                 controller: _phoneController,
                 keyboardType: TextInputType.phone,
                 decoration: InputDecoration(
-                  labelText: 'Numéro de téléphone',
-                  hintText: 'ex: 690 00 00 00',
+                  labelText: Translator.t('phone_number'),
+                  hintText: Translator.t('phone_number_hint'),
                   prefixIcon: const Icon(Icons.phone),
                   filled: true,
                   fillColor: Colors.grey[50],
@@ -78,8 +79,8 @@ class _OrangeMoneyScreenState extends State<OrangeMoneyScreen> {
                   ),
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) return 'Veuillez entrer un numéro';
-                  if (value.length < 9) return 'Numéro invalide';
+                  if (value == null || value.isEmpty) return Translator.t('phone_required');
+                  if (value.length < 9) return Translator.t('invalid_number');
                   return null;
                 },
               ),
@@ -101,8 +102,8 @@ class _OrangeMoneyScreenState extends State<OrangeMoneyScreen> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                     elevation: 0,
                   ),
-                  child: const Text('CONFIRMER LE PAIEMENT', 
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  child: Text(Translator.t('confirm_payment'), 
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 ),
               ),
             ],
@@ -116,23 +117,23 @@ class _OrangeMoneyScreenState extends State<OrangeMoneyScreen> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: _orange.withOpacity(0.05),
+        color: _orange.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: _orange.withOpacity(0.1)),
+        border: Border.all(color: _orange.withValues(alpha: 0.1)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             children: [
-              Icon(Icons.info_outline, color: _orange, size: 20),
-              SizedBox(width: 10),
-              Text('Instructions', style: TextStyle(fontWeight: FontWeight.bold, color: _orange)),
+              const Icon(Icons.info_outline, color: _orange, size: 20),
+              const SizedBox(width: 10),
+              Text(Translator.t('instructions'), style: const TextStyle(fontWeight: FontWeight.bold, color: _orange)),
             ],
           ),
           const SizedBox(height: 12),
           Text(
-            '1. Validez la transaction sur votre téléphone.\n2. Composez le #150*50# si vous ne recevez pas de notification.\n3. Entrez votre code PIN pour confirmer.',
+            Translator.t('orange_money_instructions'),
             style: TextStyle(color: Colors.grey[800], fontSize: 13, height: 1.5),
           ),
         ],

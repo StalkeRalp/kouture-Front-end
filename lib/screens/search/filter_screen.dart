@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../backend/translator.dart';
 import '../../backend/mock_firebase.dart';
 
 class FilterScreen extends StatefulWidget {
@@ -107,220 +108,225 @@ class _FilterScreenState extends State<FilterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text('Filtres', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.close, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
-        actions: [
-          if (!_isLoading)
-            TextButton(
-              onPressed: _resetFilters,
-              child: const Text('Reset', style: TextStyle(color: _salmon, fontWeight: FontWeight.bold)),
+    return AnimatedBuilder(
+      animation: MockFirebase(),
+      builder: (context, _) {
+        return Scaffold(
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            title: Text(Translator.t('filters'), style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+            backgroundColor: Colors.white,
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(Icons.close, color: Colors.black),
+              onPressed: () => Navigator.pop(context),
             ),
-        ],
-      ),
-      body: _isLoading 
-        ? const Center(child: CircularProgressIndicator(color: _salmon))
-        : SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildSectionTitle('Tranche de prix'),
-            const SizedBox(height: 20),
-            Row(
+            actions: [
+              if (!_isLoading)
+                TextButton(
+                  onPressed: _resetFilters,
+                  child: Text(Translator.t('reset'), style: const TextStyle(color: _salmon, fontWeight: FontWeight.bold)),
+                ),
+            ],
+          ),
+          body: _isLoading 
+            ? const Center(child: CircularProgressIndicator(color: _salmon))
+            : SingleChildScrollView(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: _buildPriceInput(
-                    controller: _minPriceController,
-                    label: 'Min (XAF)',
-                    onChanged: (val) => _syncSliderFromText(),
-                  ),
-                ),
-                const SizedBox(width: 15),
-                Container(
-                  height: 1,
-                  width: 10,
-                  color: Colors.grey,
-                ),
-                const SizedBox(width: 15),
-                Expanded(
-                  child: _buildPriceInput(
-                    controller: _maxPriceController,
-                    label: 'Max (XAF)',
-                    onChanged: (val) => _syncSliderFromText(),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            RangeSlider(
-              values: _currentRangeValues,
-              min: 0,
-              max: 200000,
-              divisions: 40,
-              activeColor: _salmon,
-              inactiveColor: Colors.grey.shade200,
-              labels: RangeLabels(
-                '${_currentRangeValues.start.round()} XAF',
-                '${_currentRangeValues.end.round()} XAF',
-              ),
-              onChanged: (values) {
-                setState(() {
-                  _currentRangeValues = values;
-                  _minPriceController.text = values.start.round().toString();
-                  _maxPriceController.text = values.end.round().toString();
-                });
-              },
-            ),
-            
-            if (_categories.isNotEmpty) ...[
-              const SizedBox(height: 30),
-              _buildSectionTitle('Catégories'),
-              const SizedBox(height: 15),
-              Wrap(
-                spacing: 10,
-                runSpacing: 10,
-                children: _categories.map((cat) {
-                  final isSelected = _selectedCategories.contains(cat);
-                  return FilterChip(
-                    label: Text(cat),
-                    selected: isSelected,
-                    onSelected: (selected) {
-                      setState(() {
-                        if (selected) {
-                          _selectedCategories.add(cat);
-                        } else {
-                          _selectedCategories.remove(cat);
-                        }
-                      });
-                    },
-                    selectedColor: _salmon.withOpacity(0.2),
-                    checkmarkColor: _salmon,
-                    backgroundColor: Colors.grey.shade50,
-                    labelStyle: TextStyle(
-                      color: isSelected ? _salmon : Colors.black87,
-                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                    ),
-                  );
-                }).toList(),
-              ),
-            ],
-            
-            if (_sizes.isNotEmpty) ...[
-              const SizedBox(height: 30),
-              _buildSectionTitle('Tailles'),
-              const SizedBox(height: 15),
-              Wrap(
-                spacing: 10,
-                runSpacing: 10,
-                children: _sizes.map((size) {
-                  final isSelected = _selectedSizes.contains(size);
-                  return ChoiceChip(
-                    label: Text(size),
-                    selected: isSelected,
-                    onSelected: (selected) {
-                      setState(() {
-                        if (selected) {
-                          _selectedSizes.add(size);
-                        } else {
-                          _selectedSizes.remove(size);
-                        }
-                      });
-                    },
-                    selectedColor: _salmon.withOpacity(0.2),
-                    backgroundColor: Colors.grey.shade50,
-                    labelStyle: TextStyle(
-                      color: isSelected ? _salmon : Colors.black87,
-                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                    ),
-                  );
-                }).toList(),
-              ),
-            ],
-
-            if (_colorsList.isNotEmpty) ...[
-              const SizedBox(height: 30),
-              _buildSectionTitle('Couleurs'),
-              const SizedBox(height: 15),
-              SizedBox(
-                height: 50,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: _colorsList.length,
-                  itemBuilder: (context, index) {
-                    final hex = _colorsList[index];
-                    final color = _hexToColor(hex);
-                    final isSelected = _selectedColor == hex;
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _selectedColor = isSelected ? null : hex;
-                        });
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.only(right: 15),
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: color,
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: isSelected ? _salmon : Colors.transparent,
-                            width: 3,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.1),
-                              blurRadius: 4,
-                              spreadRadius: 1,
-                            )
-                          ],
-                        ),
-                        child: isSelected 
-                          ? Icon(
-                              Icons.check, 
-                              color: color.computeLuminance() > 0.5 ? Colors.black : Colors.white, 
-                              size: 20
-                            )
-                          : null,
+                _buildSectionTitle(Translator.t('price_range')),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildPriceInput(
+                        controller: _minPriceController,
+                        label: 'Min (XAF)',
+                        onChanged: (val) => _syncSliderFromText(),
                       ),
-                    );
+                    ),
+                    const SizedBox(width: 15),
+                    Container(
+                      height: 1,
+                      width: 10,
+                      color: Colors.grey,
+                    ),
+                    const SizedBox(width: 15),
+                    Expanded(
+                      child: _buildPriceInput(
+                        controller: _maxPriceController,
+                        label: 'Max (XAF)',
+                        onChanged: (val) => _syncSliderFromText(),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                RangeSlider(
+                  values: _currentRangeValues,
+                  min: 0,
+                  max: 200000,
+                  divisions: 40,
+                  activeColor: _salmon,
+                  inactiveColor: Colors.grey.shade200,
+                  labels: RangeLabels(
+                    '${_currentRangeValues.start.round()} XAF',
+                    '${_currentRangeValues.end.round()} XAF',
+                  ),
+                  onChanged: (values) {
+                    setState(() {
+                      _currentRangeValues = values;
+                      _minPriceController.text = values.start.round().toString();
+                      _maxPriceController.text = values.end.round().toString();
+                    });
                   },
                 ),
-              ),
-            ],
-            
-            const SizedBox(height: 50),
-          ],
-        ),
-      ),
-      bottomNavigationBar: _isLoading ? null : Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, -5))
-          ],
-        ),
-        child: ElevatedButton(
-          onPressed: _applyFilters,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: _salmon,
-            foregroundColor: Colors.white,
-            minimumSize: const Size(double.infinity, 55),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-            elevation: 0,
+                
+                if (_categories.isNotEmpty) ...[
+                  const SizedBox(height: 30),
+                  _buildSectionTitle(Translator.t('categories')),
+                  const SizedBox(height: 15),
+                  Wrap(
+                    spacing: 10,
+                    runSpacing: 10,
+                    children: _categories.map((cat) {
+                      final isSelected = _selectedCategories.contains(cat);
+                      return FilterChip(
+                        label: Text(cat),
+                        selected: isSelected,
+                        onSelected: (selected) {
+                          setState(() {
+                            if (selected) {
+                              _selectedCategories.add(cat);
+                            } else {
+                              _selectedCategories.remove(cat);
+                            }
+                          });
+                        },
+                        selectedColor: _salmon.withValues(alpha: 0.2),
+                        checkmarkColor: _salmon,
+                        backgroundColor: Colors.grey.shade50,
+                        labelStyle: TextStyle(
+                          color: isSelected ? _salmon : Colors.black87,
+                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ],
+                
+                if (_sizes.isNotEmpty) ...[
+                  const SizedBox(height: 30),
+                  _buildSectionTitle(Translator.t('sizes')),
+                  const SizedBox(height: 15),
+                  Wrap(
+                    spacing: 10,
+                    runSpacing: 10,
+                    children: _sizes.map((size) {
+                      final isSelected = _selectedSizes.contains(size);
+                      return ChoiceChip(
+                        label: Text(size),
+                        selected: isSelected,
+                        onSelected: (selected) {
+                          setState(() {
+                            if (selected) {
+                              _selectedSizes.add(size);
+                            } else {
+                              _selectedSizes.remove(size);
+                            }
+                          });
+                        },
+                        selectedColor: _salmon.withValues(alpha: 0.2),
+                        backgroundColor: Colors.grey.shade50,
+                        labelStyle: TextStyle(
+                          color: isSelected ? _salmon : Colors.black87,
+                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ],
+
+                if (_colorsList.isNotEmpty) ...[
+                  const SizedBox(height: 30),
+                  _buildSectionTitle(Translator.t('colors')),
+                  const SizedBox(height: 15),
+                  SizedBox(
+                    height: 50,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: _colorsList.length,
+                      itemBuilder: (context, index) {
+                        final hex = _colorsList[index];
+                        final color = _hexToColor(hex);
+                        final isSelected = _selectedColor == hex;
+                        return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _selectedColor = isSelected ? null : hex;
+                            });
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.only(right: 15),
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: color,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: isSelected ? _salmon : Colors.transparent,
+                                width: 3,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.1),
+                                  blurRadius: 4,
+                                  spreadRadius: 1,
+                                )
+                              ],
+                            ),
+                            child: isSelected 
+                              ? Icon(
+                                  Icons.check, 
+                                  color: color.computeLuminance() > 0.5 ? Colors.black : Colors.white, 
+                                  size: 20
+                                )
+                              : null,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+                
+                const SizedBox(height: 50),
+              ],
+            ),
           ),
-          child: const Text('Appliquer les filtres', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-        ),
-      ),
+          bottomNavigationBar: _isLoading ? null : Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, -5))
+              ],
+            ),
+            child: ElevatedButton(
+              onPressed: _applyFilters,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: _salmon,
+                foregroundColor: Colors.white,
+                minimumSize: const Size(double.infinity, 55),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                elevation: 0,
+              ),
+              child: Text(Translator.t('apply_filters'), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            ),
+          ),
+        );
+      },
     );
   }
 

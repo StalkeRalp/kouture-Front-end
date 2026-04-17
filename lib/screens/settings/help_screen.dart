@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../backend/mock_firebase.dart';
+import '../../backend/translator.dart';
 
 class HelpScreen extends StatelessWidget {
   const HelpScreen({super.key});
@@ -9,62 +11,67 @@ class HelpScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text('Aide & Support', 
-          style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 1.1)),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black, size: 18),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(24.0),
-        children: [
-          const Text('Comment pouvons-nous vous aider ?', 
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: _darkNavy)),
-          const SizedBox(height: 30),
-          _buildFaqItem('Comment suivre ma commande ?', 'Allez dans l\'onglet "Activités" pour voir le suivi en temps réel de votre colis.'),
-          _buildFaqItem('Quels sont les modes de paiement ?', 'Nous acceptons Orange Money, MTN Mobile Money et les Cartes Bancaires (Visa/Mastercard).'),
-          _buildFaqItem('Puis-je retourner un article ?', 'Oui, les retours sont acceptés sous 7 jours si l\'article n\'a pas été porté et que le sceau de garantie est intact.'),
-          _buildFaqItem('Délais de confection ?', 'La plupart de nos créateurs confectionnent vos tenues en 5 à 10 jours ouvrés.'),
-          const SizedBox(height: 40),
-          const Text('Besoin de parler à un expert ?', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-          const SizedBox(height: 15),
-          ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              backgroundColor: _darkNavy,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-              padding: const EdgeInsets.symmetric(vertical: 20),
-              elevation: 0,
-            ),
-            child: const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.chat_bubble_outline, size: 20),
-                SizedBox(width: 12),
-                Text('CONTACTER LE SUPPORT', style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1)),
-              ],
+    return AnimatedBuilder(
+      animation: MockFirebase(),
+      builder: (context, _) {
+        return Scaffold(
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            title: Text(Translator.t('help_support'), 
+              style: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 1.1)),
+            backgroundColor: Colors.white,
+            elevation: 0,
+            centerTitle: true,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black, size: 18),
+              onPressed: () => Navigator.pop(context),
             ),
           ),
-          const SizedBox(height: 15),
-          OutlinedButton(
-            onPressed: () {},
-            style: OutlinedButton.styleFrom(
-              side: const BorderSide(color: _salmon),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-              padding: const EdgeInsets.symmetric(vertical: 20),
-            ),
-            child: const Text('ENVOYER UN EMAIL', style: TextStyle(color: _salmon, fontWeight: FontWeight.bold, letterSpacing: 1)),
+          body: ListView(
+            padding: const EdgeInsets.all(24.0),
+            children: [
+              Text(Translator.t('help_main_question'), 
+                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: _darkNavy)),
+              const SizedBox(height: 30),
+              _buildFaqItem(Translator.t('faq_q1'), Translator.t('faq_a1')),
+              _buildFaqItem(Translator.t('faq_q2'), Translator.t('faq_a2')),
+              _buildFaqItem(Translator.t('faq_q3'), Translator.t('faq_a3')),
+              _buildFaqItem(Translator.t('faq_q4'), Translator.t('faq_a4')),
+              const SizedBox(height: 40),
+              Text(Translator.t('help_expert_title'), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              const SizedBox(height: 15),
+              ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: _darkNavy,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  elevation: 0,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.chat_bubble_outline, size: 20),
+                    const SizedBox(width: 12),
+                    Text(Translator.t('contact_support'), style: const TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1)),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 15),
+              OutlinedButton(
+                onPressed: () {},
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: _salmon),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                ),
+                child: Text(Translator.t('send_email'), style: const TextStyle(color: _salmon, fontWeight: FontWeight.bold, letterSpacing: 1)),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 

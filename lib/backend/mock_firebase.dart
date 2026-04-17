@@ -3,11 +3,15 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'dart:math' as math;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MockFirebase extends ChangeNotifier {
   static final MockFirebase _instance = MockFirebase._internal();
   factory MockFirebase() => _instance;
   MockFirebase._internal();
+
+  /// Public method to trigger listeners from outside (e.g. for bulk updates)
+  void refresh() => notifyListeners();
 
   List<dynamic> _products = [];
   List<dynamic> _categoriesData = [];
@@ -22,6 +26,11 @@ class MockFirebase extends ChangeNotifier {
   List<String> favoriteIds = [];
   List<String> recentSearches = [];
   Map<String, dynamic>? _authenticatedUser;
+
+  /// Utilisateur en attente de vérification OTP après inscription
+  Map<String, dynamic>? _pendingUser;
+
+  static const String _sessionKey = 'auth_session_id';
 
   List<dynamic> get allProducts => _products;
   List<dynamic> get promotions => _promotions;
@@ -79,6 +88,25 @@ class MockFirebase extends ChangeNotifier {
       } catch (e) {
         favoriteIds = [];
       }
+
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        final savedUserId = prefs.getString(_sessionKey);
+        if (savedUserId != null) {
+          final user = _users.firstWhere(
+            (u) => u['id'] == savedUserId,
+            orElse: () => null,
+          );
+          if (user != null) {
+            _authenticatedUser = Map<String, dynamic>.from(user);
+          }
+        }
+      } catch (e) {
+        debugPrint('MockFirebase Session Restore Error: $e');
+      }
+
+      // Seed orders for testing if empty
+      _seedOrders();
 
       _isInitialized = true;
     } catch (e) {
@@ -279,6 +307,11 @@ class MockFirebase extends ChangeNotifier {
         (u) => u['email'] == email && u['password'] == password,
       );
       _authenticatedUser = Map<String, dynamic>.from(user);
+      
+      // Save session
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(_sessionKey, _authenticatedUser!['id']);
+      
       notifyListeners();
       return _authenticatedUser!;
     } catch (e) {
@@ -311,23 +344,65 @@ class MockFirebase extends ChangeNotifier {
       'preferences': {},
     };
 
-    // Note: In a real app, we'd add it to the list, but here we'll just return it
-    // and wait for OTP verification to "officially" add/log in.
+    // Stocker l'utilisateur en attente. Il sera officiellement enregistré
+    // après la vérification OTP réussie.
+    _pendingUser = newUser;
     return newUser;
+  }
+
+  /// Renvoie l'email de l'utilisateur en cours d'inscription (pour l'écran OTP)
+  String? get pendingUserEmail => _pendingUser?['email'] as String?;
+
+  /// Annule l'inscription en cours
+  void cancelPendingRegistration() {
+    _pendingUser = null;
+  }
+
+  /// Envoie un e-mail de réinitialisation de mot de passe (simulé)
+  Future<bool> sendPasswordResetEmail(String email) async {
+    await Future.delayed(const Duration(seconds: 2));
+    // Vérifie si l'email existe dans la base
+    final exists = _users.any((u) => u['email'] == email);
+    if (!exists) {
+      // Pour des raisons de sécurité, on ne révèle pas si l'email existe ou non
+      // On simule quand même un succès
+      debugPrint('Simulated: password reset email sent to $email (user not found)');
+    } else {
+      debugPrint('Simulated: password reset email sent to $email');
+    }
+    return true;
   }
 
   Future<bool> verifyOtp(String code) async {
     await _delay();
-    // Simulate valid OTP (any 6 digit code for mock)
+    // Simulation : tout code à 6 chiffres est valide
+    // Le vrai code OTP valide est "123456" pour tester le cas d'erreur
     if (code.length == 6) {
-      // In a real mock flow, we'd log the user in here
+      // Si un utilisateur est en attente d'inscription, on le finalise
+      if (_pendingUser != null) {
+        _users.add(Map<String, dynamic>.from(_pendingUser!));
+        _authenticatedUser = Map<String, dynamic>.from(_pendingUser!);
+        _pendingUser = null;
+        _saveToDisk();
+
+        // Save session
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString(_sessionKey, _authenticatedUser!['id']);
+
+        notifyListeners();
+      }
       return true;
     }
     return false;
   }
 
-  void logout() {
+  void logout() async {
     _authenticatedUser = null;
+    
+    // Clear session
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_sessionKey);
+    
     notifyListeners();
   }
 
@@ -349,6 +424,11 @@ class MockFirebase extends ChangeNotifier {
           updatedUser[key] = value;
         });
         _users[i] = updatedUser;
+        
+        // If this is the current authenticated user, update it too
+        if (_authenticatedUser != null && _authenticatedUser!['id'] == id) {
+          _authenticatedUser = updatedUser;
+        }
         
         // Save to disk for local persistence
         _saveToDisk();
@@ -423,48 +503,76 @@ class MockFirebase extends ChangeNotifier {
 
   Future<List<dynamic>> getRecommendedProducts() async {
     await _delay();
+
+    // Guard: if products list is empty, nothing to return
+    if (_products.isEmpty) return [];
+
     final user = currentUser;
-    if (user == null || user['preferences'] == null) {
-      return _products.where((p) => p['isFeatured'] == true).toList();
+
+    // No user or no preference-based filters → return featured or all
+    if (user == null ||
+        user['preferences'] == null ||
+        (user['preferences'] as Map<String, dynamic>).isEmpty) {
+      final featured =
+          _products.where((p) => p['isFeatured'] == true).toList();
+      return featured.isNotEmpty ? featured : List.from(_products);
     }
 
     final prefs = user['preferences'] as Map<String, dynamic>;
-    final stylePref = (prefs['styles'] as List?)?.map((s) => s.toString().toLowerCase()).toList() ?? [];
-    final materialPref = (prefs['materials'] as List?)?.map((m) => m.toString().toLowerCase()).toList() ?? [];
-    final occasionPref = (prefs['occasions'] as List?)?.map((o) => o.toString().toLowerCase()).toList() ?? [];
+    final stylePref = (prefs['styles'] as List?)
+            ?.map((s) => s.toString().toLowerCase())
+            .toList() ??
+        [];
+    final materialPref = (prefs['materials'] as List?)
+            ?.map((m) => m.toString().toLowerCase())
+            .toList() ??
+        [];
+    final occasionPref = (prefs['occasions'] as List?)
+            ?.map((o) => o.toString().toLowerCase())
+            .toList() ??
+        [];
+
+    // If user has no style/material/occasion prefs, skip scoring
+    if (stylePref.isEmpty && materialPref.isEmpty && occasionPref.isEmpty) {
+      final featured =
+          _products.where((p) => p['isFeatured'] == true).toList();
+      return featured.isNotEmpty ? featured : List.from(_products);
+    }
 
     // Scoring system per product
     List<Map<String, dynamic>> scoredProducts = _products.map((p) {
       int score = 0;
-      final tags = (p['tags'] as List?)?.map((t) => t.toString().toLowerCase()).toList() ?? [];
+      final tags = (p['tags'] as List?)
+              ?.map((t) => t.toString().toLowerCase())
+              .toList() ??
+          [];
       final category = p['category'].toString().toLowerCase();
 
-      // Style scoring
       for (var s in stylePref) {
         if (tags.contains(s) || category.contains(s)) score += 3;
       }
-      
-      // Material scoring
       for (var m in materialPref) {
-        if (tags.contains(m) || p['description'].toString().toLowerCase().contains(m)) score += 2;
+        if (tags.contains(m) ||
+            p['description'].toString().toLowerCase().contains(m)) score += 2;
       }
-
-      // Occasion scoring
       for (var o in occasionPref) {
-        if (tags.contains(o)) score += 5; // Heavy weight on occasion
+        if (tags.contains(o)) score += 5;
       }
 
       return {...(p as Map<String, dynamic>), '_score': score};
     }).toList();
 
-    // Sort by score and return top results
-    scoredProducts.sort((a, b) => (b['_score'] as int).compareTo(a['_score'] as int));
-    
-    // Filter out items with very low score if there are enough high score items
-    final results = scoredProducts.where((p) => p['_score'] > 0).toList();
-    if (results.isEmpty) return _products.where((p) => p['isFeatured'] == true).toList();
-    
-    return results;
+    // Sort by score descending
+    scoredProducts
+        .sort((a, b) => (b['_score'] as int).compareTo(a['_score'] as int));
+
+    // Return scored products (score > 0), or fallback to featured/all
+    final results =
+        scoredProducts.where((p) => p['_score'] as int > 0).toList();
+    if (results.isNotEmpty) return results;
+
+    final featured = _products.where((p) => p['isFeatured'] == true).toList();
+    return featured.isNotEmpty ? featured : List.from(_products);
   }
 
   Future<void> saveUserPreferences(Map<String, dynamic> preferences) async {
@@ -544,6 +652,16 @@ class MockFirebase extends ChangeNotifier {
       return _categoriesData.map((c) => c['name'].toString()).toList();
     }
     return _products.map((p) => p['category'].toString()).toSet().toList();
+  }
+
+  Future<List<Map<String, dynamic>>> getAllCategories() async {
+    await _delay();
+    return List<Map<String, dynamic>>.from(_categoriesData);
+  }
+
+  Future<List<dynamic>> getProductsByCategoryId(String categoryId) async {
+    await _delay();
+    return _products.where((p) => p['categoryId'] == categoryId).toList();
   }
 
   Future<List<String>> getUniqueSizes() async {
@@ -735,5 +853,129 @@ class MockFirebase extends ChangeNotifier {
     user['addresses'] = addresses;
     notifyListeners();
     _saveToDisk();
+  }
+
+  // --- STATS HELPER ---
+  
+  void _seedOrders() {
+    if (_orders.isNotEmpty || _products.isEmpty) return;
+    
+    final now = DateTime.now();
+    final random = math.Random();
+    
+    // Create 15-20 random orders over the last 6 months
+    for (int i = 0; i < 18; i++) {
+      final monthsAgo = random.nextInt(6);
+      final daysAgo = random.nextInt(28);
+      final orderDate = now.subtract(Duration(days: monthsAgo * 30 + daysAgo));
+      
+      // Pick 1-3 random products
+      final List<Map<String, dynamic>> items = [];
+      int itemCount = random.nextInt(3) + 1;
+      double total = 0;
+      
+      for (int j = 0; j < itemCount; j++) {
+        final product = _products[random.nextInt(_products.length)];
+        final qty = random.nextInt(2) + 1;
+        final price = (product['price'] as num).toDouble();
+        total += price * qty;
+        
+        items.add({
+          'productId': product['id'],
+          'product': product,
+          'quantity': qty,
+          'size': 'M',
+          'color': 'Original',
+        });
+      }
+
+      final methods = ['Orange Money', 'Mobile Money', 'Carte Bancaire', 'Cash'];
+
+      _orders.add({
+        'id': 'KT-${100000 + i}',
+        'userId': 'u1',
+        'items': items,
+        'total': total + 2500,
+        'status': i < 5 ? 'Livrée' : (i < 10 ? 'Expédiée' : 'En confection'),
+        'date': orderDate.toIso8601String(),
+        'shippingAddress': 'Bastos, Rue 1234, Yaoundé, CMR',
+        'paymentMethod': methods[random.nextInt(methods.length)],
+      });
+    }
+    
+    // Sort by date desc
+    _orders.sort((a, b) => b['date'].compareTo(a['date']));
+  }
+
+  Map<String, double> getOrdersStatsByMonth() {
+    final Map<String, double> stats = {};
+    final now = DateTime.now();
+    final months = ['Jan', 'Féb', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
+
+    // Initialize last 6 months with 0
+    for (int i = 5; i >= 0; i--) {
+      final date = DateTime(now.year, now.month - i, 1);
+      final key = months[date.month - 1];
+      stats[key] = 0.0;
+    }
+
+    for (var order in _orders) {
+      final date = DateTime.parse(order['date']);
+      final diff = now.difference(date).inDays;
+      if (diff <= 180) { // last 6 months approx
+        final key = months[date.month - 1];
+        if (stats.containsKey(key)) {
+          stats[key] = (stats[key] ?? 0) + (order['total'] as num).toDouble();
+        }
+      }
+    }
+    return stats;
+  }
+
+  Map<String, dynamic> getFavoriteCategoryStats() {
+    if (_orders.isEmpty) return {'name': 'N/A', 'percent': 0};
+    
+    final Map<String, int> counts = {};
+    int totalItems = 0;
+    
+    for (var order in _orders) {
+      for (var item in (order['items'] as List)) {
+        final cat = item['product']['category'] ?? 'Autre';
+        counts[cat] = (counts[cat] ?? 0) + (item['quantity'] as int);
+        totalItems += item['quantity'] as int;
+      }
+    }
+    
+    if (counts.isEmpty) return {'name': 'N/A', 'percent': 0};
+    
+    var favorite = counts.entries.first;
+    for (var entry in counts.entries) {
+      if (entry.value > favorite.value) favorite = entry;
+    }
+    
+    return {
+      'name': favorite.key,
+      'percent': ((favorite.value / totalItems) * 100).toInt(),
+    };
+  }
+
+  Map<String, dynamic> getMostUsedPaymentMethod() {
+    if (_orders.isEmpty) return {'name': 'N/A', 'percent': 0};
+    
+    final Map<String, int> counts = {};
+    for (var order in _orders) {
+      final method = order['paymentMethod'] ?? 'N/A';
+      counts[method] = (counts[method] ?? 0) + 1;
+    }
+    
+    var favorite = counts.entries.first;
+    for (var entry in counts.entries) {
+      if (entry.value > favorite.value) favorite = entry;
+    }
+    
+    return {
+      'name': favorite.key,
+      'percent': ((favorite.value / _orders.length) * 100).toInt(),
+    };
   }
 }

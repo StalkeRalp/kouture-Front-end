@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
-import '../../widgets/product_card.dart';
-import '../settings/settings_screen.dart';
+import '../../backend/translator.dart';
 import '../../backend/mock_firebase.dart';
-import '../search/product_search_delegate.dart';
 import '../notifications/notifications_screen.dart';
+import '../settings/settings_screen.dart';
+import '../search/product_search_delegate.dart';
 import '../vendor/vendor_profile_screen.dart';
-
+import '../profile/profile_screen.dart';
+import '../discover/discover_screen.dart';
+import '../cart/cart_screen.dart';
+import '../../widgets/product_card.dart';
+import '../../widgets/state_widgets.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -32,11 +36,11 @@ class _HomeScreenState extends State<HomeScreen> {
   // 
   // DATA
   // 
-  final List<Map<String, String>> _categories = [
-    {'name': 'Men',        'image': 'https://images.unsplash.com/photo-1512484776495-a09d92e87c3b?w=200'},
-    {'name': 'Women',      'image': 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=200'},
-    {'name': 'Kids',       'image': 'https://images.unsplash.com/photo-1471286174890-9c112ffca5b4?w=200'},
-    {'name': 'Accessories','image': 'https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?w=200'},
+  final List<Map<String, String>> _categoriesDataList = [
+    {'id': 'men',         'image': 'https://images.unsplash.com/photo-1512484776495-a09d92e87c3b?w=200'},
+    {'id': 'women',       'image': 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=200'},
+    {'id': 'kids',        'image': 'https://images.unsplash.com/photo-1471286174890-9c112ffca5b4?w=200'},
+    {'id': 'accessories', 'image': 'https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?w=200'},
   ];
 
   // 
@@ -47,65 +51,68 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: _lightBg,
       body: SafeArea(
-        child: Column(
-          children: [
-            //  Scrollable content 
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 16),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: _buildHeader(),
+        child: AnimatedBuilder(
+          animation: MockFirebase(),
+          builder: (context, _) {
+            return Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 16),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: _buildHeader(),
+                        ),
+                        const SizedBox(height: 20),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: _buildSearchBar(),
+                        ),
+                        const SizedBox(height: 20),
+                        _buildHeroBanner(),
+                        const SizedBox(height: 25),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: _buildSectionHeader(Translator.t('new_arrivals')),
+                        ),
+                        const SizedBox(height: 15),
+                        _buildHorizontalScroll(),
+                        const SizedBox(height: 25),
+                        _buildBannerDots(),
+                        const SizedBox(height: 25),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: _buildSectionHeader(Translator.t('categories')),
+                        ),
+                        const SizedBox(height: 15),
+                        _buildCategories(),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: _buildSectionHeader(Translator.t('top_trends')),
+                        ),
+                        const SizedBox(height: 15),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: _buildProductGrid(),
+                        ),
+                        const SizedBox(height: 25),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: _buildSectionHeader(Translator.t('recommended_tailors')),
+                        ),
+                        const SizedBox(height: 15),
+                        _buildTailorSuggestions(),
+                        const SizedBox(height: 30),
+                      ],
                     ),
-                    const SizedBox(height: 20),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: _buildSearchBar(),
-                    ),
-                    const SizedBox(height: 20),
-                    _buildHeroBanner(),
-                    const SizedBox(height: 25),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: _buildSectionHeader('Nouveautés'),
-                    ),
-                    const SizedBox(height: 15),
-                    _buildHorizontalScroll(),
-                    const SizedBox(height: 25),
-                    //  Dots indicateur 
-                    _buildBannerDots(),
-                    const SizedBox(height: 25),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: _buildSectionHeader('Category'),
-                    ),
-                    const SizedBox(height: 15),
-                    _buildCategories(),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: _buildSectionHeader('Top Tendances'),
-                    ),
-                    const SizedBox(height: 15),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: _buildProductGrid(),
-                    ),
-                    const SizedBox(height: 25),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: _buildSectionHeader('Tailleurs recommandés'),
-                    ),
-                    const SizedBox(height: 15),
-                    _buildTailorSuggestions(),
-                    const SizedBox(height: 30),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-          ],
+              ],
+            );
+          },
         ),
       ),
     );
@@ -115,53 +122,50 @@ class _HomeScreenState extends State<HomeScreen> {
   // HEADER
   // 
   Widget _buildHeader() {
-    return AnimatedBuilder(
-      animation: MockFirebase(),
-      builder: (context, _) {
-        final user = MockFirebase().currentUser;
-        final avatarUrl = user?['avatar'] ?? 'https://i.pravatar.cc/150?u=falcon';
-        final name = user?['name'] ?? 'Guest';
+    final user = MockFirebase().currentUser;
+    final avatarUrl = user?['avatar'] ?? 'https://i.pravatar.cc/150?u=falcon';
+    final name = user?['name'] ?? 'Guest';
 
-        return Row(
-          children: [
-            // Avatar
-            GestureDetector(
-              onTap: () => Navigator.pushNamed(context, '/profile'),
-              child: Container(
-                width: 52,
-                height: 52,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: _salmon.withOpacity(0.3), width: 2),
-                  image: DecorationImage(
-                    image: NetworkImage(avatarUrl),
-                    fit: BoxFit.cover,
-                  ),
+    return Row(
+      children: [
+        // Avatar
+        GestureDetector(
+          onTap: () => Navigator.pushNamed(context, ProfileScreen.routeName),
+          child: Container(
+            width: 52,
+            height: 52,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: _salmon.withValues(alpha: 0.3), width: 2),
+              image: DecorationImage(
+                image: NetworkImage(avatarUrl),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
+        // Texte
+        GestureDetector(
+          onTap: () => Navigator.pushNamed(context, ProfileScreen.routeName),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                Translator.t('welcome_back') + '!',
+                style: TextStyle(color: Colors.grey[600], fontSize: 13),
+              ),
+              Text(
+                name,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 17,
+                  color: Colors.black,
                 ),
               ),
-            ),
-            const SizedBox(width: 12),
-            // Texte
-            GestureDetector(
-              onTap: () => Navigator.pushNamed(context, '/profile'),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Welcome Back!',
-                    style: TextStyle(color: Colors.grey[600], fontSize: 13),
-                  ),
-                  Text(
-                    name,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 17,
-                      color: Colors.black,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            ],
+          ),
+        ),
             const Spacer(),
             // Notification icon
             AnimatedBuilder(
@@ -180,8 +184,6 @@ class _HomeScreenState extends State<HomeScreen> {
             // Settings icon
             _buildHeaderIcon(Icons.settings_outlined, onTap: () => Navigator.pushNamed(context, SettingsScreen.routeName)),
           ],
-        );
-      }
     );
   }
 
@@ -199,7 +201,7 @@ class _HomeScreenState extends State<HomeScreen> {
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.15),
+                color: Colors.grey.withValues(alpha: 0.15),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -235,11 +237,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildHorizontalScroll() {
     final List<Map<String, String>> featured = [
-      {'name': 'Nouveautés', 'image': 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=400'},
-      {'name': 'Promotions', 'image': 'https://images.unsplash.com/photo-1441984967741-21338c2b42bc?w=400'},
-      {'name': 'Élite',      'image': 'https://images.unsplash.com/photo-1479064566235-aa2742b96a46?w=400'},
-      {'name': 'Tradition',  'image': 'https://images.unsplash.com/photo-1544441893-675973e31985?w=400'},
-      {'name': 'Mariage',    'image': 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=400'},
+      {'id': 'new_arrivals', 'image': 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=400'},
+      {'id': 'promotions',  'image': 'https://images.unsplash.com/photo-1441984967741-21338c2b42bc?w=400'},
+      {'id': 'Élite',       'image': 'https://images.unsplash.com/photo-1479064566235-aa2742b96a46?w=400'},
+      {'id': 'Tradition',   'image': 'https://images.unsplash.com/photo-1544441893-675973e31985?w=400'},
+      {'id': 'Mariage',     'image': 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=400'},
     ];
 
     return SizedBox(
@@ -249,8 +251,9 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         itemCount: featured.length,
         itemBuilder: (context, index) {
+          final String titleKey = featured[index]['id']!;
           return GestureDetector(
-            onTap: () => Navigator.pushNamed(context, '/discover'),
+            onTap: () => Navigator.pushNamed(context, DiscoverScreen.routeName),
             child: Container(
               width: 160,
               margin: const EdgeInsets.only(right: 12),
@@ -268,7 +271,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     begin: Alignment.bottomCenter,
                     end: Alignment.topCenter,
                     colors: [
-                      Colors.black.withOpacity(0.6),
+                      Colors.black.withValues(alpha: 0.6),
                       Colors.transparent,
                     ],
                   ),
@@ -277,7 +280,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Align(
                   alignment: Alignment.bottomLeft,
                   child: Text(
-                    featured[index]['name']!,
+                    // Try translating, fallback to ID
+                    Translator.t(titleKey).contains(titleKey) ? titleKey : Translator.t(titleKey),
                     style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -312,7 +316,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 borderRadius: BorderRadius.circular(30),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.1),
+                    color: Colors.grey.withValues(alpha: 0.1),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
@@ -323,7 +327,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Icon(Icons.search, color: Colors.grey[400], size: 22),
                   const SizedBox(width: 10),
                   Text(
-                    'What are you looking for...',
+                    Translator.t('search_hint'),
                     style: TextStyle(color: Colors.grey[400], fontSize: 14),
                   ),
                 ],
@@ -334,7 +338,7 @@ class _HomeScreenState extends State<HomeScreen> {
         const SizedBox(width: 16),
         // Cart icon with badge
         GestureDetector(
-          onTap: () => Navigator.pushNamed(context, '/cart'),
+          onTap: () => Navigator.pushNamed(context, CartScreen.routeName),
           child: Stack(
             clipBehavior: Clip.none,
             children: [
@@ -406,7 +410,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     begin: Alignment.bottomLeft,
                     end: Alignment.topRight,
                     colors: [
-                      Colors.black.withOpacity(0.55),
+                      Colors.black.withValues(alpha: 0.55),
                       Colors.transparent,
                     ],
                   ),
@@ -426,7 +430,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(height: 14),
                     ElevatedButton(
-                      onPressed: () => Navigator.pushNamed(context, '/discover'),
+                      onPressed: () => Navigator.pushNamed(context, DiscoverScreen.routeName),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: _salmon,
                         shape: RoundedRectangleBorder(
@@ -435,9 +439,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 10),
                         elevation: 0,
                       ),
-                      child: const Text(
-                        'SHOP NOW',
-                        style: TextStyle(
+                      child: Text(
+                        Translator.t('shop_now'),
+                        style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 13,
@@ -496,7 +500,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
           GestureDetector(
-            onTap: () => Navigator.pushNamed(context, '/discover'),
+            onTap: () => Navigator.pushNamed(context, DiscoverScreen.routeName),
             child: Container(
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
@@ -504,7 +508,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.15),
+                    color: Colors.grey.withValues(alpha: 0.15),
                     blurRadius: 6,
                   ),
                 ],
@@ -525,10 +529,11 @@ class _HomeScreenState extends State<HomeScreen> {
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        itemCount: _categories.length,
+        itemCount: _categoriesDataList.length,
         itemBuilder: (context, index) {
+          final cat = _categoriesDataList[index];
           return GestureDetector(
-            onTap: () => Navigator.pushNamed(context, '/discover'),
+            onTap: () => Navigator.pushNamed(context, DiscoverScreen.routeName),
             child: Padding(
               padding: const EdgeInsets.only(right: 24),
               child: Column(
@@ -538,16 +543,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: 68,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(color: _salmon.withOpacity(0.4), width: 2),
+                      border: Border.all(color: _salmon.withValues(alpha: 0.4), width: 2),
                       image: DecorationImage(
-                        image: NetworkImage(_categories[index]['image']!),
+                        image: NetworkImage(cat['image']!),
                         fit: BoxFit.cover,
                       ),
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    _categories[index]['name']!,
+                    Translator.t(cat['id']!),
                     style: const TextStyle(fontSize: 12, color: Colors.black87),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -568,7 +573,7 @@ class _HomeScreenState extends State<HomeScreen> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const SizedBox(
             height: 170,
-            child: Center(child: CircularProgressIndicator(color: _salmon)),
+            child: KoutureLoadingState(),
           );
         }
         
@@ -602,7 +607,7 @@ class _HomeScreenState extends State<HomeScreen> {
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -694,41 +699,57 @@ class _HomeScreenState extends State<HomeScreen> {
   // PRODUCT GRID
   // 
   Widget _buildProductGrid() {
-    return FutureBuilder<List<dynamic>>(
-      future: _productsFuture,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: Padding(
-            padding: EdgeInsets.all(20.0),
-            child: CircularProgressIndicator(color: Color(0xFFFF8C8C)),
-          ));
-        }
-        if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        }
-        if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text('No products available'));
-        }
+    return AnimatedBuilder(
+      animation: MockFirebase(),
+      builder: (context, _) {
+        return FutureBuilder<List<dynamic>>(
+          // Re-fetch when user auth state changes so recommendations update
+          future: MockFirebase().getRecommendedProducts(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 80),
+                child: KoutureLoadingState(message: Translator.t('loading_products')),
+              );
+            }
+            if (snapshot.hasError) {
+              return KoutureErrorState(
+                message: Translator.t('error_fetching_products'),
+                onRetry: () {
+                  setState(() {
+                    _productsFuture = MockFirebase().getRecommendedProducts();
+                  });
+                },
+              );
+            }
 
-        final products = snapshot.data!;
+            final products = snapshot.data ?? [];
+            if (products.isEmpty) {
+              return KoutureEmptyState(
+                title: Translator.t('no_products'),
+                message: Translator.t('no_recommended_products'),
+              );
+            }
 
-        return GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: products.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisSpacing: 18,
-            crossAxisSpacing: 14,
-            childAspectRatio: 0.68,
-          ),
-          itemBuilder: (context, index) {
-            final p = products[index] as Map<String, dynamic>;
-            return ProductCard(
-              product: p,
-              onFavoriteTap: () {},
-              onAddToCartTap: () {},
-              heroPrefix: 'home',
+            return GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: products.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 18,
+                crossAxisSpacing: 14,
+                childAspectRatio: 0.68,
+              ),
+              itemBuilder: (context, index) {
+                final p = products[index] as Map<String, dynamic>;
+                return ProductCard(
+                  product: p,
+                  onFavoriteTap: () {},
+                  onAddToCartTap: () {},
+                  heroPrefix: 'home',
+                );
+              },
             );
           },
         );

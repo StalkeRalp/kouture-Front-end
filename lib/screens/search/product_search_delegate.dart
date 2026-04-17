@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../backend/mock_firebase.dart';
+import '../../backend/translator.dart';
 
 import '../../widgets/product_card.dart';
 import 'filter_screen.dart';
@@ -11,7 +12,7 @@ class ProductSearchDelegate extends SearchDelegate<String> {
   Map<String, dynamic>? _activeFilters;
 
   @override
-  String get searchFieldLabel => 'What are you looking for...';
+  String get searchFieldLabel => Translator.t('search_hint');
 
   @override
   ThemeData appBarTheme(BuildContext context) {
@@ -112,7 +113,7 @@ class ProductSearchDelegate extends SearchDelegate<String> {
     }).toList();
 
     if (results.isEmpty) {
-      return const Center(child: Text('Aucun résultat trouvé.'));
+      return Center(child: Text(Translator.t('no_results')));
     }
 
     return Container(
@@ -176,10 +177,10 @@ class ProductSearchDelegate extends SearchDelegate<String> {
         if (recents.isEmpty) {
           return Container(
             color: const Color(0xFFF8F8F8),
-            child: const Center(
+            child: Center(
               child: Text(
-                'Commencez à chercher...',
-                style: TextStyle(color: Colors.grey),
+                Translator.t('start_searching'),
+                style: const TextStyle(color: Colors.grey),
               ),
             ),
           );
@@ -194,10 +195,10 @@ class ProductSearchDelegate extends SearchDelegate<String> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Recent Searches', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  Text(Translator.t('recent_searches'), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                   TextButton(
                     onPressed: () => MockFirebase().clearRecentSearches(),
-                    child: const Text('Clear all', style: TextStyle(color: _salmon)),
+                    child: Text(Translator.t('clear_all'), style: const TextStyle(color: _salmon)),
                   ),
                 ],
               ),

@@ -9,6 +9,10 @@ import 'package:kouture/screens/settings/privacy_screen.dart';
 import 'package:kouture/screens/settings/country_screen.dart';
 import 'package:kouture/screens/settings/currency_screen.dart';
 import 'package:kouture/screens/settings/measurements_screen.dart';
+import 'package:kouture/screens/address/address_list_screen.dart';
+import 'package:kouture/screens/settings/help_screen.dart';
+import '../../backend/mock_firebase.dart';
+import '../../backend/translator.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -31,9 +35,9 @@ class SettingsScreen extends StatelessWidget {
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black, size: 18),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
-          'Paramètres',
-          style: TextStyle(
+        title: Text(
+          Translator.t('settings'),
+          style: const TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold,
             fontSize: 16,
@@ -43,102 +47,112 @@ class SettingsScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_none_outlined, color: Colors.black),
-            onPressed: () => Navigator.pushNamed(context, '/notification-settings'),
+            onPressed: () => Navigator.pushNamed(context, NotificationSettingsScreen.routeName),
           ),
         ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
-          child: Divider(height: 1, color: Colors.grey.withOpacity(0.1)),
+          child: Divider(height: 1, color: Colors.grey.withValues(alpha: 0.1)),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildSectionHeader('Personal'),
-            _buildListItem(
-              'My Profile',
-              onTap: () => Navigator.pushNamed(context, ProfileScreen.routeName),
-            ),
-            _buildDivider(),
-            _buildListItem(
-              'My Measurements',
-              onTap: () => Navigator.pushNamed(context, MeasurementsScreen.routeName),
-            ),
-            _buildDivider(),
-            _buildListItem(
-              'Shipping Addresses',
-              onTap: () => Navigator.pushNamed(context, '/addresses'),
-            ),
-            _buildDivider(),
-            _buildListItem(
-              'Favoris',
-              onTap: () => Navigator.pushNamed(context, FavoritesScreen.routeName),
-            ),
-            _buildDivider(),
-            _buildListItem(
-              'Notification Settings',
-              onTap: () => Navigator.pushNamed(context, NotificationSettingsScreen.routeName),
-            ),
-            
-            _buildSectionHeader('Shop'),
-            _buildListItem('Country', value: 'Cameroun', onTap: () => Navigator.pushNamed(context, CountryScreen.routeName)),
-            _buildDivider(),
-            _buildListItem('Currency', value: 'XAF 🇨🇲', onTap: () => Navigator.pushNamed(context, CurrencyScreen.routeName)),
-            _buildDivider(),
-            _buildListItem(
-              'Terms and Conditions',
-              onTap: () => Navigator.pushNamed(context, PrivacyScreen.routeName),
-            ),
-            
-             _buildSectionHeader('Account'),
-            _buildListItem(
-              'Language',
-              value: 'English',
-              onTap: () => Navigator.pushNamed(context, LanguageScreen.routeName),
-            ),
-            _buildDivider(),
-            _buildListItem(
-              'Aide & Support',
-              onTap: () => Navigator.pushNamed(context, '/help'),
-            ),
-            _buildDivider(),
-            _buildListItem(
-              'About Kouture',
-              onTap: () => Navigator.pushNamed(context, AboutScreen.routeName),
-            ),
-            _buildDivider(),
-            
-            const SizedBox(height: 30),
-            
-            // Footer
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Kouture',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
+      body: AnimatedBuilder(
+        animation: MockFirebase(),
+        builder: (context, _) {
+          final user = MockFirebase().currentUser;
+          final country = user?['preferences']?['country'] ?? 'Cameroun';
+          final language = user?['preferences']?['language'] ?? 'English';
+          final currency = user?['preferences']?['currency'] ?? 'XAF 🇨🇲';
+
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildSectionHeader(Translator.t('personal')),
+                _buildListItem(
+                  Translator.t('my_profile'),
+                  onTap: () => Navigator.pushNamed(context, ProfileScreen.routeName),
+                ),
+                _buildDivider(),
+                _buildListItem(
+                  Translator.t('my_measurements'),
+                  onTap: () => Navigator.pushNamed(context, MeasurementsScreen.routeName),
+                ),
+                _buildDivider(),
+                _buildListItem(
+                  Translator.t('shipping_addresses'),
+                  onTap: () => Navigator.pushNamed(context, AddressListScreen.routeName),
+                ),
+                _buildDivider(),
+                _buildListItem(
+                  Translator.t('favorites'),
+                  onTap: () => Navigator.pushNamed(context, FavoritesScreen.routeName),
+                ),
+                _buildDivider(),
+                _buildListItem(
+                  Translator.t('notification_settings'),
+                  onTap: () => Navigator.pushNamed(context, NotificationSettingsScreen.routeName),
+                ),
+                
+                _buildSectionHeader(Translator.t('shop')),
+                _buildListItem(Translator.t('country'), value: country, onTap: () => Navigator.pushNamed(context, CountryScreen.routeName)),
+                _buildDivider(),
+                _buildListItem(Translator.t('currency'), value: currency, onTap: () => Navigator.pushNamed(context, CurrencyScreen.routeName)),
+                _buildDivider(),
+                _buildListItem(
+                  Translator.t('terms_conditions'),
+                  onTap: () => Navigator.pushNamed(context, PrivacyScreen.routeName),
+                ),
+                
+                 _buildSectionHeader(Translator.t('account')),
+                _buildListItem(
+                  Translator.t('language'),
+                  value: language,
+                  onTap: () => Navigator.pushNamed(context, LanguageScreen.routeName),
+                ),
+                _buildDivider(),
+                _buildListItem(
+                  Translator.t('help_support'),
+                  onTap: () => Navigator.pushNamed(context, HelpScreen.routeName),
+                ),
+                _buildDivider(),
+                _buildListItem(
+                  Translator.t('about_kouture'),
+                  onTap: () => Navigator.pushNamed(context, AboutScreen.routeName),
+                ),
+                _buildDivider(),
+                
+                const SizedBox(height: 30),
+                
+                // Footer
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Kouture',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '${Translator.t('version')} 1.0 Avril, 2026',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Version 1.0 Avril, 2026',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                ],
-              ),
+                ),
+                const SizedBox(height: 40),
+              ],
             ),
-            const SizedBox(height: 40),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

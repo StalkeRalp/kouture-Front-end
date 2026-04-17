@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import '../../backend/translator.dart';
+import '../../backend/mock_firebase.dart';
 import '../../widgets/product_card.dart';
 import '../settings/settings_screen.dart';
-import '../../backend/mock_firebase.dart';
-import '../search/product_search_delegate.dart';
+import '../profile/profile_screen.dart';
+import '../notifications/notifications_screen.dart';
+import '../search/search_screen.dart';
+import '../search/search_results_screen.dart';
+import '../cart/cart_summary_screen.dart';
 
 
 class DiscoverScreen extends StatelessWidget {
@@ -12,92 +17,92 @@ class DiscoverScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 10),
-                _buildTopRow(context),
-                const SizedBox(height: 10),
-                const Text(
-                  'Discover',
-                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+    return AnimatedBuilder(
+      animation: MockFirebase(),
+      builder: (context, _) {
+        return Scaffold(
+          body: SafeArea(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 10),
+                    _buildTopRow(context),
+                    const SizedBox(height: 10),
+                    Text(
+                      Translator.t('discover'),
+                      style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 20),
+                    _buildSearchBar(context),
+                    const SizedBox(height: 25),
+                    Text(
+                      Translator.t('categories'),
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    ),
+                    const SizedBox(height: 15),
+                    _buildCategories(),
+                    const SizedBox(height: 25),
+                    _buildProductGrid(),
+                  ],
                 ),
-                const SizedBox(height: 20),
-                _buildSearchBar(context),
-                const SizedBox(height: 25),
-                const Text(
-                  'Category',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                ),
-                const SizedBox(height: 15),
-                _buildCategories(),
-                const SizedBox(height: 25),
-                _buildProductGrid(),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
   Widget _buildTopRow(BuildContext context) {
-    return AnimatedBuilder(
-      animation: MockFirebase(),
-      builder: (context, _) {
-        final user = MockFirebase().currentUser;
-        final avatarUrl = user?['avatar'] ?? 'https://i.pravatar.cc/150?u=falcon';
-        final name = user?['name'] ?? 'User';
+    final user = MockFirebase().currentUser;
+    final avatarUrl = user?['avatar'] ?? 'https://i.pravatar.cc/150?u=falcon';
+    final name = user?['name'] ?? 'User';
 
-        return Row(
-          children: [
-            GestureDetector(
-              onTap: () => Navigator.pushNamed(context, '/profile'),
-              child: CircleAvatar(
-                radius: 20,
-                backgroundImage: NetworkImage(avatarUrl),
+    return Row(
+      children: [
+        GestureDetector(
+          onTap: () => Navigator.pushNamed(context, ProfileScreen.routeName),
+          child: CircleAvatar(
+            radius: 20,
+            backgroundImage: NetworkImage(avatarUrl),
+          ),
+        ),
+        const SizedBox(width: 10),
+        GestureDetector(
+          onTap: () => Navigator.pushNamed(context, ProfileScreen.routeName),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                Translator.t('welcome_back') + '!',
+                style: TextStyle(color: Colors.grey[600], fontSize: 12),
               ),
-            ),
-            const SizedBox(width: 10),
-            GestureDetector(
-              onTap: () => Navigator.pushNamed(context, '/profile'),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Welcome Back!',
-                    style: TextStyle(color: Colors.grey[600], fontSize: 12),
-                  ),
-                  Text(
-                    name,
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-                  ),
-                ],
+              Text(
+                name,
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
               ),
-            ),
-            const Spacer(),
-            AnimatedBuilder(
-              animation: MockFirebase(),
-              builder: (context, _) {
-                final count = MockFirebase().unreadNotificationsCount;
-                return _buildHeaderIcon(
-                  Icons.notifications_none_outlined, 
-                  hasBadge: count > 0,
-                  badgeCount: count > 0 ? count : null,
-                  onTap: () => Navigator.pushNamed(context, '/notifications'),
-                );
-              }
-            ),
-            const SizedBox(width: 8),
-            _buildHeaderIcon(Icons.settings_outlined, onTap: () => Navigator.pushNamed(context, SettingsScreen.routeName)),
-          ],
-        );
-      },
+            ],
+          ),
+        ),
+        const Spacer(),
+        AnimatedBuilder(
+          animation: MockFirebase(),
+          builder: (context, _) {
+            final count = MockFirebase().unreadNotificationsCount;
+            return _buildHeaderIcon(
+              Icons.notifications_none_outlined, 
+              hasBadge: count > 0,
+              badgeCount: count > 0 ? count : null,
+              onTap: () => Navigator.pushNamed(context, NotificationsScreen.routeName),
+            );
+          }
+        ),
+        const SizedBox(width: 8),
+        _buildHeaderIcon(Icons.settings_outlined, onTap: () => Navigator.pushNamed(context, SettingsScreen.routeName)),
+      ],
     );
   }
 
@@ -146,7 +151,7 @@ class DiscoverScreen extends StatelessWidget {
       children: [
         Expanded(
           child: GestureDetector(
-            onTap: () => Navigator.pushNamed(context, '/search'),
+            onTap: () => Navigator.pushNamed(context, SearchScreen.routeName),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               height: 50,
@@ -159,7 +164,7 @@ class DiscoverScreen extends StatelessWidget {
                   const Icon(Icons.search, color: Color(0xFF0D0D26), size: 22),
                   const SizedBox(width: 12),
                   Text(
-                    'Rechercher sur Kouture...',
+                    Translator.t('search_hint'),
                     style: TextStyle(color: Colors.grey[500], fontSize: 14),
                   ),
                   const Spacer(),
@@ -175,7 +180,7 @@ class DiscoverScreen extends StatelessWidget {
         ),
         const SizedBox(width: 15),
         GestureDetector(
-          onTap: () => Navigator.pushNamed(context, '/cart'),
+          onTap: () => Navigator.pushNamed(context, CartSummaryScreen.routeName),
           child: Stack(
             clipBehavior: Clip.none,
             children: [
@@ -218,10 +223,10 @@ class DiscoverScreen extends StatelessWidget {
 
   Widget _buildCategories() {
     final categories = [
-      {'name': 'Men', 'image': 'https://images.unsplash.com/photo-1512484776495-a09d92e87c3b?w=200'},
-      {'name': 'Women', 'image': 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=200'},
-      {'name': 'Kids', 'image': 'https://images.unsplash.com/photo-1471286174890-9c112ffca5b4?w=200'},
-      {'name': 'Accessories', 'image': 'https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?w=200'},
+      {'id': 'men', 'image': 'https://images.unsplash.com/photo-1512484776495-a09d92e87c3b?w=200'},
+      {'id': 'women', 'image': 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=200'},
+      {'id': 'kids', 'image': 'https://images.unsplash.com/photo-1471286174890-9c112ffca5b4?w=200'},
+      {'id': 'accessories', 'image': 'https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?w=200'},
     ];
 
 
@@ -233,7 +238,7 @@ class DiscoverScreen extends StatelessWidget {
         itemBuilder: (context, index) {
           final isEven = index % 2 == 0;
           return GestureDetector(
-            onTap: () => Navigator.pushNamed(context, '/search-results', arguments: categories[index]['name']),
+            onTap: () => Navigator.pushNamed(context, SearchResultsScreen.routeName, arguments: categories[index]['id']),
             child: Padding(
               padding: const EdgeInsets.only(right: 20.0),
               child: Column(
@@ -252,7 +257,7 @@ class DiscoverScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    categories[index]['name']!,
+                    Translator.t(categories[index]['id']!),
                     style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey[800]),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../backend/mock_firebase.dart';
+import '../../backend/translator.dart';
 import './payment_success_screen.dart';
 import './payment_failure_screen.dart';
 import 'dart:math';
@@ -36,7 +37,7 @@ class _PaymentProcessingScreenState extends State<PaymentProcessingScreen> {
         
         // Simple logic: clear cart on success
         MockFirebase().cartItems.clear();
-        MockFirebase().notifyListeners();
+        MockFirebase().refresh();
         Navigator.pushReplacementNamed(context, PaymentSuccessScreen.routeName);
       } else {
         Navigator.pushReplacementNamed(context, PaymentFailureScreen.routeName);
@@ -46,29 +47,34 @@ class _PaymentProcessingScreenState extends State<PaymentProcessingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFF8C8C)),
-              strokeWidth: 6,
+    return AnimatedBuilder(
+      animation: MockFirebase(),
+      builder: (context, _) {
+        return Scaffold(
+          backgroundColor: Colors.white,
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFF8C8C)),
+                  strokeWidth: 6,
+                ),
+                const SizedBox(height: 40),
+                Text(
+                  Translator.t('secure_processing'),
+                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF0D0D26)),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  Translator.t('do_not_close'),
+                  style: TextStyle(color: Colors.grey[600], fontSize: 14),
+                ),
+              ],
             ),
-            const SizedBox(height: 40),
-            const Text(
-              'Traitement sécurisé...',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF0D0D26)),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              'Veuillez ne pas fermer l\'application.',
-              style: TextStyle(color: Colors.grey[600], fontSize: 14),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

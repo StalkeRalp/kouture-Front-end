@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../backend/mock_firebase.dart';
+import '../../backend/translator.dart';
 import '../chat/chat_detail_screen.dart';
 import './vendor_products_screen.dart';
 
@@ -55,7 +56,7 @@ class VendorProfileScreen extends StatelessWidget {
                       const SizedBox(height: 25),
                       _buildStats(vendor),
                       const SizedBox(height: 30),
-                      const Text('À propos', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                      Text(Translator.t('about'), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                       const SizedBox(height: 12),
                       Text(
                         vendor['description'] ?? '',
@@ -134,9 +135,9 @@ class VendorProfileScreen extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildStatItem(vendor['rating'].toString(), 'Note', Icons.star),
-          _buildStatItem(vendor['totalReviews'].toString(), 'Avis', Icons.comment),
-          _buildStatItem(vendor['totalSales'].toString(), 'Ventes', Icons.shopping_bag),
+          _buildStatItem(vendor['rating'].toString(), Translator.t('rating_label'), Icons.star),
+          _buildStatItem(vendor['totalReviews'].toString(), Translator.t('reviews'), Icons.comment),
+          _buildStatItem(vendor['totalSales'].toString(), Translator.t('sales'), Icons.shopping_bag),
         ],
       ),
     );
@@ -170,7 +171,7 @@ class VendorProfileScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 18),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
             ),
-            child: const Text('VOIR LES PRODUITS', style: TextStyle(fontWeight: FontWeight.bold)),
+            child: Text(Translator.t('view_products'), style: const TextStyle(fontWeight: FontWeight.bold)),
           ),
         ),
         const SizedBox(width: 15),

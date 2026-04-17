@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../backend/mock_firebase.dart';
+import '../../backend/translator.dart';
 
 class NotificationSettingsScreen extends StatefulWidget {
   const NotificationSettingsScreen({super.key});
@@ -18,7 +19,7 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Settings', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        title: Text(Translator.t('settings'), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
@@ -34,52 +35,52 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
           return ListView(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
             children: [
-              _buildSectionTitle('General Notifications'),
+              _buildSectionTitle(Translator.t('general_notifications')),
               _buildSettingTile(
-                title: 'Push Notifications',
-                subtitle: 'Enable or disable push alerts',
+                title: Translator.t('push_notifications'),
+                subtitle: Translator.t('push_notifications_desc'),
                 value: prefs['push_notifications'] ?? true,
                 onChanged: (val) => _updatePref('push_notifications', val),
               ),
               _buildSettingTile(
-                title: 'Vibrate',
-                subtitle: 'Vibrate on notification arrival',
+                title: Translator.t('vibrate'),
+                subtitle: Translator.t('vibrate_desc'),
                 value: prefs['vibrate'] ?? true,
                 onChanged: (val) => _updatePref('vibrate', val),
               ),
               _buildSettingTile(
-                title: 'Sound',
-                subtitle: 'Play sound on discovery',
+                title: Translator.t('sound'),
+                subtitle: Translator.t('sound_desc'),
                 value: prefs['sound'] ?? true,
                 onChanged: (val) => _updatePref('sound', val),
               ),
               
               const SizedBox(height: 30),
-              _buildSectionTitle('Marketplace Updates'),
+              _buildSectionTitle(Translator.t('marketplace_updates')),
               _buildSettingTile(
-                title: 'New Collections',
-                subtitle: 'Notify when new products arrive',
+                title: Translator.t('new_collections'),
+                subtitle: Translator.t('new_collections_desc'),
                 value: prefs['new_collections'] ?? true,
                 onChanged: (val) => _updatePref('new_collections', val),
               ),
               _buildSettingTile(
-                title: 'Price Alerts',
-                subtitle: 'Notify about price drops',
+                title: Translator.t('price_alerts'),
+                subtitle: Translator.t('price_alerts_desc'),
                 value: prefs['price_alerts'] ?? false,
                 onChanged: (val) => _updatePref('price_alerts', val),
               ),
               _buildSettingTile(
-                title: 'Promotions',
-                subtitle: 'Daily coupons and offers',
+                title: Translator.t('promotions'),
+                subtitle: Translator.t('promotions_desc'),
                 value: prefs['promotions'] ?? true,
                 onChanged: (val) => _updatePref('promotions', val),
               ),
 
               const SizedBox(height: 30),
-              _buildSectionTitle('Order Activity'),
+              _buildSectionTitle(Translator.t('order_activity')),
               _buildSettingTile(
-                title: 'Order Status',
-                subtitle: 'Real-time tracking notifications',
+                title: Translator.t('order_status'),
+                subtitle: Translator.t('order_status_desc'),
                 value: prefs['order_status_updates'] ?? true,
                 onChanged: (val) => _updatePref('order_status_updates', val),
               ),
@@ -98,14 +99,14 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
                     if (mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(sent ? 'Notification sent!' : 'Notification blocked by settings.'),
+                          content: Text(sent ? Translator.t('notification_sent') : Translator.t('notification_blocked')),
                           backgroundColor: sent ? Colors.green : Colors.orange,
                         ),
                       );
                     }
                   },
                   icon: const Icon(Icons.notifications_active_outlined),
-                  label: const Text('SIMULATE PUSH', style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.1)),
+                  label: Text(Translator.t('simulate_push'), style: const TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.1)),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: _salmon,
                     side: const BorderSide(color: _salmon),
@@ -114,10 +115,10 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
                 ),
               ),
               const SizedBox(height: 20),
-              const Text(
-                'Use this button to verify if the notifications appear based on your current switch settings.',
+              Text(
+                Translator.t('verify_notifications'),
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey, fontSize: 11),
+                style: const TextStyle(color: Colors.grey, fontSize: 11),
               ),
             ],
           );
@@ -159,9 +160,9 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: const Color(0xFFFF8C8C).withOpacity(0.04),
+        color: const Color(0xFFFF8C8C).withValues(alpha: 0.04),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.withOpacity(0.05)),
+        border: Border.all(color: Colors.grey.withValues(alpha: 0.05)),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

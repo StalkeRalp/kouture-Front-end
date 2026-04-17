@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../backend/translator.dart';
 import '../../backend/mock_firebase.dart';
 import 'add_review_screen.dart';
 
@@ -13,31 +14,24 @@ class ReviewsScreen extends StatefulWidget {
 }
 
 class _ReviewsScreenState extends State<ReviewsScreen> {
-  String _selectedFilter = 'All';
-  final List<String> _filters = ['All', '5 stars', '4 stars', '3 stars', '2 stars', '1 star'];
+  String _selectedFilterKey = 'all';
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text('Reviews', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, size: 20),
-          onPressed: () => Navigator.pop(context),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.more_vert),
-            onPressed: () {},
+    return AnimatedBuilder(
+      animation: MockFirebase(),
+      builder: (context, _) {
+        return Scaffold(
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            title: Text(Translator.t('reviews'), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+            centerTitle: true,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back_ios_new, size: 20),
+              onPressed: () => Navigator.pop(context),
+            ),
           ),
-        ],
-      ),
-      body: AnimatedBuilder(
-        animation: MockFirebase(),
-        builder: (context, _) {
-          return FutureBuilder<List<dynamic>>(
+          body: FutureBuilder<List<dynamic>>(
             future: MockFirebase().getReviewsByProductId(widget.product['id'].toString()),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData) {
@@ -65,16 +59,16 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
                 ],
               );
             },
-          );
-        },
-      ),
-      bottomNavigationBar: _buildBottomBar(),
+          ),
+          bottomNavigationBar: _buildBottomBar(),
+        );
+      },
     );
   }
 
   List<dynamic> _filterReviews(List<dynamic> reviews) {
-    if (_selectedFilter == 'All') return reviews;
-    int target = int.parse(_selectedFilter.split(' ')[0]);
+    if (_selectedFilterKey == 'all') return reviews;
+    int target = int.parse(_selectedFilterKey);
     return reviews.where((r) => (r['rating'] as num).toInt() == target).toList();
   }
 
@@ -86,7 +80,7 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
       padding: const EdgeInsets.all(20),
       margin: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFFFF8C8C).withOpacity(0.05),
+        color: const Color(0xFFFF8C8C).withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(24),
       ),
       child: Row(
@@ -109,7 +103,7 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  '$totalReviews reviews',
+                  '$totalReviews ${Translator.t('reviews').toLowerCase()}',
                   style: TextStyle(color: Colors.grey[600], fontSize: 13),
                 ),
               ],
@@ -151,18 +145,27 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
   }
 
   Widget _buildFilters() {
+    final filters = [
+      {'key': 'all', 'label': Translator.t('all')},
+      {'key': '5', 'label': '5 ${Translator.t('stars')}'},
+      {'key': '4', 'label': '4 ${Translator.t('stars')}'},
+      {'key': '3', 'label': '3 ${Translator.t('stars')}'},
+      {'key': '2', 'label': '2 ${Translator.t('stars')}'},
+      {'key': '1', 'label': '1 ${Translator.t('star')}'},
+    ];
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.only(left: 20, bottom: 20),
       child: Row(
-        children: _filters.map((filter) {
-          bool isSelected = _selectedFilter == filter;
+        children: filters.map((f) {
+          bool isSelected = _selectedFilterKey == f['key'];
           return Padding(
             padding: const EdgeInsets.only(right: 12),
             child: ChoiceChip(
-              label: Text(filter),
+              label: Text(f['label']!),
               selected: isSelected,
-              onSelected: (val) => setState(() => _selectedFilter = filter),
+              onSelected: (val) => setState(() => _selectedFilterKey = f['key']!),
               selectedColor: const Color(0xFFFF8C8C),
               labelStyle: TextStyle(
                 color: isSelected ? Colors.white : Colors.black87,
@@ -202,7 +205,7 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
                       style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                     ),
                     Text(
-                      review['date'] ?? 'Just now',
+                      review['date'] ?? Translator.t('just_now'),
                       style: TextStyle(color: Colors.grey[500], fontSize: 12),
                     ),
                   ],
@@ -228,17 +231,17 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
               const Icon(Icons.thumb_up_alt_outlined, size: 16, color: Colors.grey),
               const SizedBox(width: 6),
               Text(
-                '${review['likes']} helpful',
+                '${review['likes']} ${Translator.t('helpful')}',
                 style: const TextStyle(color: Colors.grey, fontSize: 12),
               ),
               const Spacer(),
               TextButton(
                 onPressed: () {},
-                child: const Text('Helpful?', style: TextStyle(color: Color(0xFFFF8C8C), fontWeight: FontWeight.bold, fontSize: 12)),
+                child: Text(Translator.t('is_helpful_q'), style: const TextStyle(color: Color(0xFFFF8C8C), fontWeight: FontWeight.bold, fontSize: 12)),
               ),
             ],
           ),
-          Divider(color: Colors.grey.withOpacity(0.1), height: 30),
+          Divider(color: Colors.grey.withValues(alpha: 0.1), height: 30),
         ],
       ),
     );
@@ -252,7 +255,7 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
           Icon(Icons.rate_review_outlined, size: 64, color: Colors.grey[300]),
           const SizedBox(height: 16),
           Text(
-            'No reviews for this filter yet',
+            Translator.t('no_reviews_filter'),
             style: TextStyle(color: Colors.grey[400], fontSize: 16),
           ),
         ],
@@ -267,7 +270,7 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
         decoration: BoxDecoration(
           color: Colors.white,
           boxShadow: [
-            BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, -5)),
+            BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, -5)),
           ],
         ),
         child: SizedBox(
@@ -280,9 +283,9 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
               elevation: 0,
             ),
-            child: const Text(
-              'WRITE A REVIEW',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, letterSpacing: 1.2),
+            child: Text(
+              Translator.t('write_review'),
+              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, letterSpacing: 1.2),
             ),
           ),
         ),

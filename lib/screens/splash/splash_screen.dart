@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
+import '../../backend/mock_firebase.dart';
+import '../main_navigation_screen.dart';
+import '../onboarding/onboarding_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
-  static const String routeName = '/splash';
+  static const String routeName = '/';
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -50,7 +53,13 @@ class _SplashScreenState extends State<SplashScreen>
     _mainController.forward();
 
     Future.delayed(const Duration(seconds: 3), () {
-      if (mounted) Navigator.pushReplacementNamed(context, '/onboarding');
+      if (mounted) {
+        if (MockFirebase().isAuthenticated) {
+          Navigator.pushReplacementNamed(context, MainNavigationScreen.routeName);
+        } else {
+          Navigator.pushReplacementNamed(context, OnboardingScreen.routeName);
+        }
+      }
     });
   }
 
@@ -144,7 +153,7 @@ class _SplashScreenState extends State<SplashScreen>
         Container(
           width: 48,
           height: 0.8,
-          color: _coral.withOpacity(0.4),
+          color: _coral.withValues(alpha: 0.4),
         ),
         const SizedBox(width: 8),
         Transform.rotate(
@@ -152,14 +161,14 @@ class _SplashScreenState extends State<SplashScreen>
           child: Container(
             width: 6,
             height: 6,
-            color: _coral.withOpacity(0.6),
+            color: _coral.withValues(alpha: 0.6),
           ),
         ),
         const SizedBox(width: 8),
         Container(
           width: 48,
           height: 0.8,
-          color: _coral.withOpacity(0.4),
+          color: _coral.withValues(alpha: 0.4),
         ),
       ],
     );
@@ -191,7 +200,7 @@ class _AnimatedDots extends StatelessWidget {
                 height: 5,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: const Color(0xFFFF8C8C).withOpacity(opacity),
+                  color: const Color(0xFFFF8C8C).withValues(alpha: opacity),
                 ),
               ),
             ),
@@ -214,7 +223,7 @@ class _FiligreePainter extends CustomPainter {
     final h = size.height;
 
     // 1. Grille de points subtils
-    final dotPaint = Paint()..color = navy.withOpacity(0.06);
+    final dotPaint = Paint()..color = navy.withValues(alpha: 0.06);
     for (double x = 10; x < w; x += 20) {
       for (double y = 10; y < h; y += 20) {
         canvas.drawCircle(Offset(x, y), 0.9, dotPaint);
@@ -223,7 +232,7 @@ class _FiligreePainter extends CustomPainter {
 
     // 2. Grille de losanges corail très légers
     final diamondPaint = Paint()
-      ..color = coral.withOpacity(0.10)
+      ..color = coral.withValues(alpha: 0.10)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.4;
     for (double x = 0; x < w; x += 40) {
@@ -245,7 +254,7 @@ class _FiligreePainter extends CustomPainter {
         radius: 0.45,
         colors: [
           const Color(0xFFFAFAF8),
-          const Color(0xFFFAFAF8).withOpacity(0.0),
+          const Color(0xFFFAFAF8).withValues(alpha: 0.0),
         ],
         stops: const [0.3, 1.0],
       ).createShader(Rect.fromLTWH(0, 0, w, h));
@@ -259,7 +268,7 @@ class _FiligreePainter extends CustomPainter {
 
     // 5. Lignes diagonales fines (style patron de couture)
     final linePaint = Paint()
-      ..color = navy.withOpacity(0.035)
+      ..color = navy.withValues(alpha: 0.035)
       ..strokeWidth = 0.5;
     for (double offset = -h; offset < w + h; offset += 80) {
       canvas.drawLine(Offset(offset, 0), Offset(offset + h, h), linePaint);
@@ -267,7 +276,7 @@ class _FiligreePainter extends CustomPainter {
 
     // 6. Grande rosace centrale fantôme
     final rosacePaint = Paint()
-      ..color = navy.withOpacity(0.04)
+      ..color = navy.withValues(alpha: 0.04)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.5;
     final cx = w / 2;
@@ -286,13 +295,13 @@ class _FiligreePainter extends CustomPainter {
 
     // 7. Lignes horizontales haut/bas
     final borderLinePaint = Paint()
-      ..color = coral.withOpacity(0.18)
+      ..color = coral.withValues(alpha: 0.18)
       ..strokeWidth = 0.5;
     canvas.drawLine(Offset(24, 52), Offset(w - 24, 52), borderLinePaint);
     canvas.drawLine(Offset(24, h - 52), Offset(w - 24, h - 52), borderLinePaint);
 
     // 8. Petits losanges latéraux
-    final accentPaint = Paint()..color = coral.withOpacity(0.18);
+    final accentPaint = Paint()..color = coral.withValues(alpha: 0.18);
     for (final offset in [Offset(10, h / 2 - 20), Offset(10, h / 2 + 20),
                            Offset(w - 10, h / 2 - 20), Offset(w - 10, h / 2 + 20)]) {
       final p = Path()
@@ -307,7 +316,7 @@ class _FiligreePainter extends CustomPainter {
 
   void _drawCorner(Canvas canvas, Offset origin, double sx, double sy, Color color) {
     final paint = Paint()
-      ..color = color.withOpacity(0.20)
+      ..color = color.withValues(alpha: 0.20)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.8;
 
@@ -328,7 +337,7 @@ class _FiligreePainter extends CustomPainter {
     canvas.drawPath(p2, paint);
 
     // Petit point décoratif
-    final dotPaint = Paint()..color = color.withOpacity(0.25);
+    final dotPaint = Paint()..color = color.withValues(alpha: 0.25);
     canvas.drawCircle(
       Offset(origin.dx + sx * 14, origin.dy + sy * 14),
       2.5, dotPaint,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../backend/mock_firebase.dart';
+import '../../backend/translator.dart';
 import 'package:intl/intl.dart';
 
 class NotificationsScreen extends StatelessWidget {
@@ -12,7 +13,7 @@ class NotificationsScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Notifications', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        title: Text(Translator.t('notifications'), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
@@ -21,11 +22,11 @@ class NotificationsScreen extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => MockFirebase().markAllAsRead(),
-            child: const Text('Mark all read', style: TextStyle(color: Color(0xFFFF8C8C), fontSize: 13)),
+            child: Text(Translator.t('mark_all_read'), style: const TextStyle(color: Color(0xFFFF8C8C), fontSize: 13)),
           ),
           TextButton(
             onPressed: () => MockFirebase().clearAllNotifications(),
-            child: const Text('Clear All', style: TextStyle(color: Colors.grey, fontSize: 13)),
+            child: Text(Translator.t('clear_all'), style: const TextStyle(color: Colors.grey, fontSize: 13)),
           ),
         ],
       ),
@@ -48,7 +49,7 @@ class NotificationsScreen extends StatelessWidget {
               return ListView.separated(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 itemCount: notifications.length,
-                separatorBuilder: (context, index) => Divider(color: Colors.grey.withOpacity(0.05), height: 1),
+                separatorBuilder: (context, index) => Divider(color: Colors.grey.withValues(alpha: 0.05), height: 1),
                 itemBuilder: (context, index) {
                   return _buildNotificationItem(context, notifications[index]);
                 },
@@ -92,14 +93,14 @@ class NotificationsScreen extends StatelessWidget {
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        color: isRead ? Colors.transparent : const Color(0xFFFF8C8C).withOpacity(0.03),
+        color: isRead ? Colors.transparent : const Color(0xFFFF8C8C).withValues(alpha: 0.03),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: iconColor.withOpacity(0.1),
+                color: iconColor.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(icon, color: iconColor, size: 24),
@@ -172,21 +173,24 @@ class NotificationsScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(32),
             decoration: BoxDecoration(
-              color: const Color(0xFFFF8C8C).withOpacity(0.05),
+              color: const Color(0xFFFF8C8C).withValues(alpha: 0.05),
               shape: BoxShape.circle,
             ),
-            child: Icon(Icons.notifications_off_outlined, size: 64, color: const Color(0xFFFF8C8C).withOpacity(0.3)),
+            child: Icon(Icons.notifications_off_outlined, size: 64, color: const Color(0xFFFF8C8C).withValues(alpha: 0.3)),
           ),
           const SizedBox(height: 24),
-          const Text(
-            'No notifications yet',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.black87),
+          Text(
+            Translator.t('no_notifications'),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.black87),
           ),
           const SizedBox(height: 8),
-          Text(
-            'We will notify you when something important arrives.',
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.grey[500], fontSize: 14),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 40),
+            child: Text(
+              Translator.t('notification_empty_desc'),
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.grey[500], fontSize: 14),
+            ),
           ),
         ],
       ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../backend/mock_firebase.dart';
+import '../../backend/translator.dart';
 
 class CountryScreen extends StatefulWidget {
   const CountryScreen({super.key});
@@ -15,8 +16,8 @@ class CountryScreen extends StatefulWidget {
 class _CountryScreenState extends State<CountryScreen> {
   final TextEditingController _searchController = TextEditingController();
   
-  List<String> _allCountries = [];
-  List<String> _filteredCountries = [];
+  List<Map<String, dynamic>> _allCountries = [];
+  List<Map<String, dynamic>> _filteredCountries = [];
   bool _isLoading = true;
   String? _errorMessage;
 
@@ -30,20 +31,24 @@ class _CountryScreenState extends State<CountryScreen> {
   Future<void> _fetchCountries() async {
     try {
       final response = await http.get(
-        Uri.parse('https://restcountries.com/v3.1/all'),
+        Uri.parse('https://restcountries.com/v3.1/all?fields=name,flags,region'),
       ).timeout(
         const Duration(seconds: 10),
-        onTimeout: () => throw Exception('Connexion trop lente'),
+        onTimeout: () => throw Exception(Translator.t('connection_too_slow')),
       );
 
       if (response.statusCode == 200) {
         final List<dynamic> countriesData = json.decode(response.body);
         
-        final List<String> africanCountries = countriesData
+        final List<Map<String, dynamic>> africanCountries = countriesData
             .where((country) => country['region'] == 'Africa')
-            .map((country) => country['name']['common'] as String)
-            .toList()
-          ..sort();
+            .map((country) => {
+              'name': country['name']['common'] as String,
+              'flag': country['flags']['png'] as String,
+            })
+            .toList();
+            
+        africanCountries.sort((a, b) => (a['name'] as String).compareTo(b['name'] as String));
         
         if (mounted) {
           setState(() {
@@ -58,7 +63,7 @@ class _CountryScreenState extends State<CountryScreen> {
     } catch (e) {
       if (mounted) {
         setState(() {
-          _errorMessage = 'Impossible de charger la liste des pays. Vérifiez votre connexion.';
+          _errorMessage = Translator.t('loading_error');
           _isLoading = false;
         });
       }
@@ -69,7 +74,7 @@ class _CountryScreenState extends State<CountryScreen> {
     final query = _searchController.text.toLowerCase();
     setState(() {
       _filteredCountries = _allCountries.where((country) {
-        return country.toLowerCase().contains(query);
+        return (country['name'] as String).toLowerCase().contains(query);
       }).toList();
     });
   }
@@ -87,7 +92,7 @@ class _CountryScreenState extends State<CountryScreen> {
       ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Pays mis à jour : $country', 
+          content: Text('${Translator.t('country_updated')} : $country', 
             style: const TextStyle(fontWeight: FontWeight.w600)),
           backgroundColor: const Color(0xFFFF8C8C),
           behavior: SnackBarBehavior.floating,
@@ -109,8 +114,8 @@ class _CountryScreenState extends State<CountryScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Sélectionner le pays',
-          style: TextStyle(color: Colors.black87, fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 1.2)),
+        title: Text(Translator.t('select_country'),
+          style: const TextStyle(color: Colors.black87, fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 1.2)),
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
@@ -120,17 +125,25 @@ class _CountryScreenState extends State<CountryScreen> {
         ),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
-          child: Divider(height: 1, color: Colors.grey.withOpacity(0.1)),
+          child: Divider(height: 1, color: Colors.grey.withValues(alpha: 0.1)),
         ),
       ),
       body: _isLoading
-          ? const Center(
+          ? Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFF8C8C))),
-                  SizedBox(height: 16),
-                  Text('Chargement...', style: TextStyle(color: Colors.black54)),
+                   SizedBox(
+                    width: 40,
+                    height: 40,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 3,
+                      valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFF8C8C)),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  Text(Translator.t('loading_african_countries'), 
+                    style: const TextStyle(color: Colors.grey, fontSize: 14, fontWeight: FontWeight.w500)),
                 ],
               ),
             )
@@ -141,20 +154,35 @@ class _CountryScreenState extends State<CountryScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.cloud_off, size: 64, color: Colors.grey[300]),
-                        const SizedBox(height: 16),
-                        Text(_errorMessage!, textAlign: TextAlign.center, style: const TextStyle(color: Colors.black54)),
-                        const SizedBox(height: 24),
-                        OutlinedButton(
-                          onPressed: () {
-                            setState(() { _isLoading = true; _errorMessage = null; });
-                            _fetchCountries();
-                          },
-                          style: OutlinedButton.styleFrom(
-                            side: const BorderSide(color: Color(0xFFFF8C8C)),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        Container(
+                          padding: const EdgeInsets.all(24),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[50],
+                            shape: BoxShape.circle,
                           ),
-                          child: const Text('Réessayer', style: TextStyle(color: Color(0xFFFF8C8C))),
+                          child: Icon(Icons.cloud_off, size: 48, color: Colors.grey[300]),
+                        ),
+                        const SizedBox(height: 24),
+                        Text(_errorMessage!, 
+                          textAlign: TextAlign.center, 
+                          style: const TextStyle(color: Colors.black54, fontSize: 14, height: 1.5)),
+                        const SizedBox(height: 32),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              setState(() { _isLoading = true; _errorMessage = null; });
+                              _fetchCountries();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFFFF8C8C),
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                              elevation: 0,
+                            ),
+                            child: const Text('Réessayer', style: TextStyle(fontWeight: FontWeight.bold)),
+                          ),
                         ),
                       ],
                     ),
@@ -175,61 +203,81 @@ class _CountryScreenState extends State<CountryScreen> {
                             margin: const EdgeInsets.all(16),
                             padding: const EdgeInsets.all(20),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFFFF5F5),
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: const Color(0xFFFF8C8C).withOpacity(0.3)),
+                              gradient: LinearGradient(
+                                colors: [
+                                  const Color(0xFFFF8C8C),
+                                  const Color(0xFFFF8C8C).withValues(alpha: 0.8),
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                              borderRadius: BorderRadius.circular(24),
                               boxShadow: [
                                 BoxShadow(
-                                  color: const Color(0xFFFF8C8C).withOpacity(0.1),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 4),
+                                  color: const Color(0xFFFF8C8C).withValues(alpha: 0.3),
+                                  blurRadius: 15,
+                                  offset: const Offset(0, 8),
                                 ),
                               ],
                             ),
                             child: Row(
                               children: [
                                 Container(
-                                  padding: const EdgeInsets.all(10),
-                                  decoration: const BoxDecoration(
-                                    color: Colors.white,
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withValues(alpha: 0.2),
                                     shape: BoxShape.circle,
                                   ),
-                                  child: const Icon(Icons.public, color: Color(0xFFFF8C8C), size: 24),
+                                  child: const Icon(Icons.public, color: Colors.white, size: 24),
                                 ),
                                 const SizedBox(width: 16),
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text('Pays Sélectionné', 
-                                        style: TextStyle(color: Colors.black.withOpacity(0.5), fontSize: 12, fontWeight: FontWeight.w600, letterSpacing: 0.5)),
+                                      Text(Translator.t('your_current_country'), 
+                                        style: const TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.w600, letterSpacing: 0.5)),
                                       const SizedBox(height: 4),
                                       Text(selectedCountry, 
-                                        style: const TextStyle(color: Colors.black87, fontSize: 18, fontWeight: FontWeight.bold)),
+                                        style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
                                     ],
                                   ),
                                 ),
-                                const Icon(Icons.check_circle, color: Color(0xFFFF8C8C), size: 28),
+                                const Icon(Icons.verified, color: Colors.white, size: 24),
                               ],
                             ),
                           ),
 
                         // --- SEARCH BAR ---
                         Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                           child: TextField(
                             controller: _searchController,
                             style: const TextStyle(fontSize: 14),
                             decoration: InputDecoration(
-                              hintText: 'Rechercher par nom...',
-                              prefixIcon: const Icon(Icons.search, size: 20),
+                              hintText: Translator.t('search_country_hint'),
+                              prefixIcon: const Icon(Icons.search, size: 20, color: Colors.grey),
                               suffixIcon: _searchController.text.isNotEmpty 
-                                ? IconButton(icon: const Icon(Icons.close, size: 18), onPressed: () => _searchController.clear())
+                                ? IconButton(
+                                    icon: const Icon(Icons.close, size: 18, color: Colors.grey), 
+                                    onPressed: () => _searchController.clear()
+                                  )
                                 : null,
                               filled: true,
-                              fillColor: Colors.grey.withOpacity(0.08),
+                              fillColor: Colors.grey[50],
                               contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
-                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16), 
+                                borderSide: BorderSide(color: Colors.grey.withValues(alpha: 0.1))
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16), 
+                                borderSide: BorderSide(color: Colors.grey.withValues(alpha: 0.1))
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16), 
+                                borderSide: const BorderSide(color: Color(0xFFFF8C8C), width: 1)
+                              ),
                             ),
                           ),
                         ),
@@ -241,39 +289,66 @@ class _CountryScreenState extends State<CountryScreen> {
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Icon(Icons.search_off, size: 48, color: Colors.grey[300]),
-                                      const SizedBox(height: 12),
-                                      Text('Aucun résultat pour "${_searchController.text}"', style: TextStyle(color: Colors.grey[400])),
+                                      Icon(Icons.search_off, size: 64, color: Colors.grey[200]),
+                                      const SizedBox(height: 16),
+                                      Text(Translator.t('no_country_found'), 
+                                        style: TextStyle(color: Colors.grey[400], fontWeight: FontWeight.w500)),
                                     ],
                                   ),
                                 )
                               : ListView.builder(
-                                  padding: const EdgeInsets.symmetric(vertical: 8),
+                                  padding: const EdgeInsets.symmetric(horizontal: 16),
                                   itemCount: _filteredCountries.length,
                                   itemBuilder: (context, index) {
-                                    final country = _filteredCountries[index];
-                                    final isSelected = selectedCountry == country;
+                                    final countryData = _filteredCountries[index];
+                                    final countryName = countryData['name'] as String;
+                                    final countryFlag = countryData['flag'] as String;
+                                    final isSelected = selectedCountry == countryName;
 
-                                    return InkWell(
-                                      onTap: () => _updateCountry(country),
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-                                        decoration: BoxDecoration(
-                                          border: Border(bottom: BorderSide(color: Colors.grey.withOpacity(0.05))),
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            Expanded(
-                                              child: Text(country, 
-                                                style: TextStyle(
-                                                  color: isSelected ? const Color(0xFFFF8C8C) : Colors.black87,
-                                                  fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                                                  fontSize: 15,
-                                                )),
+                                    return Padding(
+                                      padding: const EdgeInsets.only(bottom: 8),
+                                      child: Material(
+                                        color: isSelected ? const Color(0xFFFFF5F5) : Colors.transparent,
+                                        borderRadius: BorderRadius.circular(16),
+                                        child: InkWell(
+                                          onTap: () => _updateCountry(countryName),
+                                          borderRadius: BorderRadius.circular(16),
+                                          child: Container(
+                                            padding: const EdgeInsets.all(16),
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(16),
+                                              border: Border.all(
+                                                color: isSelected 
+                                                  ? const Color(0xFFFF8C8C).withValues(alpha: 0.3) 
+                                                  : Colors.grey.withValues(alpha: 0.05)
+                                              ),
                                             ),
-                                            if (isSelected) 
-                                              const Icon(Icons.check, color: Color(0xFFFF8C8C), size: 18),
-                                          ],
+                                            child: Row(
+                                              children: [
+                                                ClipRRect(
+                                                  borderRadius: BorderRadius.circular(4),
+                                                  child: Image.network(
+                                                    countryFlag,
+                                                    width: 32,
+                                                    height: 22,
+                                                    fit: BoxFit.cover,
+                                                    errorBuilder: (_, __, ___) => const Icon(Icons.flag, size: 24, color: Colors.grey),
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 16),
+                                                Expanded(
+                                                  child: Text(countryName, 
+                                                    style: TextStyle(
+                                                      color: isSelected ? const Color(0xFFFF8C8C) : Colors.black87,
+                                                      fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                                                      fontSize: 15,
+                                                    )),
+                                                ),
+                                                if (isSelected) 
+                                                  const Icon(Icons.check_circle, color: Color(0xFFFF8C8C), size: 20),
+                                              ],
+                                            ),
+                                          ),
                                         ),
                                       ),
                                     );

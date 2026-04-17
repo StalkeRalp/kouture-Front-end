@@ -1,44 +1,50 @@
 import 'package:flutter/material.dart';
-import '../../widgets/product_card.dart';
 import '../../backend/mock_firebase.dart';
+import '../../backend/translator.dart';
+import '../../widgets/product_card.dart';
 import 'favoritesTailor_screen.dart';
+import '../discover/discover_screen.dart';
 
 class FavoritesScreen extends StatelessWidget {
   const FavoritesScreen({super.key});
 
   static const String routeName = '/favorites';
   static const Color _salmon = Color(0xFFFF8C8C);
-  static const Color _darkNavy = Color(0xFF0D0D26);
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        backgroundColor: Colors.grey[50],
-        appBar: AppBar(
-          title: const Text('Mes Favoris', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-          backgroundColor: Colors.white,
-          elevation: 0,
-          centerTitle: true,
-          bottom: const TabBar(
-            indicatorColor: _salmon,
-            labelColor: _salmon,
-            unselectedLabelColor: Colors.grey,
-            labelStyle: TextStyle(fontWeight: FontWeight.bold),
-            tabs: [
-              Tab(text: 'Produits'),
-              Tab(text: 'Couturiers'),
-            ],
+    return AnimatedBuilder(
+      animation: MockFirebase(),
+      builder: (context, _) {
+        return DefaultTabController(
+          length: 2,
+          child: Scaffold(
+            backgroundColor: Colors.grey[50],
+            appBar: AppBar(
+              title: Text(Translator.t('favorites'), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+              backgroundColor: Colors.white,
+              elevation: 0,
+              centerTitle: true,
+              bottom: TabBar(
+                indicatorColor: _salmon,
+                labelColor: _salmon,
+                unselectedLabelColor: Colors.grey,
+                labelStyle: const TextStyle(fontWeight: FontWeight.bold),
+                tabs: [
+                  Tab(text: Translator.t('products')),
+                  Tab(text: Translator.t('tailors')),
+                ],
+              ),
+            ),
+            body: const TabBarView(
+              children: [
+                _ProductFavoritesTab(),
+                FavoritesTailorScreen(isTab: true),
+              ],
+            ),
           ),
-        ),
-        body: const TabBarView(
-          children: [
-            _ProductFavoritesTab(),
-            FavoritesTailorScreen(isTab: true),
-          ],
-        ),
-      ),
+        );
+      },
     );
   }
 }
@@ -63,20 +69,24 @@ class _ProductFavoritesTab extends StatelessWidget {
               children: [
                 Icon(Icons.favorite_outline, size: 80, color: Colors.grey[300]),
                 const SizedBox(height: 20),
-                const Text('Aucun produit favori.', 
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey)),
+                Text(
+                  Translator.t('no_favorite_products'), 
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey),
+                ),
                 const SizedBox(height: 10),
-                Text('Explorez nos produits et ajoutez vos favoris !', 
-                  style: TextStyle(color: Colors.grey[600])),
+                Text(
+                  Translator.t('explore_and_add_favorite'), 
+                  style: TextStyle(color: Colors.grey[600]),
+                ),
                 const SizedBox(height: 30),
                 ElevatedButton(
-                  onPressed: () => Navigator.pushNamed(context, '/discover'),
+                  onPressed: () => Navigator.pushNamed(context, DiscoverScreen.routeName),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF0D0D26),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                   ),
-                  child: const Text('EXPLORER', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                  child: Text(Translator.t('explore').toUpperCase(), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                 ),
               ],
             ),

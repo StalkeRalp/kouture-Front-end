@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../backend/translator.dart';
 import '../../backend/mock_firebase.dart';
 
 class TrackingScreen extends StatelessWidget {
@@ -11,43 +12,48 @@ class TrackingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final String? orderId = ModalRoute.of(context)?.settings.arguments as String?;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text('Suivi du Colis', style: TextStyle(fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.chevron_left, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
-      body: orderId == null
-        ? const Center(child: Text('Erreur: Commande introuvable'))
-        : FutureBuilder<Map<String, dynamic>?>(
-            future: MockFirebase().getOrderById(orderId),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator(color: _salmon));
-              }
-              final order = snapshot.data;
-              if (order == null) return const Center(child: Text('Commande non trouvée'));
-
-              return SingleChildScrollView(
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildOrderHeader(order),
-                    const SizedBox(height: 40),
-                    const Text('Progressions', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-                    const SizedBox(height: 30),
-                    _buildTimeline(order['status']),
-                  ],
-                ),
-              );
-            },
+    return AnimatedBuilder(
+      animation: MockFirebase(),
+      builder: (context, _) {
+        return Scaffold(
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            title: Text(Translator.t('track_order'), style: const TextStyle(fontWeight: FontWeight.bold)),
+            backgroundColor: Colors.white,
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(Icons.chevron_left, color: Colors.black),
+              onPressed: () => Navigator.pop(context),
+            ),
           ),
+          body: orderId == null
+            ? Center(child: Text(Translator.t('error_order_not_found')))
+            : FutureBuilder<Map<String, dynamic>?>(
+                future: MockFirebase().getOrderById(orderId),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator(color: _salmon));
+                  }
+                  final order = snapshot.data;
+                  if (order == null) return Center(child: Text(Translator.t('error_order_not_found')));
+
+                  return SingleChildScrollView(
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildOrderHeader(order),
+                        const SizedBox(height: 40),
+                        Text(Translator.t('progressions'), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                        const SizedBox(height: 30),
+                        _buildTimeline(order['status']),
+                      ],
+                    ),
+                  );
+                },
+              ),
+        );
+      },
     );
   }
 
@@ -66,7 +72,7 @@ class TrackingScreen extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Commande No.', style: TextStyle(color: Colors.grey, fontSize: 12)),
+                  Text(Translator.t('order_no'), style: const TextStyle(color: Colors.grey, fontSize: 12)),
                   Text(order['id'], style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                 ],
               ),
@@ -78,7 +84,7 @@ class TrackingScreen extends StatelessWidget {
             children: [
               const Icon(Icons.location_on, color: _salmon, size: 20),
               const SizedBox(width: 10),
-              Expanded(child: Text(order['shippingAddress'], style: const TextStyle(fontSize: 14))),
+              Expanded(child: Text(order['shippingAddress'] ?? '', style: const TextStyle(fontSize: 14))),
             ],
           ),
         ],
@@ -88,11 +94,11 @@ class TrackingScreen extends StatelessWidget {
 
   Widget _buildTimeline(String currentStatus) {
     final statuses = [
-      {'label': 'Commande placée', 'desc': 'Votre commande a été reçue', 'icon': Icons.shopping_bag_outlined},
-      {'label': 'Acceptée', 'desc': 'Le couturier a accepté votre commande', 'icon': Icons.check_circle_outline},
-      {'label': 'En confection', 'desc': 'Votre tenue est en train d\'être cousue', 'icon': Icons.cut_outlined},
-      {'label': 'Expédiée', 'desc': 'Le colis est en route vers vous', 'icon': Icons.local_shipping_outlined},
-      {'label': 'Livrée', 'desc': 'Vous avez reçu votre colis', 'icon': Icons.home_outlined},
+      {'label': Translator.t('status_placed'), 'desc': Translator.t('status_placed_desc'), 'icon': Icons.shopping_bag_outlined},
+      {'label': Translator.t('status_accepted'), 'desc': Translator.t('status_accepted_desc'), 'icon': Icons.check_circle_outline},
+      {'label': Translator.t('status_confection'), 'desc': Translator.t('status_confection_desc'), 'icon': Icons.cut_outlined},
+      {'label': Translator.t('status_shipped'), 'desc': Translator.t('status_shipped_desc'), 'icon': Icons.local_shipping_outlined},
+      {'label': Translator.t('status_delivered'), 'desc': Translator.t('status_delivered_desc'), 'icon': Icons.home_outlined},
     ];
 
     int currentIndex = _getStatusIndex(currentStatus);
@@ -144,13 +150,11 @@ class TrackingScreen extends StatelessWidget {
   }
 
   int _getStatusIndex(String status) {
-    switch (status) {
-      case 'En attente': return 0;
-      case 'Acceptée': return 1;
-      case 'En confection': return 2;
-      case 'Expédiée': return 3;
-      case 'Livrée': return 4;
-      default: return 0;
-    }
+    if (status == 'En attente') return 0;
+    if (status == 'Acceptée') return 1;
+    if (status == 'En confection') return 2;
+    if (status == 'Expédiée') return 3;
+    if (status == 'Livrée') return 4;
+    return 0;
   }
 }

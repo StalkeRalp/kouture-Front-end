@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../backend/mock_firebase.dart';
+import '../../backend/translator.dart';
 
 class PaymentMethodScreen extends StatelessWidget {
   const PaymentMethodScreen({super.key});
@@ -7,38 +9,43 @@ class PaymentMethodScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text('Modes de paiement', style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.chevron_left, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(24.0),
-        children: [
-          const Text('Saved Payment Methods Configuration', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87)),
-          const SizedBox(height: 20),
-          _buildPaymentCard('Orange Money', null, imagePath: 'disign/IConOM (1).ico'),
-          _buildPaymentCard('Mobile Money', null, imagePath: 'disign/IConMTN (2).ico'),
-          _buildPaymentCard('Credit Card', Icons.credit_card),
-          const SizedBox(height: 40),
-          ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF0D0D26),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-              padding: const EdgeInsets.symmetric(vertical: 16),
+    return AnimatedBuilder(
+      animation: MockFirebase(),
+      builder: (context, _) {
+        return Scaffold(
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            title: Text(Translator.t('payment_methods'), style: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold)),
+            backgroundColor: Colors.white,
+            elevation: 0,
+            centerTitle: true,
+            leading: IconButton(
+              icon: const Icon(Icons.chevron_left, color: Colors.black),
+              onPressed: () => Navigator.pop(context),
             ),
-            child: const Text('Ajouter un mode de paiement', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
           ),
-        ],
-      ),
+          body: ListView(
+            padding: const EdgeInsets.all(24.0),
+            children: [
+              Text(Translator.t('saved_payment_methods'), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87)),
+              const SizedBox(height: 20),
+              _buildPaymentCard('Orange Money', null, imagePath: 'disign/IConOM (1).ico'),
+              _buildPaymentCard('Mobile Money', null, imagePath: 'disign/IConMTN (2).ico'),
+              _buildPaymentCard(Translator.t('bank_card_title'), Icons.credit_card),
+              const SizedBox(height: 40),
+              ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF0D0D26),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: Text(Translator.t('add_payment_method'), style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 

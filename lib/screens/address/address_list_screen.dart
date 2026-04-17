@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../backend/translator.dart';
 import '../../backend/mock_firebase.dart';
 import 'add_address_screen.dart';
 
@@ -14,7 +15,7 @@ class AddressListScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Mes Adresses', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        title: Text(Translator.t('my_addresses'), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
@@ -68,14 +69,18 @@ class AddressListScreen extends StatelessWidget {
         children: [
           Icon(Icons.location_off_outlined, size: 80, color: Colors.grey[300]),
           const SizedBox(height: 20),
-          const Text(
-            'Aucune adresse enregistrée',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey),
+          Text(
+            Translator.t('no_addresses'),
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey),
           ),
           const SizedBox(height: 10),
-          Text(
-            'Ajoutez une adresse pour faciliter vos commandes.',
-            style: TextStyle(color: Colors.grey[600]),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 40),
+            child: Text(
+              Translator.t('add_address_desc'),
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.grey[600]),
+            ),
           ),
           const SizedBox(height: 40),
           _buildAddButton(context),
@@ -86,6 +91,8 @@ class AddressListScreen extends StatelessWidget {
 
   Widget _buildAddressCard(BuildContext context, Map<String, dynamic> address) {
     final bool isDefault = address['isDefault'] ?? false;
+    final String label = address['label'] ?? '';
+    final String translatedLabel = label == 'Maison' ? Translator.t('home') : (label == 'Bureau' ? Translator.t('work') : label);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -98,7 +105,7 @@ class AddressListScreen extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -115,13 +122,13 @@ class AddressListScreen extends StatelessWidget {
                 Row(
                   children: [
                     Icon(
-                      address['label'] == 'Maison' ? Icons.home_filled : Icons.work,
+                      label == 'Maison' ? Icons.home_filled : Icons.work,
                       color: isDefault ? _salmon : Colors.grey,
                       size: 20,
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      address['label'] ?? 'Adresse',
+                      translatedLabel,
                       style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                   ],
@@ -130,12 +137,12 @@ class AddressListScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
-                      color: _salmon.withOpacity(0.1),
+                      color: _salmon.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: const Text(
-                      'Défaut',
-                      style: TextStyle(color: _salmon, fontWeight: FontWeight.bold, fontSize: 10),
+                    child: Text(
+                      Translator.t('default'),
+                      style: const TextStyle(color: _salmon, fontWeight: FontWeight.bold, fontSize: 10),
                     ),
                   ),
               ],
@@ -162,9 +169,9 @@ class AddressListScreen extends StatelessWidget {
                 if (!isDefault)
                   TextButton(
                     onPressed: () => MockFirebase().setDefaultAddress(address['id']),
-                    child: const Text('Définir par défaut', style: TextStyle(color: _salmon, fontSize: 13)),
+                    child: Text(Translator.t('set_as_default'), style: const TextStyle(color: _salmon, fontSize: 13)),
                   ),
-                const Spacer(),
+                if (!isDefault) const Spacer(),
                 IconButton(
                   icon: const Icon(Icons.delete_outline, color: Colors.redAccent, size: 20),
                   onPressed: () => _showDeleteConfirmation(context, address['id']),
@@ -189,9 +196,9 @@ class AddressListScreen extends StatelessWidget {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           elevation: 0,
         ),
-        child: const Text(
-          'AJOUTER UNE NOUVELLE ADRESSE',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, letterSpacing: 0.5),
+        child: Text(
+          Translator.t('add_new_address'),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, letterSpacing: 0.5),
         ),
       ),
     );
@@ -201,19 +208,19 @@ class AddressListScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Supprimer l\'adresse ?'),
-        content: const Text('Voulez-vous vraiment supprimer cette adresse de livraison ?'),
+        title: Text(Translator.t('delete_address_title')),
+        content: Text(Translator.t('delete_address_desc')),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('ANNULER', style: TextStyle(color: Colors.grey)),
+            child: Text(Translator.t('cancel'), style: const TextStyle(color: Colors.grey)),
           ),
           TextButton(
             onPressed: () {
               MockFirebase().deleteAddress(id);
               Navigator.pop(context);
             },
-            child: const Text('SUPPRIMER', style: TextStyle(color: Colors.red)),
+            child: Text(Translator.t('delete'), style: const TextStyle(color: Colors.red)),
           ),
         ],
       ),

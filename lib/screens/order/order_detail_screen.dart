@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../backend/mock_firebase.dart';
+import '../../backend/translator.dart';
 import '../tracking/tracking_screen.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -19,7 +20,7 @@ class OrderDetailScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Commande $orderId', style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: Text('${Translator.t('order')} $orderId', style: const TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
@@ -43,61 +44,76 @@ class OrderDetailScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: orderId == null 
-        ? const Center(child: Text('Erreur: Commande introuvable'))
-        : FutureBuilder<Map<String, dynamic>?>(
-            future: MockFirebase().getOrderById(orderId),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator(color: _salmon));
-              }
-              final order = snapshot.data;
-              if (order == null) {
-                return const Center(child: Text('Commande non trouvée'));
-              }
+          body: AnimatedBuilder(
+            animation: MockFirebase(),
+            builder: (context, _) {
+              return orderId == null 
+                ? Center(child: Text(Translator.t('error_order_not_found')))
+                : FutureBuilder<Map<String, dynamic>?>(
+                    future: MockFirebase().getOrderById(orderId),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator(color: _salmon));
+                      }
+                      final order = snapshot.data;
+                      if (order == null) {
+                        return Center(child: Text(Translator.t('error_order_not_found')));
+                      }
 
-              return Column(
-                children: [
-                  Expanded(
-                    child: SingleChildScrollView(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      return Column(
                         children: [
-                          _buildStatusCard(order),
-                          const SizedBox(height: 30),
-                          _buildSectionTitle('Articles'),
-                          const SizedBox(height: 15),
-                          ... (order['items'] as List).map((item) => _buildProductItem(item)),
-                          const SizedBox(height: 30),
-                          _buildSectionTitle('Livraison'),
-                          const SizedBox(height: 15),
-                          _buildInfoTile(Icons.location_on_outlined, 'Adresse', order['shippingAddress']),
-                          const SizedBox(height: 15),
-                          _buildInfoTile(Icons.payment, 'Méthode de paiement', order['paymentMethod']),
-                          const SizedBox(height: 30),
-                          _buildSectionTitle('Résumé'),
-                          const SizedBox(height: 15),
-                          _buildPriceSummary(order),
+                          Expanded(
+                            child: SingleChildScrollView(
+                              padding: const EdgeInsets.all(20),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _buildStatusCard(order),
+                                  const SizedBox(height: 30),
+                                  _buildSectionTitle(Translator.t('articles')),
+                                  const SizedBox(height: 15),
+                                  ... (order['items'] as List).map((item) => _buildProductItem(item)),
+                                  const SizedBox(height: 30),
+                                  _buildSectionTitle(Translator.t('shipping')),
+                                  const SizedBox(height: 15),
+                                  _buildInfoTile(Icons.location_on_outlined, Translator.t('my_addresses'), order['shippingAddress']),
+                                  const SizedBox(height: 15),
+                                  _buildInfoTile(Icons.payment, Translator.t('payment_method'), order['paymentMethod']),
+                                  const SizedBox(height: 30),
+                                  _buildSectionTitle(Translator.t('summary')),
+                                  const SizedBox(height: 15),
+                                  _buildPriceSummary(order),
+                                ],
+                              ),
+                            ),
+                          ),
+                          _buildBottomActions(context, orderId),
                         ],
-                      ),
-                    ),
-                  ),
-                  _buildBottomActions(context, orderId),
-                ],
-              );
+                      );
+                    },
+                  );
             },
           ),
     );
   }
 
   Widget _buildStatusCard(Map<String, dynamic> order) {
+    String translationKey;
+    switch (order['status']) {
+      case 'En attente': translationKey = 'status_pending'; break;
+      case 'Acceptée': translationKey = 'status_accepted'; break;
+      case 'En confection': translationKey = 'status_confection'; break;
+      case 'Expédiée': translationKey = 'status_shipped'; break;
+      case 'Livrée': translationKey = 'status_delivered'; break;
+      default: translationKey = order['status'];
+    }
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: _salmon.withOpacity(0.05),
+        color: _salmon.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: _salmon.withOpacity(0.1)),
+        border: Border.all(color: _salmon.withValues(alpha: 0.1)),
       ),
       child: Row(
         children: [
@@ -107,9 +123,9 @@ class OrderDetailScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Statut : ${order['status']}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: _salmon)),
+                Text('${Translator.t('status')} : ${Translator.t(translationKey)}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: _salmon)),
                 const SizedBox(height: 4),
-                Text('Mis à jour le ${_formatDate(order['date'])}', style: TextStyle(color: Colors.grey[600], fontSize: 13)),
+                Text('${Translator.t('updated_on')} ${_formatDate(order['date'])}', style: TextStyle(color: Colors.grey[600], fontSize: 13)),
               ],
             ),
           ),
@@ -142,7 +158,7 @@ class OrderDetailScreen extends StatelessWidget {
               children: [
                 Text(p['name'] ?? '', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
                 const SizedBox(height: 4),
-                Text('Quantité: ${item['quantity']} • Taille: ${item['size']}', style: TextStyle(color: Colors.grey[600], fontSize: 13)),
+                Text('${Translator.t('quantity')}: ${item['quantity']} • ${Translator.t('size')}: ${item['size']}', style: TextStyle(color: Colors.grey[600], fontSize: 13)),
               ],
             ),
           ),
@@ -178,11 +194,11 @@ class OrderDetailScreen extends StatelessWidget {
       decoration: BoxDecoration(color: Colors.grey[50], borderRadius: BorderRadius.circular(20)),
       child: Column(
         children: [
-          _buildPriceRow('Total Articles', '${order['total'] - 2000} XAF'),
+          _buildPriceRow(Translator.t('total_items'), '${order['total'] - 2000} XAF'),
           const SizedBox(height: 10),
-          _buildPriceRow('Frais de Livraison', '2000 XAF'),
+          _buildPriceRow(Translator.t('delivery_fees'), '2000 XAF'),
           const Divider(height: 30),
-          _buildPriceRow('TOTAL', '${order['total']} XAF', isBold: true),
+          _buildPriceRow(Translator.t('total'), '${order['total']} XAF', isBold: true),
         ],
       ),
     );
@@ -201,7 +217,7 @@ class OrderDetailScreen extends StatelessWidget {
   Widget _buildBottomActions(BuildContext context, String orderId) {
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 40),
-      decoration: BoxDecoration(color: Colors.white, boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, -5))]),
+      decoration: BoxDecoration(color: Colors.white, boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, -5))]),
       child: Row(
         children: [
           Expanded(
@@ -212,7 +228,7 @@ class OrderDetailScreen extends StatelessWidget {
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                 padding: const EdgeInsets.symmetric(vertical: 18),
               ),
-              child: const Text('ANNULER', style: TextStyle(color: _darkNavy, fontWeight: FontWeight.bold)),
+              child: Text(Translator.t('cancel'), style: const TextStyle(color: _darkNavy, fontWeight: FontWeight.bold)),
             ),
           ),
           const SizedBox(width: 15),
@@ -225,7 +241,7 @@ class OrderDetailScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 18),
                 elevation: 0,
               ),
-              child: const Text('SUIVRE LE COLIS', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+              child: Text(Translator.t('track_order'), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
             ),
           ),
         ],
@@ -236,7 +252,11 @@ class OrderDetailScreen extends StatelessWidget {
   String _formatDate(String iso) {
     try {
       final date = DateTime.parse(iso);
-      return '${date.day}/${date.month}/${date.year}';
+      final monthKeys = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+      final month = Translator.t(monthKeys[date.month - 1]);
+      final at = (Translator.currentLanguage == 'Français') ? 'à' : ((Translator.currentLanguage == 'English') ? 'at' : 'a');
+      
+      return '${date.day} $month ${date.year} $at ${date.hour}:${date.minute.toString().padLeft(2, '0')}';
     } catch (_) {
       return iso;
     }
@@ -254,11 +274,11 @@ class OrderDetailScreen extends StatelessWidget {
             children: [
               pw.Text('KOUTURE', style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold, color: PdfColors.black)),
               pw.SizedBox(height: 10),
-              pw.Text('Facture commande: ${order['id']}'),
-              pw.Text('Statut : ${order['status']}'),
+              pw.Text('${Translator.t('invoice_title')}: ${order['id']}'),
+              pw.Text('${Translator.t('status')} : ${Translator.t(order['status'] == 'En attente' ? 'status_pending' : (order['status'] == 'Acceptée' ? 'status_accepted' : (order['status'] == 'En confection' ? 'status_confection' : (order['status'] == 'Expédiée' ? 'status_shipped' : (order['status'] == 'Livrée' ? 'status_delivered' : order['status'])))))}'),
               pw.Divider(),
               pw.SizedBox(height: 20),
-              pw.Text('Articles:', style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
+              pw.Text('${Translator.t('articles')}:', style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
               ... (order['items'] as List).map((item) {
                 final product = item['product'];
                 final qty = item['quantity'];
@@ -276,14 +296,14 @@ class OrderDetailScreen extends StatelessWidget {
               pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pw.Text('Sous-total'),
+                  pw.Text(Translator.t('subtotal')),
                   pw.Text('${order['total'] - 2000} XAF'),
                 ],
               ),
               pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pw.Text('Frais de livraison'),
+                  pw.Text(Translator.t('delivery_fees')),
                   pw.Text('2000 XAF'),
                 ],
               ),
@@ -291,7 +311,7 @@ class OrderDetailScreen extends StatelessWidget {
               pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pw.Text('TOTAL', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                  pw.Text(Translator.t('total').toUpperCase(), style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
                   pw.Text('${order['total']} XAF', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
                 ],
               ),
