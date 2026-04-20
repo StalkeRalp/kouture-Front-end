@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import '../../backend/translator.dart';
 import '../auth/login_screen.dart';
+import '../../widgets/responsive_helper.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -22,7 +24,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       title: Translator.t('onb_title_1'),
       description: Translator.t('onb_desc_1'),
       color: const Color(0xFFFF8C8C),
-      icon: Icons.auto_awesome,
+      icon: HugeIcons.strokeRoundedSparkles,
       assetPath: 'assets/onboarding/tailor_artisan.png',
       tag: Translator.t('onb_tag_1'),
     ),
@@ -30,7 +32,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       title: Translator.t('onb_title_2'),
       description: Translator.t('onb_desc_2'),
       color: const Color(0xFF0D0D26),
-      icon: Icons.gesture_rounded,
+      icon: HugeIcons.strokeRoundedHandPointingRight01,
       assetPath: 'assets/onboarding/stitch_detail.png',
       tag: Translator.t('onb_tag_2'),
     ),
@@ -38,7 +40,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       title: Translator.t('onb_title_3'),
       description: Translator.t('onb_desc_3'),
       color: const Color(0xFFFF8C8C),
-      icon: Icons.straighten_rounded,
+      icon: HugeIcons.strokeRoundedRuler,
       assetPath: 'assets/onboarding/perfect_fit_model.png',
       tag: Translator.t('onb_tag_3'),
     ),
@@ -49,7 +51,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     super.initState();
     _pageController.addListener(() {
       setState(() {
-        _scrollOffset = _pageController.offset / MediaQuery.of(context).size.width;
+        _scrollOffset = _pageController.offset / (MediaQuery.of(context).size.width > 0 ? MediaQuery.of(context).size.width : 1.0);
       });
     });
   }
@@ -85,9 +87,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           
           // Navigation & Indicators
           Positioned(
-            bottom: 40,
-            left: 24,
-            right: 24,
+            bottom: context.h(40),
+            left: context.w(24),
+            right: context.w(24),
             child: _buildBottomNavigation(),
           ),
         ],
@@ -102,11 +104,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          const SizedBox(height: 60),
+          SizedBox(height: context.h(60)),
           // 📸 Image Container with Shadow and Parallax
           Container(
-            height: MediaQuery.of(context).size.width,
-            margin: const EdgeInsets.symmetric(horizontal: 24),
+            height: context.w(327), // Defined width for image container
+            margin: EdgeInsets.symmetric(horizontal: context.w(24)),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(40),
               boxShadow: [
@@ -151,48 +153,48 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
           ),
 
-          const SizedBox(height: 48),
+          SizedBox(height: context.h(40)),
 
           // 📝 Text Content Step-in Animation
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32),
+            padding: EdgeInsets.symmetric(horizontal: context.w(32)),
             child: Column(
               children: [
                 // Tag / Badge (Surprise 2: Elegant Animated Badge)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: EdgeInsets.symmetric(horizontal: context.w(16), vertical: context.h(8)),
                   decoration: BoxDecoration(
                     color: page.color.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(30),
+                    borderRadius: BorderRadius.circular(context.w(30)),
                   ),
                   child: Text(
                     page.tag,
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: context.sp(12),
                       fontWeight: FontWeight.w900,
                       color: page.color,
                       letterSpacing: 2,
                     ),
                   ),
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: context.h(24)),
                 Text(
                   page.title,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 36,
+                  style: TextStyle(
+                    fontSize: context.sp(32),
                     fontWeight: FontWeight.w900,
                     height: 1.1,
                     letterSpacing: -1,
                     color: Color(0xFF0D0D26),
                   ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: context.h(16)),
                 Text(
                   page.description,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: context.sp(16),
                     color: Colors.grey[500],
                     height: 1.6,
                     fontFamily: 'Montserrat',
@@ -201,7 +203,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 140), // Space for bottom nav
+          SizedBox(height: context.h(140)), // Space for bottom nav
         ],
       ),
     );
@@ -227,7 +229,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
           ),
         ),
-        const SizedBox(height: 32),
+        SizedBox(height: context.h(32)),
         if (_currentPage < _pages.length - 1)
           Center(
             child: TextButton(
@@ -241,20 +243,20 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         else
           Center(
             child: SizedBox(
-              height: 64,
-              width: 220,
+              height: context.h(60),
+              width: context.w(220),
               child: ElevatedButton(
                 onPressed: () => Navigator.pushReplacementNamed(context, LoginScreen.routeName),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF0D0D26),
                   foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(context.w(24))),
                   elevation: 10,
                   shadowColor: const Color(0xFF0D0D26).withValues(alpha: 0.3),
                 ),
                 child: Text(
                   Translator.t('start'),
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, letterSpacing: 1.5),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: context.sp(16), letterSpacing: 1.5),
                 ),
               ),
             ),
@@ -307,7 +309,7 @@ class OnboardingData {
   final String title;
   final String description;
   final Color color;
-  final IconData icon;
+  final dynamic icon;
   final String assetPath;
   final String tag;
 

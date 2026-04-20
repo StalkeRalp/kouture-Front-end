@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../backend/mock_firebase.dart';
 import '../../backend/translator.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class HelpScreen extends StatelessWidget {
   const HelpScreen({super.key});
@@ -23,7 +24,7 @@ class HelpScreen extends StatelessWidget {
             elevation: 0,
             centerTitle: true,
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black, size: 18),
+              icon: HugeIcon(icon: HugeIcons.strokeRoundedArrowLeft01, color: Colors.black, size: 18),
               onPressed: () => Navigator.pop(context),
             ),
           ),
@@ -52,7 +53,7 @@ class HelpScreen extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.chat_bubble_outline, size: 20),
+                    HugeIcon(icon: HugeIcons.strokeRoundedBubbleChatQuestion, size: 20, color: Colors.black),
                     const SizedBox(width: 12),
                     Text(Translator.t('contact_support'), style: const TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1)),
                   ],

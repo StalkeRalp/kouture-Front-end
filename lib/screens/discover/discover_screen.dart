@@ -8,6 +8,7 @@ import '../notifications/notifications_screen.dart';
 import '../search/search_screen.dart';
 import '../search/search_results_screen.dart';
 import '../cart/cart_summary_screen.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 
 class DiscoverScreen extends StatelessWidget {
@@ -93,7 +94,7 @@ class DiscoverScreen extends StatelessWidget {
           builder: (context, _) {
             final count = MockFirebase().unreadNotificationsCount;
             return _buildHeaderIcon(
-              Icons.notifications_none_outlined, 
+              HugeIcons.strokeRoundedNotification01, 
               hasBadge: count > 0,
               badgeCount: count > 0 ? count : null,
               onTap: () => Navigator.pushNamed(context, NotificationsScreen.routeName),
@@ -101,12 +102,12 @@ class DiscoverScreen extends StatelessWidget {
           }
         ),
         const SizedBox(width: 8),
-        _buildHeaderIcon(Icons.settings_outlined, onTap: () => Navigator.pushNamed(context, SettingsScreen.routeName)),
+        _buildHeaderIcon(HugeIcons.strokeRoundedSettings01, onTap: () => Navigator.pushNamed(context, SettingsScreen.routeName)),
       ],
     );
   }
 
-  Widget _buildHeaderIcon(IconData icon, {bool hasBadge = false, int? badgeCount, VoidCallback? onTap}) {
+  Widget _buildHeaderIcon(dynamic icon, {bool hasBadge = false, int? badgeCount, VoidCallback? onTap}) {
     return Stack(
       children: [
         GestureDetector(
@@ -118,7 +119,7 @@ class DiscoverScreen extends StatelessWidget {
             shape: BoxShape.circle,
             border: Border.all(color: Colors.grey.shade200),
           ),
-          child: Icon(icon, color: Colors.black, size: 20),
+          child: HugeIcon(icon: icon, color: Colors.black, size: 20),
         ),
         ),
         if (hasBadge)
@@ -161,7 +162,7 @@ class DiscoverScreen extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.search, color: Color(0xFF0D0D26), size: 22),
+                  HugeIcon(icon: HugeIcons.strokeRoundedSearch01, color: Color(0xFF0D0D26), size: 22),
                   const SizedBox(width: 12),
                   Text(
                     Translator.t('search_hint'),
@@ -171,7 +172,7 @@ class DiscoverScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: const BoxDecoration(color: Color(0xFF0D0D26), shape: BoxShape.circle),
-                    child: const Icon(Icons.tune, color: Colors.white, size: 16),
+                    child: HugeIcon(icon: HugeIcons.strokeRoundedFilter, color: Colors.white, size: 16),
                   ),
                 ],
               ),
@@ -184,7 +185,7 @@ class DiscoverScreen extends StatelessWidget {
           child: Stack(
             clipBehavior: Clip.none,
             children: [
-              const Icon(Icons.shopping_cart_outlined, size: 28),
+              HugeIcon(icon: HugeIcons.strokeRoundedShoppingCart01, size: 28, color: Colors.black),
               Positioned(
                 right: -4,
                 top: -4,

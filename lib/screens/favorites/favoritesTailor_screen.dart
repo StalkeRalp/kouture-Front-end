@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../backend/mock_firebase.dart';
 import '../../backend/translator.dart';
 import '../vendor/vendor_profile_screen.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class FavoritesTailorScreen extends StatelessWidget {
   final bool isTab;
@@ -28,7 +29,7 @@ class FavoritesTailorScreen extends StatelessWidget {
             elevation: 0,
             centerTitle: true,
             leading: IconButton(
-              icon: const Icon(Icons.chevron_left, color: Colors.black),
+              icon: HugeIcon(icon: HugeIcons.strokeRoundedArrowLeft01, color: Colors.black, size: 24.0),
               onPressed: () => Navigator.pop(context),
             ),
           ),
@@ -74,7 +75,7 @@ class FavoritesTailorScreen extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.person_outline, size: 80, color: Colors.grey[300]),
+          HugeIcon(icon: HugeIcons.strokeRoundedUser, size: 80, color: Colors.grey[300]),
           const SizedBox(height: 20),
           Text(
             Translator.t('no_favorite_tailors'), 
@@ -133,14 +134,14 @@ class FavoritesTailorScreen extends StatelessWidget {
             const SizedBox(height: 4),
             Row(
               children: [
-                const Icon(Icons.star, color: Colors.amber, size: 14),
+                HugeIcon(icon: HugeIcons.strokeRoundedStars, color: Colors.amber, size: 14),
                 const SizedBox(width: 4),
                 Text(
                   '${vendor['rating']}',
                   style: TextStyle(color: Colors.grey[700], fontSize: 13, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(width: 10),
-                const Icon(Icons.location_on, color: Colors.grey, size: 14),
+                HugeIcon(icon: HugeIcons.strokeRoundedLocation01, color: Colors.grey, size: 14),
                 const SizedBox(width: 4),
                 Expanded(
                   child: Text(
@@ -155,7 +156,7 @@ class FavoritesTailorScreen extends StatelessWidget {
           ],
         ),
         trailing: IconButton(
-          icon: const Icon(Icons.favorite, color: _salmon),
+          icon: HugeIcon(icon: HugeIcons.strokeRoundedFavourite, color: _salmon, size: 24.0),
           onPressed: () {
             MockFirebase().toggleFavorite(vendor['id'].toString());
           },

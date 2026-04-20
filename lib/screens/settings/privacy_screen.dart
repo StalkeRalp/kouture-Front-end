@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../backend/mock_firebase.dart';
 import '../../backend/translator.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class PrivacyScreen extends StatelessWidget {
   const PrivacyScreen({super.key});
@@ -23,7 +24,7 @@ class PrivacyScreen extends StatelessWidget {
             elevation: 0,
             centerTitle: true,
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black, size: 18),
+              icon: HugeIcon(icon: HugeIcons.strokeRoundedArrowLeft01, color: Colors.black, size: 18),
               onPressed: () => Navigator.pop(context),
             ),
             bottom: PreferredSize(
@@ -59,7 +60,7 @@ class PrivacyScreen extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.info_outline, color: _salmon),
+                      HugeIcon(icon: HugeIcons.strokeRoundedInformationCircle, color: _salmon, size: 24.0),
                       const SizedBox(width: 15),
                       Expanded(
                         child: Text(

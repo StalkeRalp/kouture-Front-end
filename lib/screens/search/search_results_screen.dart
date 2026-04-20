@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../backend/mock_firebase.dart';
 import '../../backend/translator.dart';
 import '../../widgets/product_card.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class SearchResultsScreen extends StatelessWidget {
   const SearchResultsScreen({super.key});
@@ -22,7 +23,7 @@ class SearchResultsScreen extends StatelessWidget {
             backgroundColor: Colors.white,
             elevation: 0,
             leading: IconButton(
-              icon: const Icon(Icons.chevron_left, color: Colors.black),
+              icon: HugeIcon(icon: HugeIcons.strokeRoundedArrowLeft01, color: Colors.black, size: 24.0),
               onPressed: () => Navigator.pop(context),
             ),
           ),
@@ -40,7 +41,7 @@ class SearchResultsScreen extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.search_off, size: 80, color: Colors.grey[300]),
+                      HugeIcon(icon: HugeIcons.strokeRoundedSearchRemove, size: 80, color: Colors.grey[300]),
                       const SizedBox(height: 20),
                       Text(
                         Translator.t('no_products_found'),

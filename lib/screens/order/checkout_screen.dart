@@ -5,6 +5,7 @@ import '../address/address_list_screen.dart';
 import '../payment/orange_money_screen.dart';
 import '../payment/mobile_money_screen.dart';
 import '../payment/card_payment_screen.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
@@ -34,7 +35,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           appBar: AppBar(
             title: Text(Translator.t('checkout_confirmation'), style: const TextStyle(fontWeight: FontWeight.bold)),
             leading: IconButton(
-              icon: const Icon(Icons.chevron_left),
+              icon: HugeIcon(icon: HugeIcons.strokeRoundedArrowLeft01, color: Colors.black, size: 24.0),
               onPressed: () => Navigator.pop(context),
             ),
           ),
@@ -91,9 +92,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   Widget _buildPaymentMethods() {
     final methods = [
-      {'id': 0, 'name': 'Orange Money', 'icon': Icons.phone_android, 'color': Colors.orange},
-      {'id': 1, 'name': 'MTN MoMo', 'icon': Icons.smartphone, 'color': Colors.yellow[700]},
-      {'id': 2, 'name': Translator.t('credit_card'), 'icon': Icons.credit_card, 'color': Colors.blue},
+      {'id': 0, 'name': 'Orange Money', 'icon': HugeIcons.strokeRoundedSmartPhone01, 'color': Colors.orange},
+      {'id': 1, 'name': 'MTN MoMo', 'icon': HugeIcons.strokeRoundedSmartPhone01, 'color': Colors.yellow[700]},
+      {'id': 2, 'name': Translator.t('credit_card'), 'icon': HugeIcons.strokeRoundedCreditCard, 'color': Colors.blue},
     ];
 
     return Column(
@@ -111,11 +112,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             ),
             child: Row(
               children: [
-                Icon(m['icon'] as IconData, color: m['color'] as Color),
+                HugeIcon(icon: m['icon'] as dynamic, color: m['color'] as Color, size: 24.0),
                 const SizedBox(width: 15),
                 Text(m['name'] as String, style: TextStyle(fontWeight: isBold ? FontWeight.bold : FontWeight.normal)),
                 const Spacer(),
-                if (isSelected) const Icon(Icons.check_circle, color: _darkNavy, size: 20),
+                if (isSelected) HugeIcon(icon: HugeIcons.strokeRoundedCheckmarkCircle01, color: _darkNavy, size: 20),
               ],
             ),
           ),
@@ -180,7 +181,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       ),
       child: Row(
         children: [
-          const Icon(Icons.location_on_outlined, color: _darkNavy),
+          HugeIcon(icon: HugeIcons.strokeRoundedLocation01, color: _darkNavy, size: 24.0),
           const SizedBox(width: 15),
           Expanded(
             child: Column(
@@ -263,7 +264,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               Text('${Translator.t('pay')} ${total.toStringAsFixed(0)} XAF', 
                 style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, letterSpacing: 1.1)),
               const SizedBox(width: 10),
-              const Icon(Icons.security, size: 20),
+              HugeIcon(icon: HugeIcons.strokeRoundedShield01, size: 20, color: Colors.black),
             ],
           ),
         ),

@@ -4,6 +4,7 @@ import '../../backend/translator.dart';
 
 import '../../widgets/product_card.dart';
 import 'filter_screen.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 
 class ProductSearchDelegate extends SearchDelegate<String> {
@@ -34,13 +35,13 @@ class ProductSearchDelegate extends SearchDelegate<String> {
     return [
       if (query.isNotEmpty)
         IconButton(
-          icon: const Icon(Icons.clear, color: Colors.grey),
+          icon: HugeIcon(icon: HugeIcons.strokeRoundedCancel01, color: Colors.grey, size: 24.0),
           onPressed: () {
             query = '';
           },
         ),
       IconButton(
-        icon: Icon(Icons.tune, color: (_activeFilters != null) ? _salmon : Colors.black),
+        icon: HugeIcon(icon: HugeIcons.strokeRoundedFilter, color: (_activeFilters != null) ? _salmon : Colors.black, size: 24.0),
         onPressed: () async {
           final result = await Navigator.push(
             context,
@@ -61,7 +62,7 @@ class ProductSearchDelegate extends SearchDelegate<String> {
   @override
   Widget buildLeading(BuildContext context) {
     return IconButton(
-      icon: const Icon(Icons.arrow_back),
+      icon: HugeIcon(icon: HugeIcons.strokeRoundedArrowLeft01, color: Colors.black, size: 24.0),
       onPressed: () => close(context, ''),
     );
   }
@@ -157,7 +158,7 @@ class ProductSearchDelegate extends SearchDelegate<String> {
           itemBuilder: (context, index) {
             final p = fastResults[index];
             return ListTile(
-              leading: const Icon(Icons.search, color: Colors.grey),
+              leading: HugeIcon(icon: HugeIcons.strokeRoundedSearch01, color: Colors.grey, size: 24.0),
               title: Text(p['name'].toString()),
               onTap: () {
                 query = p['name'].toString();
@@ -210,10 +211,10 @@ class ProductSearchDelegate extends SearchDelegate<String> {
                     final recent = recents[index];
                     return ListTile(
                       contentPadding: EdgeInsets.zero,
-                      leading: const Icon(Icons.history, color: Colors.grey),
+                      leading: HugeIcon(icon: HugeIcons.strokeRoundedClock01, color: Colors.grey, size: 24.0),
                       title: Text(recent, style: const TextStyle(color: Colors.black87)),
                       trailing: IconButton(
-                        icon: const Icon(Icons.close, size: 18, color: Colors.grey),
+                        icon: HugeIcon(icon: HugeIcons.strokeRoundedCancel01, size: 18, color: Colors.grey),
                         onPressed: () {
                           MockFirebase().removeRecentSearch(recent);
                         },

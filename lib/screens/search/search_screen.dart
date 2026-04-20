@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../backend/mock_firebase.dart';
 import '../../backend/translator.dart';
 import 'search_results_screen.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -45,7 +46,7 @@ class _SearchScreenState extends State<SearchScreen> {
             backgroundColor: Colors.white,
             elevation: 0,
             leading: IconButton(
-              icon: const Icon(Icons.chevron_left, color: Colors.black),
+              icon: HugeIcon(icon: HugeIcons.strokeRoundedArrowLeft01, color: Colors.black, size: 24.0),
               onPressed: () => Navigator.pop(context),
             ),
             title: TextField(
@@ -60,7 +61,7 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
             actions: [
               IconButton(
-                icon: const Icon(Icons.close, color: Colors.grey),
+                icon: HugeIcon(icon: HugeIcons.strokeRoundedCancel01, color: Colors.grey, size: 24.0),
                 onPressed: () => _searchController.clear(),
               ),
             ],
@@ -96,7 +97,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.history, size: 16, color: Colors.grey[600]),
+                          HugeIcon(icon: HugeIcons.strokeRoundedClock01, size: 16, color: Colors.grey[600]),
                           const SizedBox(width: 8),
                           Text(query, style: TextStyle(color: Colors.grey[800])),
                         ],

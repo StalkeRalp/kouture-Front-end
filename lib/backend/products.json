@@ -68,14 +68,14 @@
   ],
 
   "categories": [
-    { "id": "c1", "name": "Robes",        "image": "https://images.unsplash.com/photo-1515347619252-7e0520696781?w=300&q=80", "productCount": 34 },
-    { "id": "c2", "name": "Costumes",     "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&q=80", "productCount": 21 },
-    { "id": "c3", "name": "Traditionnel", "image": "https://images.unsplash.com/photo-1583759136431-e5f0d8bbfb4f?w=300&q=80", "productCount": 47 },
-    { "id": "c4", "name": "Streetwear",   "image": "https://images.unsplash.com/photo-1552346154-21d32810aba3?w=300&q=80", "productCount": 58 },
-    { "id": "c5", "name": "Accessoires",  "image": "https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?w=300&q=80", "productCount": 63 },
-    { "id": "c6", "name": "Chaussures",   "image": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&q=80", "productCount": 29 },
-    { "id": "c7", "name": "Sacs",         "image": "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=300&q=80", "productCount": 41 },
-    { "id": "c8", "name": "Enfants",      "image": "https://images.unsplash.com/photo-1471286174890-9c112ffca5b4?w=300&q=80", "productCount": 19 }
+    { "id": "c1", "name": "Robes",        "image": "https://images.unsplash.com/photo-1515347619252-7e0520696781?w=300&q=80", "productCount": 38 },
+    { "id": "c2", "name": "Costumes",     "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&q=80", "productCount": 24 },
+    { "id": "c3", "name": "Traditionnel", "image": "https://images.unsplash.com/photo-1583759136431-e5f0d8bbfb4f?w=300&q=80", "productCount": 52 },
+    { "id": "c4", "name": "Streetwear",   "image": "https://images.unsplash.com/photo-1552346154-21d32810aba3?w=300&q=80", "productCount": 62 },
+    { "id": "c5", "name": "Accessoires",  "image": "https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?w=300&q=80", "productCount": 68 },
+    { "id": "c6", "name": "Chaussures",   "image": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&q=80", "productCount": 33 },
+    { "id": "c7", "name": "Sacs",         "image": "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=300&q=80", "productCount": 45 },
+    { "id": "c8", "name": "Enfants",      "image": "https://images.unsplash.com/photo-1471286174890-9c112ffca5b4?w=300&q=80", "productCount": 22 }
   ],
 
   "products": [
@@ -108,7 +108,7 @@
     {
       "id": "p2",
       "name": "Costume Sur Mesure",
-      "description": "Costume en lin coupe moderne pour événements habillés. Veste et pantalon inclus, finitions impeccables. Tenu élégant adapté aux cérémonies et réunions professionnelles.",
+      "description": "Costume en lin coupe moderne pour événements habillés. Veste et pantalon inclus, finitions impeccables.",
       "price": 75000,
       "oldPrice": null,
       "currency": "XAF",
@@ -134,7 +134,7 @@
     {
       "id": "p3",
       "name": "Ensemble Bazin Riche",
-      "description": "Ensemble traditionnel africain en bazin de haute qualité avec broderies soignées à la main. Disponible en plusieurs coloris vibrants.",
+      "description": "Ensemble traditionnel africain en bazin de haute qualité avec broderies soignées à la main.",
       "price": 45000,
       "oldPrice": 55000,
       "currency": "XAF",
@@ -160,7 +160,7 @@
     {
       "id": "p4",
       "name": "Bomber Jacket Kamer",
-      "description": "Bomber jacket streetwear inspiré des couleurs du Cameroun. Coupe oversize tendance, doublure satinée confortable.",
+      "description": "Bomber jacket streetwear inspiré des couleurs du Cameroun. Coupe oversize tendance.",
       "price": 32000,
       "oldPrice": 40000,
       "currency": "XAF",
@@ -186,7 +186,7 @@
     {
       "id": "p5",
       "name": "Sac à Main Raphia Tressé",
-      "description": "Sac à main artisanal en raphia tressé, entièrement fait à la main par des artisans locaux. Élégant et durable.",
+      "description": "Sac à main artisanal en raphia tressé, entièrement fait à la main par des artisans locaux.",
       "price": 18000,
       "oldPrice": null,
       "currency": "XAF",
@@ -290,7 +290,7 @@
     {
       "id": "p9",
       "name": "Chemise Wax Slim Fit",
-      "description": "Chemise en tissu wax coupe slim fit, parfaite pour un look africain moderne au quotidien ou lors d'événements.",
+      "description": "Chemise en tissu wax coupe slim fit, parfaite pour un look africain moderne.",
       "price": 15000,
       "oldPrice": 18000,
       "currency": "XAF",
@@ -316,7 +316,7 @@
     {
       "id": "p10",
       "name": "Robe Kente Mariage",
-      "description": "Robe longue en tissu Kente tissé main, spécialement conçue pour les cérémonies de mariage et les événements de grande envergure.",
+      "description": "Robe longue en tissu Kente tissé main, spécialement conçue pour les cérémonies de mariage.",
       "price": 95000,
       "oldPrice": 120000,
       "currency": "XAF",
@@ -338,6 +338,215 @@
       "isNew": true,
       "discount": 21,
       "tags": ["kente", "mariage", "cérémonie", "robe", "luxe"]
+    },
+
+    {
+      "id": "p11",
+      "name": "Sacoche Cuir Artisan",
+      "description": "Sacoche bandoulière en cuir pleine fleur, teintée à la main par nos artisans du Nord.",
+      "price": 28500,
+      "oldPrice": 35000,
+      "currency": "XAF",
+      "vendorId": "v5",
+      "vendorName": "Maison Chic",
+      "images": [
+        "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=600&q=80",
+        "https://images.unsplash.com/photo-1600706885580-86cac5dfccbd?w=600&q=80",
+        "https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?w=600&q=80"
+      ],
+      "category": "Sacs",
+      "categoryId": "c7",
+      "sizes": ["unique"],
+      "colors": ["#5D3A1A", "#2C1810", "#8B5A2B"],
+      "stock": 12,
+      "rating": 4.8,
+      "totalReviews": 34,
+      "isFeatured": true,
+      "isNew": true,
+      "discount": 18,
+      "tags": ["sacoche", "cuir", "artisan", "homme"]
+    },
+    {
+      "id": "p12",
+      "name": "Boucles d'Oreilles Dorées",
+      "description": "Boucles d'oreilles pendantes en laiton doré, finition fait main, motifs géométriques inspirés des tissus wax.",
+      "price": 6500,
+      "oldPrice": null,
+      "currency": "XAF",
+      "vendorId": "v5",
+      "vendorName": "Maison Chic",
+      "images": [
+        "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=600&q=80",
+        "https://images.unsplash.com/photo-1531862499820-7f59eabec94b?w=600&q=80",
+        "https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?w=600&q=80"
+      ],
+      "category": "Accessoires",
+      "categoryId": "c5",
+      "sizes": ["unique"],
+      "colors": ["#DAA520"],
+      "stock": 45,
+      "rating": 4.9,
+      "totalReviews": 67,
+      "isFeatured": false,
+      "isNew": false,
+      "discount": 0,
+      "tags": ["boucles", "oreilles", "bijoux", "doré"]
+    },
+    {
+      "id": "p13",
+      "name": "Robe Caftan Soirée",
+      "description": "Caftan long en mousseline de soie, broderies dorées faites à la main, parfait pour les grandes occasions.",
+      "price": 65000,
+      "oldPrice": 85000,
+      "currency": "XAF",
+      "vendorId": "v1",
+      "vendorName": "Boutique Elegance",
+      "images": [
+        "https://images.unsplash.com/photo-1564257631407-4deb1f99d992?w=600&q=80",
+        "https://images.unsplash.com/photo-1539008835657-9e8e9680c956?w=600&q=80",
+        "https://images.unsplash.com/photo-1551232864-3f0890e580d9?w=600&q=80"
+      ],
+      "category": "Robes",
+      "categoryId": "c1",
+      "sizes": ["S", "M", "L", "XL"],
+      "colors": ["#2E0854", "#800020", "#C9B037"],
+      "stock": 7,
+      "rating": 4.9,
+      "totalReviews": 23,
+      "isFeatured": true,
+      "isNew": true,
+      "discount": 23,
+      "tags": ["caftan", "soirée", "luxe", "femme", "brodé"]
+    },
+    {
+      "id": "p14",
+      "name": "Mocassins Africains",
+      "description": "Mocassins en cuir souple avec motifs africains gravés. Semelle cousue Goodyear.",
+      "price": 42000,
+      "oldPrice": 52000,
+      "currency": "XAF",
+      "vendorId": "v2",
+      "vendorName": "Tailleur Du Roi",
+      "images": [
+        "https://images.unsplash.com/photo-1533867617858-e7b97e060509?w=600&q=80",
+        "https://images.unsplash.com/photo-1603808033192-8c3bb9c4dcf5?w=600&q=80",
+        "https://images.unsplash.com/photo-1607524063689-677e5b6762aa?w=600&q=80"
+      ],
+      "category": "Chaussures",
+      "categoryId": "c6",
+      "sizes": ["39", "40", "41", "42", "43", "44"],
+      "colors": ["#3E2723", "#5D4037", "#1A1A1A"],
+      "stock": 14,
+      "rating": 4.7,
+      "totalReviews": 29,
+      "isFeatured": false,
+      "isNew": true,
+      "discount": 19,
+      "tags": ["mocassins", "cuir", "homme", "élégant"]
+    },
+    {
+      "id": "p15",
+      "name": "Ensemble Pantalon Wax",
+      "description": "Ensemble moderne pantalon large + haut crop en wax. Look tendance et confortable.",
+      "price": 32000,
+      "oldPrice": 40000,
+      "currency": "XAF",
+      "vendorId": "v1",
+      "vendorName": "Boutique Elegance",
+      "images": [
+        "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=600&q=80",
+        "https://images.unsplash.com/photo-1562408590-e32931084e23?w=600&q=80",
+        "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600&q=80"
+      ],
+      "category": "Traditionnel",
+      "categoryId": "c3",
+      "sizes": ["XS", "S", "M", "L", "XL"],
+      "colors": ["#1E3A8A", "#B91C1C", "#047857"],
+      "stock": 18,
+      "rating": 4.6,
+      "totalReviews": 41,
+      "isFeatured": true,
+      "isNew": false,
+      "discount": 20,
+      "tags": ["ensemble", "pantalon", "wax", "moderne"]
+    },
+    {
+      "id": "p16",
+      "name": "Tee-Shirt Graphique",
+      "description": "Tee-shirt 100% coton avec imprimé 'Africa is the future' - Streetwear engagé.",
+      "price": 9500,
+      "oldPrice": 12500,
+      "currency": "XAF",
+      "vendorId": "v4",
+      "vendorName": "Kamer Street",
+      "images": [
+        "https://images.unsplash.com/photo-1503342394128-c104d54dba01?w=600&q=80",
+        "https://images.unsplash.com/photo-1554568218-0f1715e72254?w=600&q=80",
+        "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=600&q=80"
+      ],
+      "category": "Streetwear",
+      "categoryId": "c4",
+      "sizes": ["S", "M", "L", "XL", "XXL"],
+      "colors": ["#000000", "#FFFFFF", "#E11D48"],
+      "stock": 50,
+      "rating": 4.5,
+      "totalReviews": 88,
+      "isFeatured": false,
+      "isNew": true,
+      "discount": 24,
+      "tags": ["t-shirt", "streetwear", "graphique", "homme"]
+    },
+    {
+      "id": "p17",
+      "name": "Coiffeuse Africaine",
+      "description": "Coiffeuse professionnelle pour tresses et perruques. Support ajustable, miroir intégré.",
+      "price": 55000,
+      "oldPrice": 70000,
+      "currency": "XAF",
+      "vendorId": "v5",
+      "vendorName": "Maison Chic",
+      "images": [
+        "https://images.unsplash.com/photo-1614277576875-07d6fbd962e4?w=600&q=80",
+        "https://images.unsplash.com/photo-1631106882562-48d7a53ca12c?w=600&q=80",
+        "https://images.unsplash.com/photo-1581472723648-909f4851d4ae?w=600&q=80"
+      ],
+      "category": "Accessoires",
+      "categoryId": "c5",
+      "sizes": ["unique"],
+      "colors": ["#8B4513", "#2F2F2F"],
+      "stock": 8,
+      "rating": 4.8,
+      "totalReviews": 52,
+      "isFeatured": false,
+      "isNew": false,
+      "discount": 21,
+      "tags": ["coiffeuse", "perruque", "beauté", "femme"]
+    },
+    {
+      "id": "p18",
+      "name": "Ensemble Petit Prince",
+      "description": "Ensemble bébé garçon : pantalon bouffant + chemisette en wax doux. Cadeau idéal.",
+      "price": 11000,
+      "oldPrice": 15000,
+      "currency": "XAF",
+      "vendorId": "v3",
+      "vendorName": "L'Artisan",
+      "images": [
+        "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=600&q=80",
+        "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=600&q=80",
+        "https://images.unsplash.com/photo-1601040310928-3d7901b2eaba?w=600&q=80"
+      ],
+      "category": "Enfants",
+      "categoryId": "c8",
+      "sizes": ["6mois", "12mois", "18mois", "24mois"],
+      "colors": ["#FFB6C1", "#87CEEB", "#98FB98"],
+      "stock": 25,
+      "rating": 4.7,
+      "totalReviews": 19,
+      "isFeatured": true,
+      "isNew": true,
+      "discount": 26,
+      "tags": ["bébé", "enfant", "wax", "ensemble"]
     }
   ],
 
@@ -455,7 +664,7 @@
         "country": "Cameroun",
         "postalCode": "00237"
       },
-      "favorites": ["p1", "p4", "p6"],
+      "favorites": ["p1", "p4", "p6", "p11", "p15"],
       "paymentMethods": [
         { "type": "orange_money", "number": "+237 699 123 456", "isDefault": true },
         { "type": "mobile_money", "number": "+237 677 654 321", "isDefault": false }

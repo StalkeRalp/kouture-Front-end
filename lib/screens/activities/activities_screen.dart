@@ -3,6 +3,7 @@ import '../../backend/translator.dart';
 import '../../backend/mock_firebase.dart';
 import '../chat/chat_detail_screen.dart';
 import '../order/order_detail_screen.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class ActivitiesScreen extends StatefulWidget {
   final int initialTabIndex; // 0 for Messages, 1 for Orders
@@ -165,7 +166,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
           Text(chat['time'] ?? '', style: const TextStyle(color: Colors.grey, fontSize: 12)),
           const SizedBox(height: 4),
           if (chat['unread'] > 0)
-            const Icon(Icons.circle, size: 10, color: _salmon),
+            HugeIcon(icon: HugeIcons.strokeRoundedCircle, size: 10, color: _salmon),
         ],
       ),
     );
@@ -176,7 +177,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.forum_outlined, size: 80, color: Colors.grey[300]),
+          HugeIcon(icon: HugeIcons.strokeRoundedMessage01, size: 80, color: Colors.grey[300]),
           const SizedBox(height: 16),
           Text(Translator.t('no_messages'), style: const TextStyle(color: Colors.grey, fontSize: 16)),
         ],
@@ -243,8 +244,8 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(16),
                         child: img.isNotEmpty 
-                          ? Image.network(img, fit: BoxFit.cover, errorBuilder: (_, __, ___) => const Icon(Icons.image_not_supported, color: Colors.grey))
-                          : const Icon(Icons.inventory_2_outlined, color: Colors.grey),
+                          ? Image.network(img, fit: BoxFit.cover, errorBuilder: (_, __, ___) => HugeIcon(icon: HugeIcons.strokeRoundedImageNotFound01, color: Colors.grey, size: 24.0))
+                          : HugeIcon(icon: HugeIcons.strokeRoundedPackageAdd, color: Colors.grey, size: 24.0),
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -352,7 +353,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.shopping_bag_outlined, size: 80, color: Colors.grey[300]),
+            HugeIcon(icon: HugeIcons.strokeRoundedShoppingBag01, size: 80, color: Colors.grey[300]),
             const SizedBox(height: 24),
             Text(Translator.t('no_orders'), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: _navy)),
           ],

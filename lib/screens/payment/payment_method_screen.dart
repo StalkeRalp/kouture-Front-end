@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../backend/mock_firebase.dart';
 import '../../backend/translator.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class PaymentMethodScreen extends StatelessWidget {
   const PaymentMethodScreen({super.key});
@@ -20,7 +21,7 @@ class PaymentMethodScreen extends StatelessWidget {
             elevation: 0,
             centerTitle: true,
             leading: IconButton(
-              icon: const Icon(Icons.chevron_left, color: Colors.black),
+              icon: HugeIcon(icon: HugeIcons.strokeRoundedArrowLeft01, color: Colors.black, size: 24.0),
               onPressed: () => Navigator.pop(context),
             ),
           ),
@@ -31,7 +32,7 @@ class PaymentMethodScreen extends StatelessWidget {
               const SizedBox(height: 20),
               _buildPaymentCard('Orange Money', null, imagePath: 'disign/IConOM (1).ico'),
               _buildPaymentCard('Mobile Money', null, imagePath: 'disign/IConMTN (2).ico'),
-              _buildPaymentCard(Translator.t('bank_card_title'), Icons.credit_card),
+              _buildPaymentCard(Translator.t('bank_card_title'), HugeIcons.strokeRoundedCreditCard),
               const SizedBox(height: 40),
               ElevatedButton(
                 onPressed: () {},
@@ -49,7 +50,7 @@ class PaymentMethodScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildPaymentCard(String title, IconData? icon, {String? subtitle, String? imagePath}) {
+  Widget _buildPaymentCard(String title, dynamic icon, {String? subtitle, String? imagePath}) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
@@ -67,7 +68,7 @@ class PaymentMethodScreen extends StatelessWidget {
               child: Image.asset(imagePath, width: 30, height: 30, fit: BoxFit.cover),
             )
           else if (icon != null)
-            Icon(icon, color: const Color(0xFFFF8C8C), size: 30)
+            HugeIcon(icon: icon, color: const Color(0xFFFF8C8C), size: 30)
           else
             const SizedBox(width: 30, height: 30),
           const SizedBox(width: 12),
@@ -86,7 +87,7 @@ class PaymentMethodScreen extends StatelessWidget {
               ],
             ),
           ),
-          const Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey),
+          HugeIcon(icon: HugeIcons.strokeRoundedArrowRight01, size: 14, color: Colors.grey),
         ],
       ),
     );

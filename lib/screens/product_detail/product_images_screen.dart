@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class ProductImagesScreen extends StatefulWidget {
   const ProductImagesScreen({super.key});
@@ -42,7 +43,7 @@ class _ProductImagesScreenState extends State<ProductImagesScreen> {
           backgroundColor: Colors.black,
           elevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.close, color: Colors.white),
+            icon: HugeIcon(icon: HugeIcons.strokeRoundedCancel01, color: Colors.white, size: 24.0),
             onPressed: () => Navigator.pop(context),
           ),
         ),
@@ -88,7 +89,7 @@ class _ProductImagesScreenState extends State<ProductImagesScreen> {
                         );
                       },
                       errorBuilder: (_, __, ___) => const Center(
-                        child: Icon(Icons.broken_image, color: Colors.white54, size: 50),
+                        child: HugeIcon(icon: HugeIcons.strokeRoundedImageNotFound01, color: Colors.white54, size: 50),
                       ),
                     ),
                   ),
@@ -110,7 +111,7 @@ class _ProductImagesScreenState extends State<ProductImagesScreen> {
                     shape: BoxShape.circle,
                   ),
                   child: IconButton(
-                    icon: const Icon(Icons.close, color: Colors.white),
+                    icon: HugeIcon(icon: HugeIcons.strokeRoundedCancel01, color: Colors.white, size: 24.0),
                     onPressed: () => Navigator.pop(context),
                   ),
                 ),

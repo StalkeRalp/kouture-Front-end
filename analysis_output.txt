@@ -1,0 +1,186 @@
+Analyzing kouture...                                            
+
+warning • Unused import: 'dart:io' • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/mock_firebase.dart:2:8 • unused_import
+   info • Statements in an if should be enclosed in a block • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/mock_firebase.dart:630:68 • curly_braces_in_flow_control_structures
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/translator.dart:817:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/translator.dart:822:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/translator.dart:873:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/translator.dart:879:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/translator.dart:893:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/translator.dart:896:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/translator.dart:905:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/translator.dart:955:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/translator.dart:956:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/translator.dart:976:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/translator.dart:983:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/translator.dart:985:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/translator.dart:987:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/translator.dart:988:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/translator.dart:989:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/translator.dart:1018:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/translator.dart:1065:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/translator.dart:1066:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/translator.dart:1072:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/translator.dart:1073:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/translator.dart:1074:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/translator.dart:1075:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/translator.dart:1076:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/translator.dart:1077:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/translator.dart:1078:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/translator.dart:1079:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/translator.dart:1080:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/translator.dart:1081:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/translator.dart:1082:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/translator.dart:1083:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/translator.dart:1084:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/translator.dart:1085:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/translator.dart:1086:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/translator.dart:1087:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/translator.dart:1088:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/translator.dart:1089:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/assets/debug/mergeDebugAssets/flutter_assets/lib/backend/translator.dart:1093:7 • equal_keys_in_map
+warning • Unused import: 'dart:io' • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/mock_firebase.dart:2:8 • unused_import
+   info • Statements in an if should be enclosed in a block • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/mock_firebase.dart:630:68 • curly_braces_in_flow_control_structures
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/translator.dart:817:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/translator.dart:822:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/translator.dart:873:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/translator.dart:879:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/translator.dart:893:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/translator.dart:896:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/translator.dart:905:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/translator.dart:955:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/translator.dart:956:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/translator.dart:976:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/translator.dart:983:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/translator.dart:985:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/translator.dart:987:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/translator.dart:988:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/translator.dart:989:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/translator.dart:1018:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/translator.dart:1065:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/translator.dart:1066:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/translator.dart:1072:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/translator.dart:1073:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/translator.dart:1074:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/translator.dart:1075:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/translator.dart:1076:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/translator.dart:1077:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/translator.dart:1078:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/translator.dart:1079:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/translator.dart:1080:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/translator.dart:1081:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/translator.dart:1082:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/translator.dart:1083:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/translator.dart:1084:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/translator.dart:1085:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/translator.dart:1086:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/translator.dart:1087:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/translator.dart:1088:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/translator.dart:1089:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • build/app/intermediates/flutter/debug/flutter_assets/lib/backend/translator.dart:1093:7 • equal_keys_in_map
+warning • Unused import: 'dart:io' • lib/backend/mock_firebase.dart:2:8 • unused_import
+   info • Statements in an if should be enclosed in a block • lib/backend/mock_firebase.dart:630:68 • curly_braces_in_flow_control_structures
+warning • Two keys in a map literal shouldn't be equal • lib/backend/translator.dart:817:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • lib/backend/translator.dart:822:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • lib/backend/translator.dart:873:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • lib/backend/translator.dart:879:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • lib/backend/translator.dart:893:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • lib/backend/translator.dart:896:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • lib/backend/translator.dart:905:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • lib/backend/translator.dart:955:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • lib/backend/translator.dart:956:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • lib/backend/translator.dart:976:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • lib/backend/translator.dart:983:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • lib/backend/translator.dart:985:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • lib/backend/translator.dart:987:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • lib/backend/translator.dart:988:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • lib/backend/translator.dart:989:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • lib/backend/translator.dart:1018:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • lib/backend/translator.dart:1065:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • lib/backend/translator.dart:1066:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • lib/backend/translator.dart:1072:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • lib/backend/translator.dart:1073:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • lib/backend/translator.dart:1074:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • lib/backend/translator.dart:1075:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • lib/backend/translator.dart:1076:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • lib/backend/translator.dart:1077:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • lib/backend/translator.dart:1078:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • lib/backend/translator.dart:1079:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • lib/backend/translator.dart:1080:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • lib/backend/translator.dart:1081:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • lib/backend/translator.dart:1082:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • lib/backend/translator.dart:1083:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • lib/backend/translator.dart:1084:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • lib/backend/translator.dart:1085:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • lib/backend/translator.dart:1086:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • lib/backend/translator.dart:1087:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • lib/backend/translator.dart:1088:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • lib/backend/translator.dart:1089:7 • equal_keys_in_map
+warning • Two keys in a map literal shouldn't be equal • lib/backend/translator.dart:1093:7 • equal_keys_in_map
+   info • Unnecessary use of multiple underscores • lib/screens/activities/activities_screen.dart:118:33 • unnecessary_underscores
+   info • Unnecessary use of multiple underscores • lib/screens/activities/activities_screen.dart:247:85 • unnecessary_underscores
+   info • Unnecessary use of multiple underscores • lib/screens/activities/activities_screen.dart:247:89 • unnecessary_underscores
+warning • The value of the field '_locationPermissionDenied' isn't used • lib/screens/address/add_address_screen.dart:242:8 • unused_field
+warning • The value of the field '_mapZoom' isn't used • lib/screens/address/add_address_screen.dart:248:10 • unused_field
+warning • The value of the field '_grey200' isn't used • lib/screens/address/add_address_screen.dart:269:22 • unused_field
+   info • 'desiredAccuracy' is deprecated and shouldn't be used. use settings parameter with AndroidSettings, AppleSettings, WebSettings, or LocationSettings • lib/screens/address/add_address_screen.dart:494:9 • deprecated_member_use
+warning • The declaration '_zoomIn' isn't referenced • lib/screens/address/add_address_screen.dart:660:8 • unused_element
+warning • The declaration '_zoomOut' isn't referenced • lib/screens/address/add_address_screen.dart:666:8 • unused_element
+   info • Don't use 'BuildContext's across async gaps • lib/screens/address/add_address_screen.dart:777:21 • use_build_context_synchronously
+   info • Unnecessary use of multiple underscores • lib/screens/address/add_address_screen.dart:837:34 • unnecessary_underscores
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/address/add_address_screen.dart:849:52 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/address/add_address_screen.dart:864:51 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/address/add_address_screen.dart:952:35 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/address/add_address_screen.dart:1050:32 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/address/add_address_screen.dart:1051:38 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/address/add_address_screen.dart:1083:37 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/address/add_address_screen.dart:1186:37 • deprecated_member_use
+warning • Dead code • lib/screens/address/add_address_screen.dart:1270:51 • dead_code
+warning • The left operand can't be null, so the right operand is never executed • lib/screens/address/add_address_screen.dart:1270:54 • dead_null_aware_expression
+warning • The left operand can't be null, so the right operand is never executed • lib/screens/address/add_address_screen.dart:1271:58 • dead_null_aware_expression
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/address/add_address_screen.dart:1373:36 • deprecated_member_use
+   info • 'activeColor' is deprecated and shouldn't be used. Use activeThumbColor instead. This feature was deprecated after v3.31.0-2.0.pre • lib/screens/address/add_address_screen.dart:1503:9 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/address/add_address_screen.dart:1520:30 • deprecated_member_use
+   info • Statements in an if should be enclosed in a block • lib/screens/auth/register_screen.dart:395:37 • curly_braces_in_flow_control_structures
+   info • Statements in an if should be enclosed in a block • lib/screens/auth/register_screen.dart:396:27 • curly_braces_in_flow_control_structures
+   info • Unnecessary use of multiple underscores • lib/screens/cart/cart_summary_screen.dart:172:33 • unnecessary_underscores
+   info • Unnecessary use of multiple underscores • lib/screens/cart/cart_summary_screen.dart:172:37 • unnecessary_underscores
+   info • Unnecessary use of multiple underscores • lib/screens/category/category_screen.dart:124:33 • unnecessary_underscores
+   info • Unnecessary use of multiple underscores • lib/screens/category/category_screen.dart:124:37 • unnecessary_underscores
+   info • Use interpolation to compose strings and values • lib/screens/discover/discover_screen.dart:81:17 • prefer_interpolation_to_compose_strings
+   info • The file name 'favoritesTailor_screen.dart' isn't a lower_case_with_underscores identifier • lib/screens/favorites/favoritesTailor_screen.dart:1:1 • file_names
+warning • The value of the field '_productsFuture' isn't used • lib/screens/home/home_screen.dart:30:30 • unused_field
+   info • Use interpolation to compose strings and values • lib/screens/home/home_screen.dart:157:17 • prefer_interpolation_to_compose_strings
+   info • Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check • lib/screens/notifications/notification_settings_screen.dart:101:44 • use_build_context_synchronously
+   info • 'activeColor' is deprecated and shouldn't be used. Use activeThumbColor instead. This feature was deprecated after v3.31.0-2.0.pre • lib/screens/notifications/notification_settings_screen.dart:185:15 • deprecated_member_use
+warning • Unused import: 'dart:math' • lib/screens/onboarding/onboarding_screen.dart:2:8 • unused_import
+warning • Unused import: 'dart:math' • lib/screens/order/order_analytics_screen.dart:3:8 • unused_import
+   info • Unnecessary use of multiple underscores • lib/screens/order/order_detail_screen.dart:153:99 • unnecessary_underscores
+   info • Unnecessary use of multiple underscores • lib/screens/order/order_detail_screen.dart:153:103 • unnecessary_underscores
+   info • Unnecessary use of 'toList' in a spread • lib/screens/order/order_detail_screen.dart:294:18 • unnecessary_to_list_in_spreads
+   info • Don't use 'BuildContext's across async gaps • lib/screens/payment/payment_processing_screen.dart:41:40 • use_build_context_synchronously
+   info • Unnecessary use of multiple underscores • lib/screens/product_detail/product_images_screen.dart:91:41 • unnecessary_underscores
+   info • Unnecessary use of multiple underscores • lib/screens/product_detail/product_images_screen.dart:91:45 • unnecessary_underscores
+   info • Statements in an if should be enclosed in a block • lib/screens/profile/edit_profile_screen.dart:45:37 • curly_braces_in_flow_control_structures
+   info • Statements in an if should be enclosed in a block • lib/screens/profile/edit_profile_screen.dart:46:42 • curly_braces_in_flow_control_structures
+   info • Statements in an if should be enclosed in a block • lib/screens/profile/edit_profile_screen.dart:47:16 • curly_braces_in_flow_control_structures
+   info • Statements in an if should be enclosed in a block • lib/screens/profile/edit_profile_screen.dart:106:40 • curly_braces_in_flow_control_structures
+   info • Statements in an if should be enclosed in a block • lib/screens/profile/edit_profile_screen.dart:107:44 • curly_braces_in_flow_control_structures
+   info • 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre • lib/screens/profile/edit_profile_screen.dart:254:11 • deprecated_member_use
+   info • Use interpolation to compose strings and values • lib/screens/settings/about_screen.dart:48:24 • prefer_interpolation_to_compose_strings
+   info • Unnecessary use of multiple underscores • lib/screens/settings/country_screen.dart:336:71 • unnecessary_underscores
+   info • Unnecessary use of multiple underscores • lib/screens/settings/country_screen.dart:336:75 • unnecessary_underscores
+   info • Unnecessary use of multiple underscores • lib/screens/settings/currency_screen.dart:241:117 • unnecessary_underscores
+   info • Unnecessary use of multiple underscores • lib/screens/settings/currency_screen.dart:241:121 • unnecessary_underscores
+warning • The value of the field '_errorMessage' isn't used • lib/screens/settings/language_screen.dart:23:11 • unused_field
+   info • Statements in a for should be enclosed in a block • lib/screens/settings/measurements_screen.dart:130:42 • curly_braces_in_flow_control_structures
+   info • Statements in a for should be enclosed in a block • lib/screens/settings/measurements_screen.dart:131:48 • curly_braces_in_flow_control_structures
+warning • Unused import: 'package:kouture/screens/payment/payment_method_screen.dart' • lib/screens/settings/settings_screen.dart:4:8 • unused_import
+warning • The value of the field '_salmon' isn't used • lib/screens/settings/settings_screen.dart:23:22 • unused_field
+warning • The value of the field '_secondaryPink' isn't used • lib/screens/settings/settings_screen.dart:24:22 • unused_field
+   info • Unnecessary use of multiple underscores • lib/screens/splash/splash_screen.dart:86:28 • unnecessary_underscores
+   info • Unnecessary use of multiple underscores • lib/screens/splash/splash_screen.dart:188:20 • unnecessary_underscores
+   info • Unnecessary use of multiple underscores • lib/widgets/product_card.dart:68:47 • unnecessary_underscores
+   info • Unnecessary use of multiple underscores • lib/widgets/product_card.dart:68:51 • unnecessary_underscores
+
+182 issues found. (ran in 2.5s)

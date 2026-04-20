@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../backend/translator.dart';
 import '../payment/payment_processing_screen.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class MobileMoneyScreen extends StatefulWidget {
   const MobileMoneyScreen({super.key});
@@ -27,7 +28,7 @@ class _MobileMoneyScreenState extends State<MobileMoneyScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.chevron_left, color: Colors.black),
+          icon: HugeIcon(icon: HugeIcons.strokeRoundedArrowLeft01, color: Colors.black, size: 24.0),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -46,7 +47,7 @@ class _MobileMoneyScreenState extends State<MobileMoneyScreen> {
                     color: _mtnYellow.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Icon(Icons.smartphone_outlined, size: 50, color: Colors.black87),
+                  child: HugeIcon(icon: HugeIcons.strokeRoundedSmartPhone01, size: 50, color: Colors.black87),
                 ),
               ),
               const SizedBox(height: 30),
@@ -66,7 +67,7 @@ class _MobileMoneyScreenState extends State<MobileMoneyScreen> {
                 decoration: InputDecoration(
                   labelText: Translator.t('phone_number'),
                   hintText: 'ex: 670 00 00 00',
-                  prefixIcon: const Icon(Icons.phone),
+                  prefixIcon: HugeIcon(icon: HugeIcons.strokeRoundedCall, color: Colors.black, size: 24.0),
                   filled: true,
                   fillColor: Colors.grey[50],
                   border: OutlineInputBorder(
@@ -126,7 +127,7 @@ class _MobileMoneyScreenState extends State<MobileMoneyScreen> {
         children: [
           Row(
             children: [
-              const Icon(Icons.info_outline, color: Colors.black54, size: 20),
+              HugeIcon(icon: HugeIcons.strokeRoundedInformationCircle, color: Colors.black54, size: 20),
               const SizedBox(width: 10),
               Text(Translator.t('instructions'), style: const TextStyle(fontWeight: FontWeight.bold)),
             ],

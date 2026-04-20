@@ -5,6 +5,7 @@ import '../../backend/translator.dart';
 import '../../widgets/auth_background.dart';
 import 'login_screen.dart';
 import 'otp_verification_screen.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -286,7 +287,7 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                     
                     _buildSocialButton(
                       label: 'Google',
-                      icon: Icons.g_mobiledata,
+                      icon: HugeIcons.strokeRoundedSmartPhone01,
                       color: const Color(0xFFDB4437),
                     ),
                     
@@ -338,7 +339,7 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                   color: Color(0xFFF1FFF1),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.check_circle_rounded, size: 80, color: Colors.green),
+                child: HugeIcon(icon: HugeIcons.strokeRoundedCheckmarkCircle01, size: 80, color: Colors.green),
               ),
               const SizedBox(height: 32),
               const Text(
@@ -388,10 +389,7 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
         hintStyle: TextStyle(color: Colors.grey[300], fontSize: 14),
         suffixIcon: isPassword
             ? IconButton(
-                icon: Icon(
-                  (isConfirm ? _isConfirmPasswordVisible : _isPasswordVisible) ? Icons.visibility_off : Icons.visibility,
-                  color: Colors.grey[400],
-                ),
+                icon: HugeIcon(icon: (isConfirm ? _isConfirmPasswordVisible : _isPasswordVisible) ? HugeIcons.strokeRoundedViewOff : HugeIcons.strokeRoundedView, color: Colors.grey[400], size: 24.0),
                 onPressed: () {
                    setState(() {
                      if (isConfirm) _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
@@ -420,7 +418,7 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
     );
   }
 
-  Widget _buildSocialButton({required String label, required IconData icon, required Color color}) {
+  Widget _buildSocialButton({required String label, required dynamic icon, required Color color}) {
     return SizedBox(
       width: double.infinity,
       height: 56,
@@ -433,7 +431,7 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 24, color: color),
+            HugeIcon(icon: icon, size: 24, color: color),
             const SizedBox(width: 12),
             Text(label, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black)),
           ],

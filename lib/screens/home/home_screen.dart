@@ -10,6 +10,8 @@ import '../discover/discover_screen.dart';
 import '../cart/cart_screen.dart';
 import '../../widgets/product_card.dart';
 import '../../widgets/state_widgets.dart';
+import '../../widgets/responsive_helper.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -61,51 +63,51 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(height: 16),
+                        SizedBox(height: context.h(16)),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          padding: EdgeInsets.symmetric(horizontal: context.w(16)),
                           child: _buildHeader(),
                         ),
-                        const SizedBox(height: 20),
+                        SizedBox(height: context.h(20)),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          padding: EdgeInsets.symmetric(horizontal: context.w(16)),
                           child: _buildSearchBar(),
                         ),
-                        const SizedBox(height: 20),
+                        SizedBox(height: context.h(20)),
                         _buildHeroBanner(),
-                        const SizedBox(height: 25),
+                        SizedBox(height: context.h(25)),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          padding: EdgeInsets.symmetric(horizontal: context.w(16)),
                           child: _buildSectionHeader(Translator.t('new_arrivals')),
                         ),
-                        const SizedBox(height: 15),
+                        SizedBox(height: context.h(15)),
                         _buildHorizontalScroll(),
-                        const SizedBox(height: 25),
+                        SizedBox(height: context.h(25)),
                         _buildBannerDots(),
-                        const SizedBox(height: 25),
+                        SizedBox(height: context.h(25)),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          padding: EdgeInsets.symmetric(horizontal: context.w(16)),
                           child: _buildSectionHeader(Translator.t('categories')),
                         ),
-                        const SizedBox(height: 15),
+                        SizedBox(height: context.h(15)),
                         _buildCategories(),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          padding: EdgeInsets.symmetric(horizontal: context.w(16)),
                           child: _buildSectionHeader(Translator.t('top_trends')),
                         ),
-                        const SizedBox(height: 15),
+                        SizedBox(height: context.h(15)),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          padding: EdgeInsets.symmetric(horizontal: context.w(16)),
                           child: _buildProductGrid(),
                         ),
-                        const SizedBox(height: 25),
+                        SizedBox(height: context.h(25)),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          padding: EdgeInsets.symmetric(horizontal: context.w(16)),
                           child: _buildSectionHeader(Translator.t('recommended_tailors')),
                         ),
-                        const SizedBox(height: 15),
+                        SizedBox(height: context.h(15)),
                         _buildTailorSuggestions(),
-                        const SizedBox(height: 30),
+                        SizedBox(height: context.h(30)),
                       ],
                     ),
                   ),
@@ -132,8 +134,8 @@ class _HomeScreenState extends State<HomeScreen> {
         GestureDetector(
           onTap: () => Navigator.pushNamed(context, ProfileScreen.routeName),
           child: Container(
-            width: 52,
-            height: 52,
+            width: context.w(52),
+            height: context.w(52),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(color: _salmon.withValues(alpha: 0.3), width: 2),
@@ -144,7 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
-        const SizedBox(width: 12),
+        SizedBox(width: context.w(12)),
         // Texte
         GestureDetector(
           onTap: () => Navigator.pushNamed(context, ProfileScreen.routeName),
@@ -153,13 +155,13 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Text(
                 Translator.t('welcome_back') + '!',
-                style: TextStyle(color: Colors.grey[600], fontSize: 13),
+                style: TextStyle(color: Colors.grey[600], fontSize: context.sp(13)),
               ),
               Text(
                 name,
-                style: const TextStyle(
+                style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 17,
+                  fontSize: context.sp(17),
                   color: Colors.black,
                 ),
               ),
@@ -173,29 +175,29 @@ class _HomeScreenState extends State<HomeScreen> {
               builder: (context, _) {
                 final count = MockFirebase().unreadNotificationsCount;
                 return _buildHeaderIcon(
-                  Icons.notifications_outlined, 
+                  HugeIcons.strokeRoundedNotification01, 
                   hasBadge: count > 0,
                   badgeCount: count > 0 ? count : null,
                   onTap: () => Navigator.pushNamed(context, NotificationsScreen.routeName),
                 );
               }
             ),
-            const SizedBox(width: 10),
+            SizedBox(width: context.w(10)),
             // Settings icon
-            _buildHeaderIcon(Icons.settings_outlined, onTap: () => Navigator.pushNamed(context, SettingsScreen.routeName)),
+            _buildHeaderIcon(HugeIcons.strokeRoundedSettings01, onTap: () => Navigator.pushNamed(context, SettingsScreen.routeName)),
           ],
     );
   }
 
-  Widget _buildHeaderIcon(IconData icon, {bool hasBadge = false, int? badgeCount, VoidCallback? onTap}) {
+  Widget _buildHeaderIcon(dynamic icon, {bool hasBadge = false, int? badgeCount, VoidCallback? onTap}) {
     return Stack(
       clipBehavior: Clip.none,
       children: [
         GestureDetector(
           onTap: onTap,
           child: Container(
-            width: 44,
-            height: 44,
+            width: context.w(30),
+            height: context.w(30),
             decoration: BoxDecoration(
             color: Colors.white,
             shape: BoxShape.circle,
@@ -207,7 +209,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ],
           ),
-          child: Icon(icon, color: Colors.black87, size: 22),
+          child: HugeIcon(icon: icon, color: Colors.black87, size: context.w(13)),
         ),
         ),
         if (hasBadge)
@@ -215,7 +217,7 @@ class _HomeScreenState extends State<HomeScreen> {
             right: 0,
             top: 0,
             child: Container(
-              padding: const EdgeInsets.all(4),
+              padding: EdgeInsets.all(context.w(4)),
               decoration: const BoxDecoration(
                 color: _salmon,
                 shape: BoxShape.circle,
@@ -225,7 +227,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ? Center(
                     child: Text(
                       '$badgeCount',
-                      style: const TextStyle(color: Colors.white, fontSize: 8, fontWeight: FontWeight.bold),
+                      style: TextStyle(color: Colors.white, fontSize: context.sp(7), fontWeight: FontWeight.bold),
                     ),
                   )
                 : null,
@@ -245,7 +247,7 @@ class _HomeScreenState extends State<HomeScreen> {
     ];
 
     return SizedBox(
-      height: 110,
+      height: context.h(110),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -255,8 +257,8 @@ class _HomeScreenState extends State<HomeScreen> {
           return GestureDetector(
             onTap: () => Navigator.pushNamed(context, DiscoverScreen.routeName),
             child: Container(
-              width: 160,
-              margin: const EdgeInsets.only(right: 12),
+              width: context.w(160),
+              margin: EdgeInsets.only(right: context.w(12)),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
                 image: DecorationImage(
@@ -276,16 +278,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                 ),
-                padding: const EdgeInsets.all(12),
+                padding: EdgeInsets.all(context.w(12)),
                 child: Align(
                   alignment: Alignment.bottomLeft,
                   child: Text(
                     // Try translating, fallback to ID
                     Translator.t(titleKey).contains(titleKey) ? titleKey : Translator.t(titleKey),
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
-                      fontSize: 14,
+                      fontSize: context.sp(14),
                     ),
                   ),
                 ),
@@ -309,8 +311,8 @@ class _HomeScreenState extends State<HomeScreen> {
               showSearch(context: context, delegate: ProductSearchDelegate());
             },
             child: Container(
-              height: 50,
-              padding: const EdgeInsets.symmetric(horizontal: 18),
+              height: context.h(50),
+              padding: EdgeInsets.symmetric(horizontal: context.w(18)),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(30),
@@ -324,11 +326,11 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               child: Row(
                 children: [
-                  Icon(Icons.search, color: Colors.grey[400], size: 22),
-                  const SizedBox(width: 10),
+                  HugeIcon(icon: HugeIcons.strokeRoundedSearch01, color: Colors.grey[400], size: context.w(18)),
+                  SizedBox(width: context.w(10)),
                   Text(
                     Translator.t('search_hint'),
-                    style: TextStyle(color: Colors.grey[400], fontSize: 14),
+                    style: TextStyle(color: Colors.grey[400], fontSize: context.sp(14)),
                   ),
                 ],
               ),
@@ -342,7 +344,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Stack(
             clipBehavior: Clip.none,
             children: [
-              const Icon(Icons.shopping_cart_outlined, size: 28, color: Colors.black87),
+              HugeIcon(icon: HugeIcons.strokeRoundedShoppingCart01, size: context.w(22), color: Colors.black87),
               Positioned(
                 right: -4,
                 top: -4,
@@ -352,8 +354,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     final count = MockFirebase().cartItems.length;
                     if (count == 0) return const SizedBox();
                     return Container(
-                      width: 18,
-                      height: 18,
+                      width: context.w(18),
+                      height: context.w(18),
                       decoration: const BoxDecoration(
                         color: _salmon,
                         shape: BoxShape.circle,
@@ -361,9 +363,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Center(
                         child: Text(
                           '$count',
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.white,
-                            fontSize: 10,
+                            fontSize: context.sp(10),
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -387,7 +389,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (promos.isEmpty) return const SizedBox();
 
     return SizedBox(
-      height: 200,
+      height: context.h(200),
       child: PageView.builder(
         itemCount: promos.length,
         onPageChanged: (index) => setState(() => _currentBannerIndex = index),
@@ -422,13 +424,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     Text(
                       p['title'] ?? 'New Trend 2026',
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: Colors.white,
-                        fontSize: 26,
+                        fontSize: context.sp(26),
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 14),
+                    SizedBox(height: context.h(14)),
                     ElevatedButton(
                       onPressed: () => Navigator.pushNamed(context, DiscoverScreen.routeName),
                       style: ElevatedButton.styleFrom(
@@ -436,15 +438,15 @@ class _HomeScreenState extends State<HomeScreen> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 10),
+                        padding: EdgeInsets.symmetric(horizontal: context.w(22), vertical: context.h(10)),
                         elevation: 0,
                       ),
                       child: Text(
                         Translator.t('shop_now'),
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: 13,
+                          fontSize: context.sp(13),
                           letterSpacing: 1,
                         ),
                       ),
@@ -474,7 +476,7 @@ class _HomeScreenState extends State<HomeScreen> {
           duration: const Duration(milliseconds: 200),
           margin: const EdgeInsets.symmetric(horizontal: 4),
           width: active ? 20 : 8,
-          height: 8,
+          height: context.h(8),
           decoration: BoxDecoration(
             color: active ? _salmon : Colors.grey[300],
             borderRadius: BorderRadius.circular(4),
@@ -493,16 +495,16 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         Text(
           title,
-          style: const TextStyle(
+          style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 18,
+            fontSize: context.sp(18),
             color: Colors.black,
           ),
         ),
           GestureDetector(
             onTap: () => Navigator.pushNamed(context, DiscoverScreen.routeName),
             child: Container(
-              padding: const EdgeInsets.all(6),
+              padding: EdgeInsets.all(context.w(6)),
               decoration: BoxDecoration(
                 color: Colors.white,
                 shape: BoxShape.circle,
@@ -513,7 +515,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               ),
-              child: const Icon(Icons.chevron_right, size: 20, color: Colors.black87),
+              child: HugeIcon(icon: HugeIcons.strokeRoundedArrowRight01, size: context.w(18), color: Colors.black87),
             ),
           ),
       ],
@@ -525,7 +527,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // 
   Widget _buildCategories() {
     return SizedBox(
-      height: 110,
+      height: context.h(120),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -539,8 +541,8 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 children: [
                   Container(
-                    width: 68,
-                    height: 68,
+                    width: context.w(68),
+                    height: context.w(68),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(color: _salmon.withValues(alpha: 0.4), width: 2),
@@ -550,10 +552,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: context.h(8)),
                   Text(
                     Translator.t(cat['id']!),
-                    style: const TextStyle(fontSize: 12, color: Colors.black87),
+                    style: TextStyle(fontSize: context.sp(12), color: Colors.black87),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -571,9 +573,9 @@ class _HomeScreenState extends State<HomeScreen> {
       future: MockFirebase().getSuggestedTailors(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const SizedBox(
-            height: 170,
-            child: KoutureLoadingState(),
+          return SizedBox(
+            height: context.h(170),
+            child: const KoutureLoadingState(),
           );
         }
         
@@ -581,7 +583,7 @@ class _HomeScreenState extends State<HomeScreen> {
         if (tailors.isEmpty) return const SizedBox();
 
         return SizedBox(
-          height: 170,
+          height: context.h(170),
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -600,8 +602,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, VendorProfileScreen.routeName, arguments: tailor['id']),
       child: Container(
-        width: 140,
-        margin: const EdgeInsets.only(right: 16, bottom: 10),
+        width: context.w(140),
+        margin: EdgeInsets.only(right: context.w(16), bottom: context.h(10)),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
@@ -643,11 +645,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               color: Colors.white,
                               shape: BoxShape.circle,
                             ),
-                            child: Icon(
-                              isFav ? Icons.favorite : Icons.favorite_border,
-                              color: isFav ? _salmon : Colors.grey,
-                              size: 16,
-                            ),
+                            child: HugeIcon(icon: isFav ? HugeIcons.strokeRoundedFavourite : HugeIcons.strokeRoundedFavourite, color: isFav ? _salmon : Colors.grey,
+                              size: 16,),
                           ),
                         );
                       },
@@ -664,24 +663,24 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     Text(
                       tailor['name'] ?? '',
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: context.sp(13)),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: context.h(4)),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.star, color: Colors.amber, size: 10),
-                        const SizedBox(width: 2),
+                        HugeIcon(icon: HugeIcons.strokeRoundedStars, color: Colors.amber, size: context.w(10)),
+                        SizedBox(width: context.w(2)),
                         Text(
                           '${tailor['rating']}',
-                          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                          style: TextStyle(fontSize: context.sp(10), fontWeight: FontWeight.bold),
                         ),
-                        const SizedBox(width: 6),
+                        SizedBox(width: context.w(6)),
                         Text(
                           '${tailor['publicationCount']} pub.',
-                          style: TextStyle(fontSize: 10, color: Colors.grey[600]),
+                          style: TextStyle(fontSize: context.sp(10), color: Colors.grey[600]),
                         ),
                       ],
                     ),
@@ -735,10 +734,10 @@ class _HomeScreenState extends State<HomeScreen> {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: products.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 25,
-                crossAxisSpacing: 14,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: context.screenWidth > 600 ? 3 : 2,
+                mainAxisSpacing: context.h(25),
+                crossAxisSpacing: context.w(14),
                 childAspectRatio: 0.6,
               ),
               itemBuilder: (context, index) {

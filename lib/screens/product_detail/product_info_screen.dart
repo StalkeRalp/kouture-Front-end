@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../backend/mock_firebase.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class ProductInfoScreen extends StatelessWidget {
   final Map<String, dynamic> product;
@@ -20,7 +21,7 @@ class ProductInfoScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.chevron_left, color: Colors.black),
+          icon: HugeIcon(icon: HugeIcons.strokeRoundedArrowLeft01, color: Colors.black, size: 24.0),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -79,7 +80,7 @@ class ProductInfoScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-                      const Icon(Icons.verified, color: Colors.blue, size: 20),
+                      HugeIcon(icon: HugeIcons.strokeRoundedCheckmarkBadge01, color: Colors.blue, size: 20),
                     ],
                   ),
                 );

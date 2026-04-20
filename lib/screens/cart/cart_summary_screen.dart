@@ -6,6 +6,7 @@ import '../address/address_list_screen.dart';
 import '../payment/orange_money_screen.dart';
 import '../payment/mobile_money_screen.dart';
 import '../payment/card_payment_screen.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class CartSummaryScreen extends StatefulWidget {
   const CartSummaryScreen({super.key});
@@ -40,7 +41,7 @@ class _CartSummaryScreenState extends State<CartSummaryScreen> {
             backgroundColor: Colors.white,
             elevation: 0,
             leading: IconButton(
-              icon: const Icon(Icons.chevron_left, color: Colors.black),
+              icon: HugeIcon(icon: HugeIcons.strokeRoundedArrowLeft01, color: Colors.black, size: 24.0),
               onPressed: () => Navigator.pop(context),
             ),
             title: Text(Translator.t('order_summary'), style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
@@ -51,7 +52,7 @@ class _CartSummaryScreenState extends State<CartSummaryScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.shopping_cart_outlined, size: 80, color: Colors.grey[300]),
+                      HugeIcon(icon: HugeIcons.strokeRoundedShoppingCart01, size: 80, color: Colors.grey[300]),
                       const SizedBox(height: 16),
                       Text(Translator.t('cart_empty'), style: const TextStyle(fontSize: 18, color: Colors.grey)),
                       const SizedBox(height: 20),
@@ -126,7 +127,7 @@ class _CartSummaryScreenState extends State<CartSummaryScreen> {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(color: _salmon.withValues(alpha: 0.1), shape: BoxShape.circle),
-            child: const Icon(Icons.location_on_outlined, color: _salmon, size: 22),
+            child: HugeIcon(icon: HugeIcons.strokeRoundedLocation01, color: _salmon, size: 22),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -189,9 +190,9 @@ class _CartSummaryScreenState extends State<CartSummaryScreen> {
 
   Widget _buildPaymentOptions() {
     final options = [
-      {'icon': Icons.phone_android, 'name': 'Orange Money', 'color': Colors.orange},
-      {'icon': Icons.phone_android, 'name': 'Mobile Money', 'color': Colors.yellow[800]},
-      {'icon': Icons.credit_card, 'name': Translator.t('bank_card'), 'color': Colors.blue},
+      {'icon': HugeIcons.strokeRoundedSmartPhone01, 'name': 'Orange Money', 'color': Colors.orange},
+      {'icon': HugeIcons.strokeRoundedSmartPhone01, 'name': 'Mobile Money', 'color': Colors.yellow[800]},
+      {'icon': HugeIcons.strokeRoundedCreditCard, 'name': Translator.t('bank_card'), 'color': Colors.blue},
     ];
 
     return Column(
@@ -210,10 +211,10 @@ class _CartSummaryScreenState extends State<CartSummaryScreen> {
             ),
             child: Row(
               children: [
-                Icon(opt['icon'] as IconData, color: opt['color'] as Color?, size: 24),
+                HugeIcon(icon: opt['icon'] as dynamic, color: opt['color'] as Color?, size: 24),
                 const SizedBox(width: 14),
                 Expanded(child: Text(opt['name'] as String, style: TextStyle(fontWeight: selected ? FontWeight.bold : FontWeight.normal))),
-                if (selected) const Icon(Icons.check_circle, color: _salmon, size: 20),
+                if (selected) HugeIcon(icon: HugeIcons.strokeRoundedCheckmarkCircle01, color: _salmon, size: 20),
               ],
             ),
           ),
@@ -274,7 +275,7 @@ class _CartSummaryScreenState extends State<CartSummaryScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.lock_outline, color: Colors.white, size: 18),
+              HugeIcon(icon: HugeIcons.strokeRoundedLock, color: Colors.white, size: 18),
               const SizedBox(width: 10),
               Text(
                 '${Translator.t('pay')} ${total.toStringAsFixed(0)} XAF',

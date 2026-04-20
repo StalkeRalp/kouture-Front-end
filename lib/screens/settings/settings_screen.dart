@@ -13,6 +13,7 @@ import 'package:kouture/screens/address/address_list_screen.dart';
 import 'package:kouture/screens/settings/help_screen.dart';
 import '../../backend/mock_firebase.dart';
 import '../../backend/translator.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -32,7 +33,7 @@ class SettingsScreen extends StatelessWidget {
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black, size: 18),
+          icon: HugeIcon(icon: HugeIcons.strokeRoundedArrowLeft01, color: Colors.black, size: 18),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -46,7 +47,7 @@ class SettingsScreen extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.notifications_none_outlined, color: Colors.black),
+            icon: HugeIcon(icon: HugeIcons.strokeRoundedNotification01, color: Colors.black, size: 24.0),
             onPressed: () => Navigator.pushNamed(context, NotificationSettingsScreen.routeName),
           ),
         ],
@@ -201,11 +202,8 @@ class SettingsScreen extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                 ],
-                const Icon(
-                  Icons.arrow_forward_ios,
-                  size: 14,
-                  color: Colors.black87,
-                ),
+                HugeIcon(icon: HugeIcons.strokeRoundedArrowRight01, size: 14,
+                  color: Colors.black87,),
               ],
             ),
           ],

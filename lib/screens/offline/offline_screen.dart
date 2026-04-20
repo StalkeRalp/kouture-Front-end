@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../main_navigation_screen.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class OfflineScreen extends StatelessWidget {
   const OfflineScreen({super.key});
@@ -31,16 +32,10 @@ class OfflineScreen extends StatelessWidget {
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
-                      Icon(
-                        Icons.wifi_off_rounded,
-                        size: 100,
-                        color: _salmon.withValues(alpha: 0.2),
-                      ),
-                      const Icon(
-                        Icons.signal_cellular_connected_no_internet_4_bar_rounded,
-                        size: 60,
-                        color: _salmon,
-                      ),
+                      HugeIcon(icon: HugeIcons.strokeRoundedWifiOff01, size: 100,
+                        color: _salmon.withValues(alpha: 0.2),),
+                      HugeIcon(icon: HugeIcons.strokeRoundedCellularNetworkOffline, size: 60,
+                        color: _salmon,),
                     ],
                   ),
                 ),

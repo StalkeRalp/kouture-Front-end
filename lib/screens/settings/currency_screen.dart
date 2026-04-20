@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../backend/mock_firebase.dart';
 import '../../backend/translator.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class CurrencyScreen extends StatefulWidget {
   const CurrencyScreen({super.key});
@@ -106,7 +107,7 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black87, size: 18),
+          icon: HugeIcon(icon: HugeIcons.strokeRoundedArrowLeft01, color: Colors.black87, size: 18),
           onPressed: () => Navigator.pop(context),
         ),
         bottom: PreferredSize(
@@ -237,7 +238,7 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                   child: Center(
                     child: flagUrl != null
                       ? ClipOval(
-                          child: Image.network(flagUrl, width: 28, height: 28, fit: BoxFit.cover, errorBuilder: (_, __, ___) => const Icon(Icons.money)))
+                          child: Image.network(flagUrl, width: 28, height: 28, fit: BoxFit.cover, errorBuilder: (_, __, ___) => HugeIcon(icon: HugeIcons.strokeRoundedMoney01, color: Colors.black, size: 24.0)))
                       : Text(flagEmoji ?? '💰', style: const TextStyle(fontSize: 22)),
                   ),
                 ),
@@ -258,9 +259,9 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                   ),
                 ),
                 if (isSelected)
-                  const Icon(Icons.check_circle, color: Color(0xFFFF8C8C), size: 24)
+                  HugeIcon(icon: HugeIcons.strokeRoundedCheckmarkCircle01, color: Color(0xFFFF8C8C), size: 24)
                 else
-                  Icon(Icons.radio_button_off, color: Colors.grey[300], size: 24),
+                  HugeIcon(icon: HugeIcons.strokeRoundedCircle, color: Colors.grey[300], size: 24),
               ],
             ),
           ),

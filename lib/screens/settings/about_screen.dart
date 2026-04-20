@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../backend/mock_firebase.dart';
 import '../../backend/translator.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
@@ -22,7 +23,7 @@ class AboutScreen extends StatelessWidget {
             elevation: 0,
             centerTitle: true,
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black, size: 18),
+              icon: HugeIcon(icon: HugeIcons.strokeRoundedArrowLeft01, color: Colors.black, size: 18),
               onPressed: () => Navigator.pop(context),
             ),
           ),
@@ -57,9 +58,9 @@ class AboutScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _buildSocialIcon(Icons.facebook),
-                      _buildSocialIcon(Icons.camera_alt),
-                      _buildSocialIcon(Icons.language),
+                      _buildSocialIcon(HugeIcons.strokeRoundedFacebook01),
+                      _buildSocialIcon(HugeIcons.strokeRoundedCamera01),
+                      _buildSocialIcon(HugeIcons.strokeRoundedInternet),
                     ],
                   ),
                   const SizedBox(height: 40),
@@ -73,7 +74,7 @@ class AboutScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSocialIcon(IconData icon) {
+  Widget _buildSocialIcon(dynamic icon) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Container(
@@ -83,7 +84,7 @@ class AboutScreen extends StatelessWidget {
           shape: BoxShape.circle,
           border: Border.all(color: Colors.grey[200]!),
         ),
-        child: Icon(icon, color: Colors.grey[600], size: 20),
+        child: HugeIcon(icon: icon, color: Colors.grey[600], size: 20),
       ),
     );
   }

@@ -5,6 +5,7 @@ import '../tracking/tracking_screen.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class OrderDetailScreen extends StatelessWidget {
   const OrderDetailScreen({super.key});
@@ -24,13 +25,13 @@ class OrderDetailScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.chevron_left, color: Colors.black),
+          icon: HugeIcon(icon: HugeIcons.strokeRoundedArrowLeft01, color: Colors.black, size: 24.0),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
           if (orderId != null)
             IconButton(
-              icon: const Icon(Icons.download_outlined, color: Colors.black),
+              icon: HugeIcon(icon: HugeIcons.strokeRoundedDownload01, color: Colors.black, size: 24.0),
               onPressed: () async {
                 final order = await MockFirebase().getOrderById(orderId);
                 if (order != null && context.mounted) {
@@ -39,7 +40,7 @@ class OrderDetailScreen extends StatelessWidget {
               },
             ),
           IconButton(
-            icon: const Icon(Icons.help_outline, color: Colors.black),
+            icon: HugeIcon(icon: HugeIcons.strokeRoundedHelpCircle, color: Colors.black, size: 24.0),
             onPressed: () {},
           ),
         ],
@@ -76,9 +77,9 @@ class OrderDetailScreen extends StatelessWidget {
                                   const SizedBox(height: 30),
                                   _buildSectionTitle(Translator.t('shipping')),
                                   const SizedBox(height: 15),
-                                  _buildInfoTile(Icons.location_on_outlined, Translator.t('my_addresses'), order['shippingAddress']),
+                                  _buildInfoTile(HugeIcons.strokeRoundedLocation01, Translator.t('my_addresses'), order['shippingAddress']),
                                   const SizedBox(height: 15),
-                                  _buildInfoTile(Icons.payment, Translator.t('payment_method'), order['paymentMethod']),
+                                  _buildInfoTile(HugeIcons.strokeRoundedCreditCard, Translator.t('payment_method'), order['paymentMethod']),
                                   const SizedBox(height: 30),
                                   _buildSectionTitle(Translator.t('summary')),
                                   const SizedBox(height: 15),
@@ -117,7 +118,7 @@ class OrderDetailScreen extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Icon(Icons.local_shipping_outlined, color: _salmon, size: 40),
+          HugeIcon(icon: HugeIcons.strokeRoundedTruck, color: _salmon, size: 40),
           const SizedBox(width: 20),
           Expanded(
             child: Column(
@@ -168,13 +169,13 @@ class OrderDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoTile(IconData icon, String label, String value) {
+  Widget _buildInfoTile(dynamic icon, String label, String value) {
     return Row(
       children: [
         Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(color: Colors.grey[100], shape: BoxShape.circle),
-          child: Icon(icon, size: 20, color: Colors.grey[700]),
+          child: HugeIcon(icon: icon, size: 20, color: Colors.grey[700]),
         ),
         const SizedBox(width: 15),
         Column(

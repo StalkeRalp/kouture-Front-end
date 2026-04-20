@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../backend/mock_firebase.dart';
 import '../../backend/translator.dart';
 import '../main_navigation_screen.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class OrderConfirmationScreen extends StatefulWidget {
   const OrderConfirmationScreen({super.key});
@@ -60,7 +61,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
             automaticallyImplyLeading: false, // Prevent going back to success screen
             actions: [
               IconButton(
-                icon: const Icon(Icons.close),
+                icon: HugeIcon(icon: HugeIcons.strokeRoundedCancel01, color: Colors.black, size: 24.0),
                 onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil(
                   MainNavigationScreen.routeName,
                   (route) => false,
@@ -90,7 +91,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
               color: _rose.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.check_circle_outline, color: _rose, size: 60),
+            child: HugeIcon(icon: HugeIcons.strokeRoundedCheckmarkCircle01, color: _rose, size: 60),
           ),
           const SizedBox(height: 16),
           Text(
@@ -120,7 +121,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                   padding: const EdgeInsets.all(20.0),
                   child: Row(
                     children: [
-                      const Icon(Icons.local_shipping_outlined, color: _navy),
+                      HugeIcon(icon: HugeIcons.strokeRoundedTruck, color: _navy, size: 24.0),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Column(
@@ -164,7 +165,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                                   : null,
                             ),
                             child: (product['image'] == null && (product['images'] == null || (product['images'] as List).isEmpty))
-                                ? const Icon(Icons.image, color: Colors.grey)
+                                ? HugeIcon(icon: HugeIcons.strokeRoundedImage01, color: Colors.grey, size: 24.0)
                                 : null,
                           ),
                           const SizedBox(width: 16),

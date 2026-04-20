@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../backend/mock_firebase.dart';
 import '../../backend/translator.dart';
 import 'package:intl/intl.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class NotificationsScreen extends StatelessWidget {
   const NotificationsScreen({super.key});
@@ -16,7 +17,7 @@ class NotificationsScreen extends StatelessWidget {
         title: Text(Translator.t('notifications'), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, size: 20),
+          icon: HugeIcon(icon: HugeIcons.strokeRoundedArrowLeft01, size: 20, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
@@ -66,23 +67,23 @@ class NotificationsScreen extends StatelessWidget {
     final String type = notification['type'] ?? 'order';
     
     // Choose icon based on type
-    IconData icon;
+    dynamic icon;
     Color iconColor;
     switch (type) {
       case 'order':
-        icon = Icons.local_shipping_outlined;
+        icon = HugeIcons.strokeRoundedTruck;
         iconColor = Colors.blue;
         break;
       case 'promo':
-        icon = Icons.sell_outlined;
+        icon = HugeIcons.strokeRoundedTag01;
         iconColor = Colors.orange;
         break;
       case 'chat':
-        icon = Icons.chat_bubble_outline;
+        icon = HugeIcons.strokeRoundedBubbleChatQuestion;
         iconColor = Colors.green;
         break;
       default:
-        icon = Icons.notifications_none;
+        icon = HugeIcons.strokeRoundedNotification01;
         iconColor = const Color(0xFFFF8C8C);
     }
 
@@ -103,7 +104,7 @@ class NotificationsScreen extends StatelessWidget {
                 color: iconColor.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
-              child: Icon(icon, color: iconColor, size: 24),
+              child: HugeIcon(icon: icon, color: iconColor, size: 24),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -176,7 +177,7 @@ class NotificationsScreen extends StatelessWidget {
               color: const Color(0xFFFF8C8C).withValues(alpha: 0.05),
               shape: BoxShape.circle,
             ),
-            child: Icon(Icons.notifications_off_outlined, size: 64, color: const Color(0xFFFF8C8C).withValues(alpha: 0.3)),
+            child: HugeIcon(icon: HugeIcons.strokeRoundedNotificationOff01, size: 64, color: const Color(0xFFFF8C8C).withValues(alpha: 0.3)),
           ),
           const SizedBox(height: 24),
           Text(

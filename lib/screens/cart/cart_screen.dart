@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../backend/mock_firebase.dart';
 import '../../backend/translator.dart';
 import '../order/checkout_screen.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -25,7 +26,7 @@ class CartScreen extends StatelessWidget {
             backgroundColor: Colors.white,
             elevation: 0,
             leading: IconButton(
-              icon: const Icon(Icons.chevron_left, color: Colors.black),
+              icon: HugeIcon(icon: HugeIcons.strokeRoundedArrowLeft01, color: Colors.black, size: 24.0),
               onPressed: () => Navigator.pop(context),
             ),
           ),
@@ -38,7 +39,7 @@ class CartScreen extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.shopping_cart_outlined, size: 80, color: Colors.grey),
+                      HugeIcon(icon: HugeIcons.strokeRoundedShoppingCart01, size: 80, color: Colors.grey),
                       const SizedBox(height: 16),
                       Text(Translator.t('cart_empty'), style: const TextStyle(fontSize: 18, color: Colors.grey)),
                     ],
@@ -131,16 +132,16 @@ class CartScreen extends StatelessWidget {
                 const SizedBox(height: 12),
                 Row(
                   children: [
-                    _buildQtyBtn(Icons.add, () => MockFirebase().updateCartQuantity(item['id'], 1)),
+                    _buildQtyBtn(HugeIcons.strokeRoundedAdd01, () => MockFirebase().updateCartQuantity(item['id'], 1)),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       child: Text('${item['quantity']}', style: const TextStyle(fontWeight: FontWeight.bold)),
                     ),
-                    _buildQtyBtn(Icons.remove, () => MockFirebase().updateCartQuantity(item['id'], -1)),
+                    _buildQtyBtn(HugeIcons.strokeRoundedRemove01, () => MockFirebase().updateCartQuantity(item['id'], -1)),
                     const Spacer(),
                     IconButton(
                       onPressed: () => MockFirebase().removeFromCart(item['id']),
-                      icon: const Icon(Icons.delete_outline, color: Colors.red),
+                      icon: HugeIcon(icon: HugeIcons.strokeRoundedDelete01, color: Colors.red, size: 24.0),
                     ),
                   ],
                 ),
@@ -152,7 +153,7 @@ class CartScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildQtyBtn(IconData icon, VoidCallback onTap) {
+  Widget _buildQtyBtn(dynamic icon, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -161,7 +162,7 @@ class CartScreen extends StatelessWidget {
           border: Border.all(color: Colors.grey.shade300),
           shape: BoxShape.circle,
         ),
-        child: Icon(icon, size: 16, color: Colors.black54),
+        child: HugeIcon(icon: icon, size: 16, color: Colors.black54),
       ),
     );
   }
@@ -204,7 +205,7 @@ class CartScreen extends StatelessWidget {
               children: [
                 Text(Translator.t('checkout'), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 const SizedBox(width: 10),
-                const Icon(Icons.arrow_forward, color: Colors.white),
+                HugeIcon(icon: HugeIcons.strokeRoundedArrowRight01, color: Colors.white, size: 24.0),
               ],
             ),
           ),

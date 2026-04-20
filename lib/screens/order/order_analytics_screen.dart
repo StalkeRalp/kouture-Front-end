@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../backend/mock_firebase.dart';
 import 'dart:math' as math;
+import 'package:hugeicons/hugeicons.dart';
 
 class OrderAnalyticsScreen extends StatefulWidget {
   const OrderAnalyticsScreen({super.key});
@@ -27,7 +28,7 @@ class _OrderAnalyticsScreenState extends State<OrderAnalyticsScreen> {
         centerTitle: true,
         leading: IconButton(
           icon:
-              const Icon(Icons.arrow_back_ios_new, color: Colors.black, size: 20),
+              HugeIcon(icon: HugeIcons.strokeRoundedArrowLeft01, color: Colors.black, size: 20),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -88,7 +89,7 @@ class _OrderAnalyticsScreenState extends State<OrderAnalyticsScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.analytics_outlined, size: 80, color: Colors.grey[200]),
+          HugeIcon(icon: HugeIcons.strokeRoundedAnalytics01, size: 80, color: Colors.grey[200]),
           const SizedBox(height: 20),
           const Text(
             "Aucune donnée disponible",
@@ -110,18 +111,18 @@ class _OrderAnalyticsScreenState extends State<OrderAnalyticsScreen> {
       children: [
         Expanded(
           child: _buildStatCard(
-              'Commandes', totalOrders.toString(), Icons.shopping_bag_outlined, _salmon),
+              'Commandes', totalOrders.toString(), HugeIcons.strokeRoundedShoppingBag01, _salmon),
         ),
         const SizedBox(width: 15),
         Expanded(
           child: _buildStatCard(
-              'Dépensé (XAF)', '${totalSpent.toInt()}', Icons.wallet_outlined, _darkNavy),
+              'Dépensé (XAF)', '${totalSpent.toInt()}', HugeIcons.strokeRoundedWallet01, _darkNavy),
         ),
       ],
     );
   }
 
-  Widget _buildStatCard(String title, String value, IconData icon, Color color) {
+  Widget _buildStatCard(String title, String value, dynamic icon, Color color) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -136,7 +137,7 @@ class _OrderAnalyticsScreenState extends State<OrderAnalyticsScreen> {
             padding: const EdgeInsets.all(10),
             decoration:
                 BoxDecoration(color: color.withValues(alpha: 0.1), shape: BoxShape.circle),
-            child: Icon(icon, color: color, size: 24),
+            child: HugeIcon(icon: icon, color: color, size: 24),
           ),
           const SizedBox(height: 15),
           FittedBox(

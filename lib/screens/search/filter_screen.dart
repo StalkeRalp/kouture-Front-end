@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../backend/translator.dart';
 import '../../backend/mock_firebase.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class FilterScreen extends StatefulWidget {
   final Map<String, dynamic>? initialFilters;
@@ -118,7 +119,7 @@ class _FilterScreenState extends State<FilterScreen> {
             backgroundColor: Colors.white,
             elevation: 0,
             leading: IconButton(
-              icon: const Icon(Icons.close, color: Colors.black),
+              icon: HugeIcon(icon: HugeIcons.strokeRoundedCancel01, color: Colors.black, size: 24.0),
               onPressed: () => Navigator.pop(context),
             ),
             actions: [
@@ -288,11 +289,8 @@ class _FilterScreenState extends State<FilterScreen> {
                               ],
                             ),
                             child: isSelected 
-                              ? Icon(
-                                  Icons.check, 
-                                  color: color.computeLuminance() > 0.5 ? Colors.black : Colors.white, 
-                                  size: 20
-                                )
+                              ? HugeIcon(icon: HugeIcons.strokeRoundedTick01, color: color.computeLuminance() > 0.5 ? Colors.black : Colors.white, 
+                                  size: 20)
                               : null,
                           ),
                         );

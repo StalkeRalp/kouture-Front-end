@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../backend/translator.dart';
 import '../../backend/mock_firebase.dart';
 import 'add_address_screen.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class AddressListScreen extends StatelessWidget {
   const AddressListScreen({super.key});
@@ -20,7 +21,7 @@ class AddressListScreen extends StatelessWidget {
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.chevron_left, color: Colors.black),
+          icon: HugeIcon(icon: HugeIcons.strokeRoundedArrowLeft01, color: Colors.black, size: 24.0),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -67,7 +68,7 @@ class AddressListScreen extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.location_off_outlined, size: 80, color: Colors.grey[300]),
+          HugeIcon(icon: HugeIcons.strokeRoundedLocationOffline01, size: 80, color: Colors.grey[300]),
           const SizedBox(height: 20),
           Text(
             Translator.t('no_addresses'),
@@ -121,11 +122,8 @@ class AddressListScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(
-                      label == 'Maison' ? Icons.home_filled : Icons.work,
-                      color: isDefault ? _salmon : Colors.grey,
-                      size: 20,
-                    ),
+                    HugeIcon(icon: label == 'Maison' ? HugeIcons.strokeRoundedHome01 : HugeIcons.strokeRoundedBriefcase01, color: isDefault ? _salmon : Colors.grey,
+                      size: 20,),
                     const SizedBox(width: 8),
                     Text(
                       translatedLabel,
@@ -173,7 +171,7 @@ class AddressListScreen extends StatelessWidget {
                   ),
                 if (!isDefault) const Spacer(),
                 IconButton(
-                  icon: const Icon(Icons.delete_outline, color: Colors.redAccent, size: 20),
+                  icon: HugeIcon(icon: HugeIcons.strokeRoundedDelete01, color: Colors.redAccent, size: 20),
                   onPressed: () => _showDeleteConfirmation(context, address['id']),
                 ),
               ],

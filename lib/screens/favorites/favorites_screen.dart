@@ -4,6 +4,7 @@ import '../../backend/translator.dart';
 import '../../widgets/product_card.dart';
 import 'favoritesTailor_screen.dart';
 import '../discover/discover_screen.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class FavoritesScreen extends StatelessWidget {
   const FavoritesScreen({super.key});
@@ -67,7 +68,7 @@ class _ProductFavoritesTab extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.favorite_outline, size: 80, color: Colors.grey[300]),
+                HugeIcon(icon: HugeIcons.strokeRoundedFavourite, size: 80, color: Colors.grey[300]),
                 const SizedBox(height: 20),
                 Text(
                   Translator.t('no_favorite_products'), 

@@ -21,6 +21,7 @@ class MockFirebase extends ChangeNotifier {
   List<dynamic> _promotions = [];
   List<dynamic> _notifications = [];
   List<Map<String, dynamic>> _cartItems = [];
+  List<dynamic> _seedChats = [];
   bool _isInitialized = false;
 
   List<String> favoriteIds = [];
@@ -35,6 +36,8 @@ class MockFirebase extends ChangeNotifier {
   static const String _dbCartKey = 'mock_db_cart';
   static const String _dbOrdersKey = 'mock_db_orders';
   static const String _dbSearchesKey = 'mock_db_searches';
+  static const String _dbChatMessagesKey = 'mock_db_chat_messages';
+  static const String _dbChatsKey = 'mock_db_chats';
 
   List<dynamic> get allProducts => _products;
   List<dynamic> get promotions => _promotions;
@@ -56,6 +59,7 @@ class MockFirebase extends ChangeNotifier {
         _notifications = List<dynamic>.from(dbData['notifications'] ?? []);
         _users = List<dynamic>.from(dbData['users'] ?? []);
         _promotions = List<dynamic>.from(dbData['promotions'] ?? []);
+        _seedChats = List<dynamic>.from(dbData['chats'] ?? []);
       }
       
       // Load custom data if it exists, otherwise from db/users.json
@@ -132,6 +136,47 @@ class MockFirebase extends ChangeNotifier {
       final searchesStr = prefs.getString(_dbSearchesKey);
       if (searchesStr != null) {
         recentSearches = List<String>.from(jsonDecode(searchesStr));
+      }
+
+      final chatsStr = prefs.getString(_dbChatsKey);
+      if (chatsStr != null) {
+        _seedChats = List<dynamic>.from(jsonDecode(chatsStr));
+      }
+
+      final messagesStr = prefs.getString(_dbChatMessagesKey);
+      if (messagesStr != null) {
+        Map<String, dynamic> decoded = jsonDecode(messagesStr);
+        _chatMessages.clear();
+        decoded.forEach((key, value) {
+          _chatMessages[key] = List<Map<String, dynamic>>.from(
+            (value as List).map((x) => Map<String, dynamic>.from(x))
+          );
+        });
+      } else if (_seedChats.isNotEmpty) {
+        _chatMessages.clear();
+        for (var chat in _seedChats) {
+          final id = chat['id'].toString().replaceAll('ch', 'chat');
+          final rawMessages = List<Map<String, dynamic>>.from(chat['messages'] ?? []);
+          
+          // Aligner les messages du JSON avec le nouveau format (time, timestamp)
+          _chatMessages[id] = rawMessages.map((m) {
+            String time = m['time'] ?? '';
+            String timestamp = m['timestamp'] ?? m['sentAt'] ?? DateTime.now().toIso8601String();
+            
+            if (time.isEmpty && m.containsKey('sentAt')) {
+               try {
+                 final dt = DateTime.parse(m['sentAt']);
+                 time = '${dt.hour}:${dt.minute.toString().padLeft(2, '0')}';
+               } catch (_) {}
+            }
+            
+            return {
+              ...m,
+              'time': time,
+              'timestamp': timestamp,
+            };
+          }).toList();
+        }
       }
 
       _isInitialized = true;
@@ -472,6 +517,8 @@ class MockFirebase extends ChangeNotifier {
       await prefs.setString(_dbCartKey, jsonEncode(_cartItems));
       await prefs.setString(_dbOrdersKey, jsonEncode(_orders));
       await prefs.setString(_dbSearchesKey, jsonEncode(recentSearches));
+      await prefs.setString(_dbChatMessagesKey, jsonEncode(_chatMessages));
+      await prefs.setString(_dbChatsKey, jsonEncode(_seedChats));
     } catch (e) {
       debugPrint('Persistence Error: $e');
     }
@@ -764,50 +811,88 @@ class MockFirebase extends ChangeNotifier {
   }
 
   // --- CHAT ---
-  final Map<String, List<Map<String, dynamic>>> _chatMessages = {
-    'chat1': [
-      {'senderId': 'v1', 'text': 'Bonjour! Comment puis-je vous aider aujourd\'hui?', 'time': '10:00'},
-      {'senderId': 'u1', 'text': 'Bonjour, je voudrais savoir si cet ensemble est disponible en XXL.', 'time': '10:05'},
-    ],
-  };
+  final Map<String, List<Map<String, dynamic>>> _chatMessages = {};
 
   List<Map<String, dynamic>> getChatMessages(String chatId) {
     return _chatMessages[chatId] ?? [];
   }
 
-  Future<void> sendMessage(String chatId, String text) async {
+  Future<void> sendMessage(String chatId, String? text, {String? imageUrl}) async {
     await _delay();
     if (!_chatMessages.containsKey(chatId)) {
       _chatMessages[chatId] = [];
     }
+    
+    final now = DateTime.now();
     _chatMessages[chatId]!.add({
       'senderId': 'u1',
       'text': text,
-      'time': '${DateTime.now().hour}:${DateTime.now().minute.toString().padLeft(2, '0')}',
+      'imageUrl': imageUrl,
+      'time': '${now.hour}:${now.minute.toString().padLeft(2, '0')}',
+      'timestamp': now.toIso8601String(),
     });
+
+    // Simple bot reply simulation
+    if (text != null && text.toLowerCase().contains('bonjour')) {
+      Future.delayed(const Duration(seconds: 2), () {
+        _chatMessages[chatId]!.add({
+          'senderId': 'v${chatId.replaceAll('chat', '')}',
+          'text': 'Bonjour ! Comment puis-je vous aider ?',
+          'time': '${DateTime.now().hour}:${DateTime.now().minute.toString().padLeft(2, '0')}',
+          'timestamp': DateTime.now().toIso8601String(),
+        });
+        notifyListeners();
+        _saveToDisk();
+      });
+    }
+
     notifyListeners();
+    _saveToDisk();
   }
 
   Future<List<dynamic>> getChatList() async {
     await _delay();
-    return [
+    
+    // Si on n'a pas de chats en mémoire, on utilise les données de base
+    final List<dynamic> baseChats = _seedChats.isNotEmpty ? _seedChats : [
       {
         'id': 'chat1',
-        'name': 'Maison de Couture X',
-        'avatar': 'https://images.unsplash.com/photo-1558171813-36e0ab20d8dc?w=200',
-        'lastMessage': 'Votre commande est prête!',
-        'time': '10:30',
-        'unread': 2,
+        'name': 'Boutique Elegance',
+        'avatar': 'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=200',
       },
       {
         'id': 'chat2',
-        'name': 'Tailleur Elite',
+        'name': 'Tailleur Du Roi',
         'avatar': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200',
-        'lastMessage': 'Pouvez-vous confirmer vos mesures?',
-        'time': 'Hier',
-        'unread': 0,
-      },
+      }
     ];
+
+    return baseChats.map((chat) {
+      final chatId = chat['id'].toString().replaceAll('ch', 'chat');
+      final messages = _chatMessages[chatId] ?? [];
+      
+      String lastMsg = chat['lastMessage'] ?? 'Aucun message';
+      String time = chat['time'] ?? '';
+      
+      if (messages.isNotEmpty) {
+        final last = messages.last;
+        if (last['imageUrl'] != null) {
+          lastMsg = '📷 Photo';
+        } else {
+          lastMsg = last['text'] ?? '';
+        }
+        time = last['time'] ?? '';
+      }
+
+      return {
+        'id': chatId,
+        'name': chat['vendorName'] ?? chat['name'],
+        'avatar': chat['vendorAvatar'] ?? chat['avatar'],
+        'lastMessage': lastMsg,
+        'time': time,
+        'unread': chat['unreadCount'] ?? 0,
+      };
+    }).toList();
   }
 
   Future<List<dynamic>> getProductsByVendor(String vendorId) async {

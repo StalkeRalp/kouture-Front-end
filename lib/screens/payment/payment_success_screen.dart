@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../backend/mock_firebase.dart';
 import '../../backend/translator.dart';
 import '../order/order_confirmation_screen.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class PaymentSuccessScreen extends StatelessWidget {
   const PaymentSuccessScreen({super.key});
@@ -31,7 +32,7 @@ class PaymentSuccessScreen extends StatelessWidget {
                       color: Colors.green.withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(Icons.check_circle_outline, size: 80, color: Colors.green),
+                    child: HugeIcon(icon: HugeIcons.strokeRoundedCheckmarkCircle01, size: 80, color: Colors.green),
                   ),
                   const SizedBox(height: 40),
                   Text(

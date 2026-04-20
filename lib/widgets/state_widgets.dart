@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class KoutureLoadingState extends StatelessWidget {
   final String? message;
@@ -68,11 +69,8 @@ class KoutureErrorState extends StatelessWidget {
                 color: _salmon.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
-                Icons.error_outline_rounded,
-                color: _salmon,
-                size: 60,
-              ),
+              child: HugeIcon(icon: HugeIcons.strokeRoundedAlertCircle, color: _salmon,
+                size: 60,),
             ),
             const SizedBox(height: 24),
             Text(
@@ -126,13 +124,13 @@ class KoutureErrorState extends StatelessWidget {
 class KoutureEmptyState extends StatelessWidget {
   final String title;
   final String message;
-  final IconData icon;
+  final dynamic icon;
 
   const KoutureEmptyState({
     super.key,
     this.title = 'Rien trouvé',
     this.message = 'Il n\'y a aucun élément à afficher pour le moment.',
-    this.icon = Icons.inventory_2_outlined,
+    this.icon = HugeIcons.strokeRoundedPackageAdd,
   });
 
   @override
@@ -143,11 +141,8 @@ class KoutureEmptyState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              icon,
-              color: Colors.grey[300],
-              size: 80,
-            ),
+            HugeIcon(icon: icon, color: Colors.grey[300],
+              size: 80,),
             const SizedBox(height: 24),
             Text(
               title,

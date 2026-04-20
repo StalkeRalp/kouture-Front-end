@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import '../../backend/mock_firebase.dart';
 import '../../widgets/auth_background.dart';
 import '../main_navigation_screen.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class OtpVerificationScreen extends StatefulWidget {
   const OtpVerificationScreen({super.key});
@@ -146,7 +147,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
           elevation: 0,
           surfaceTintColor: Colors.transparent,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios_new, color: Color(0xFF0D0D26), size: 20),
+            icon: HugeIcon(icon: HugeIcons.strokeRoundedArrowLeft01, color: Color(0xFF0D0D26), size: 20),
             onPressed: () {
               // Annuler l'inscription en cours si on revient en arrière
               MockFirebase().cancelPendingRegistration();
@@ -203,7 +204,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.info_outline, size: 16, color: Color(0xFF856404)),
+                      HugeIcon(icon: HugeIcons.strokeRoundedInformationCircle, size: 16, color: Color(0xFF856404)),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
@@ -229,7 +230,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                     padding: const EdgeInsets.only(top: 16),
                     child: Row(
                       children: [
-                        const Icon(Icons.error_outline, size: 16, color: Colors.red),
+                        HugeIcon(icon: HugeIcons.strokeRoundedAlertCircle, size: 16, color: Colors.red),
                         const SizedBox(width: 6),
                         Expanded(
                           child: Text(

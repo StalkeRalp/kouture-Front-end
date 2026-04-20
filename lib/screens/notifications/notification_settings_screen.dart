@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../backend/mock_firebase.dart';
 import '../../backend/translator.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class NotificationSettingsScreen extends StatefulWidget {
   const NotificationSettingsScreen({super.key});
@@ -22,7 +23,7 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
         title: Text(Translator.t('settings'), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, size: 20),
+          icon: HugeIcon(icon: HugeIcons.strokeRoundedArrowLeft01, size: 20, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -105,7 +106,7 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
                       );
                     }
                   },
-                  icon: const Icon(Icons.notifications_active_outlined),
+                  icon: HugeIcon(icon: HugeIcons.strokeRoundedNotification01, color: Colors.black, size: 24.0),
                   label: Text(Translator.t('simulate_push'), style: const TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.1)),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: _salmon,

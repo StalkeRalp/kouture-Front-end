@@ -8,6 +8,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../backend/mock_firebase.dart';
 import '../../backend/translator.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  API utilisée : Nominatim (OpenStreetMap)
@@ -424,7 +425,7 @@ class _AddAddressScreenState extends State<AddAddressScreen>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.search_off, color: _grey400, size: 40),
+            HugeIcon(icon: HugeIcons.strokeRoundedSearchRemove, color: _grey400, size: 40),
             const SizedBox(height: 8),
             Text(
               'Aucun résultat',
@@ -444,7 +445,7 @@ class _AddAddressScreenState extends State<AddAddressScreen>
         final displayName = result['display_name']?.toString() ?? '';
         
         return ListTile(
-          leading: const Icon(Icons.location_on, color: _salmon, size: 20),
+          leading: HugeIcon(icon: HugeIcons.strokeRoundedLocation01, color: _salmon, size: 20),
           title: Text(
             displayName.split(',').first,
             style: const TextStyle(fontWeight: FontWeight.w500),
@@ -545,7 +546,7 @@ class _AddAddressScreenState extends State<AddAddressScreen>
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Row(
           children: [
-            Icon(Icons.location_off, color: Colors.orange.shade700),
+            HugeIcon(icon: HugeIcons.strokeRoundedLocationOffline01, color: Colors.orange.shade700, size: 24.0),
             const SizedBox(width: 8),
             const Text('Localisation désactivée'),
           ],
@@ -753,7 +754,7 @@ class _AddAddressScreenState extends State<AddAddressScreen>
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(Icons.check, color: Color(0xFF22C55E), size: 16),
+                  child: HugeIcon(icon: HugeIcons.strokeRoundedTick01, color: Color(0xFF22C55E), size: 16),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -784,21 +785,21 @@ class _AddAddressScreenState extends State<AddAddressScreen>
     if (!mounted) return;
     
     Color bgColor = _darkNavy;
-    IconData icon = Icons.info_outline;
+    dynamic icon = HugeIcons.strokeRoundedInformationCircle;
     
     if (isError) {
       bgColor = Colors.redAccent;
-      icon = Icons.error_outline;
+      icon = HugeIcons.strokeRoundedAlertCircle;
     } else if (isSuccess) {
       bgColor = const Color(0xFF22C55E);
-      icon = Icons.check_circle_outline;
+      icon = HugeIcons.strokeRoundedCheckmarkCircle01;
     }
     
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
           children: [
-            Icon(icon, color: Colors.white, size: 20),
+            HugeIcon(icon: icon, color: Colors.white, size: 20),
             const SizedBox(width: 12),
             Expanded(child: Text(msg)),
           ],
@@ -852,7 +853,7 @@ class _AddAddressScreenState extends State<AddAddressScreen>
                                   ),
                                 ],
                               ),
-                              child: const Icon(Icons.location_pin, size: 40, color: _salmon),
+                              child: HugeIcon(icon: HugeIcons.strokeRoundedLocation01, size: 40, color: _salmon),
                             ),
                           ),
                           AnimatedContainer(
@@ -905,7 +906,7 @@ class _AddAddressScreenState extends State<AddAddressScreen>
             color: _grey100,
             borderRadius: BorderRadius.circular(12),
           ),
-          child: const Icon(Icons.arrow_back_ios_new, color: _textPrimary, size: 16),
+          child: HugeIcon(icon: HugeIcons.strokeRoundedArrowLeft01, color: _textPrimary, size: 16),
         ),
         onPressed: () => Navigator.pop(context),
       ),
@@ -917,11 +918,8 @@ class _AddAddressScreenState extends State<AddAddressScreen>
               color: _showFullAddress ? _salmonLight : _grey100,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(
-              Icons.info_outline_rounded,
-              color: _showFullAddress ? _salmon : _textSecondary,
-              size: 18,
-            ),
+            child: HugeIcon(icon: HugeIcons.strokeRoundedInformationCircle, color: _showFullAddress ? _salmon : _textSecondary,
+              size: 18,),
           ),
           onPressed: () => setState(() => _showFullAddress = !_showFullAddress),
         ),
@@ -932,11 +930,8 @@ class _AddAddressScreenState extends State<AddAddressScreen>
               color: _isSatelliteView ? _salmonLight : _grey100,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(
-              Icons.satellite_alt_rounded,
-              color: _isSatelliteView ? _salmon : _textSecondary,
-              size: 18,
-            ),
+            child: HugeIcon(icon: HugeIcons.strokeRoundedSatellite01, color: _isSatelliteView ? _salmon : _textSecondary,
+              size: 18,),
           ),
           onPressed: () => setState(() => _isSatelliteView = !_isSatelliteView),
         ),
@@ -972,10 +967,10 @@ class _AddAddressScreenState extends State<AddAddressScreen>
           decoration: InputDecoration(
             hintText: 'Rechercher une adresse...',
             hintStyle: TextStyle(color: _grey400, fontSize: 14),
-            prefixIcon: const Icon(Icons.search, color: _salmon, size: 20),
+            prefixIcon: HugeIcon(icon: HugeIcons.strokeRoundedSearch01, color: _salmon, size: 20),
             suffixIcon: _searchController.text.isNotEmpty
                 ? IconButton(
-                    icon: const Icon(Icons.clear, size: 18),
+                    icon: HugeIcon(icon: HugeIcons.strokeRoundedCancel01, size: 18, color: Colors.black),
                     onPressed: () {
                       _searchController.clear();
                       _removeSearchOverlay();
@@ -1138,7 +1133,7 @@ class _AddAddressScreenState extends State<AddAddressScreen>
                         color: _salmonLight,
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: const Icon(Icons.location_on, color: _salmon, size: 16),
+                      child: HugeIcon(icon: HugeIcons.strokeRoundedLocation01, color: _salmon, size: 16),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -1152,7 +1147,7 @@ class _AddAddressScreenState extends State<AddAddressScreen>
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.close, size: 18),
+                      icon: HugeIcon(icon: HugeIcons.strokeRoundedCancel01, size: 18, color: Colors.black),
                       onPressed: () => setState(() => _showFullAddress = false),
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
@@ -1245,7 +1240,7 @@ class _AddAddressScreenState extends State<AddAddressScreen>
               controller: _nameController,
               label: Translator.t('full_name'),
               hint: Translator.t('full_name_hint'),
-              icon: Icons.person_outline_rounded,
+              icon: HugeIcons.strokeRoundedUser,
             ),
             const SizedBox(height: 16),
 
@@ -1254,7 +1249,7 @@ class _AddAddressScreenState extends State<AddAddressScreen>
               controller: _phoneController,
               label: Translator.t('phone'),
               hint: Translator.t('phone_hint'),
-              icon: Icons.phone_android_rounded,
+              icon: HugeIcons.strokeRoundedSmartPhone01,
               keyboardType: TextInputType.phone,
               inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9+\s\-]'))],
             ),
@@ -1265,7 +1260,7 @@ class _AddAddressScreenState extends State<AddAddressScreen>
               controller: _streetController,
               label: Translator.t('street_address'),
               hint: Translator.t('street_hint'),
-              icon: Icons.signpost_outlined,
+              icon: HugeIcons.strokeRoundedRoadLocation01,
             ),
             const SizedBox(height: 16),
 
@@ -1274,7 +1269,7 @@ class _AddAddressScreenState extends State<AddAddressScreen>
               controller: _neighborhoodController,
               label: Translator.t('neighborhood') ?? 'Quartier',
               hint: Translator.t('neighborhood_hint') ?? 'Votre quartier',
-              icon: Icons.holiday_village_outlined,
+              icon: HugeIcons.strokeRoundedHome08,
             ),
             const SizedBox(height: 16),
 
@@ -1338,9 +1333,9 @@ class _AddAddressScreenState extends State<AddAddressScreen>
 
   Widget _buildTypeSelector() {
     final types = [
-      ('Maison', Translator.t('home'), Icons.home_rounded),
-      ('Travail', Translator.t('work'), Icons.work_rounded),
-      ('Autre', Translator.t('other'), Icons.location_on_rounded),
+      ('Maison', Translator.t('home'), HugeIcons.strokeRoundedHome01),
+      ('Travail', Translator.t('work'), HugeIcons.strokeRoundedBriefcase01),
+      ('Autre', Translator.t('other'), HugeIcons.strokeRoundedLocation01),
     ];
 
     return Row(
@@ -1355,7 +1350,7 @@ class _AddAddressScreenState extends State<AddAddressScreen>
     );
   }
 
-  Widget _buildTypeChip(String internalLabel, String displayLabel, IconData icon) {
+  Widget _buildTypeChip(String internalLabel, String displayLabel, dynamic icon) {
     final isSelected = _label == internalLabel;
     return GestureDetector(
       onTap: () {
@@ -1384,7 +1379,7 @@ class _AddAddressScreenState extends State<AddAddressScreen>
         ),
         child: Column(
           children: [
-            Icon(icon, size: 20, color: isSelected ? Colors.white : _grey400),
+            HugeIcon(icon: icon, size: 20, color: isSelected ? Colors.white : _grey400),
             const SizedBox(height: 4),
             Text(
               displayLabel,
@@ -1404,7 +1399,7 @@ class _AddAddressScreenState extends State<AddAddressScreen>
     required TextEditingController controller,
     required String label,
     required String hint,
-    IconData? icon,
+    dynamic icon,
     TextInputType? keyboardType,
     List<TextInputFormatter>? inputFormatters,
   }) {
@@ -1438,7 +1433,7 @@ class _AddAddressScreenState extends State<AddAddressScreen>
               fontSize: 14,
             ),
             prefixIcon: icon != null
-                ? Icon(icon, color: _salmon, size: 20)
+                ? HugeIcon(icon: icon, color: _salmon, size: 20)
                 : null,
             filled: true,
             fillColor: _grey100,
@@ -1527,7 +1522,7 @@ class _AddAddressScreenState extends State<AddAddressScreen>
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.check_circle_outline_rounded, size: 20),
+          HugeIcon(icon: HugeIcons.strokeRoundedCheckmarkCircle01, size: 20, color: Colors.black),
           const SizedBox(width: 8),
           Text(
             Translator.t('save_address'),

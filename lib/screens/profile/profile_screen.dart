@@ -9,6 +9,7 @@ import '../settings/settings_screen.dart';
 import '../order/order_analytics_screen.dart';
 import '../address/address_list_screen.dart';
 import '../settings/help_screen.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -35,7 +36,7 @@ class ProfileScreen extends StatelessWidget {
             title: Text(Translator.t('profile'), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
             actions: [
               IconButton(
-                icon: const Icon(Icons.edit_outlined, color: Colors.black),
+                icon: HugeIcon(icon: HugeIcons.strokeRoundedEdit01, color: Colors.black, size: 24.0),
                 onPressed: () => Navigator.pushNamed(context, EditProfileScreen.routeName),
               ),
             ],
@@ -63,7 +64,7 @@ class ProfileScreen extends StatelessWidget {
                               child: Container(
                                 padding: const EdgeInsets.all(6),
                                 decoration: const BoxDecoration(color: _darkNavy, shape: BoxShape.circle),
-                                child: const Icon(Icons.edit, color: Colors.white, size: 14),
+                                child: HugeIcon(icon: HugeIcons.strokeRoundedEdit01, color: Colors.white, size: 14),
                               ),
                             ),
                           ),
@@ -91,11 +92,11 @@ class ProfileScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Row(
                     children: [
-                      _buildQuickLink(context, Icons.inventory_2_outlined, Translator.t('orders'), ActivitiesScreen.routeName, arguments: 1),
+                      _buildQuickLink(context, HugeIcons.strokeRoundedPackageAdd, Translator.t('orders'), ActivitiesScreen.routeName, arguments: 1),
                       const SizedBox(width: 12),
-                      _buildQuickLink(context, Icons.favorite_outline, Translator.t('favorites'), FavoritesScreen.routeName),
+                      _buildQuickLink(context, HugeIcons.strokeRoundedFavourite, Translator.t('favorites'), FavoritesScreen.routeName),
                       const SizedBox(width: 12),
-                      _buildQuickLink(context, Icons.settings_outlined, Translator.t('settings'), SettingsScreen.routeName),
+                      _buildQuickLink(context, HugeIcons.strokeRoundedSettings01, Translator.t('settings'), SettingsScreen.routeName),
                     ],
                   ),
                 ),
@@ -109,10 +110,10 @@ class ProfileScreen extends StatelessWidget {
                     children: [
                       Text(Translator.t('personal_info'), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                       const SizedBox(height: 15),
-                      _buildInfoRow(Icons.person_outline, Translator.t('full_name'), user['name']),
-                      _buildInfoRow(Icons.email_outlined, Translator.t('email'), user['email']),
-                      _buildInfoRow(Icons.phone_outlined, Translator.t('help_support'), user['phone']), // Use phone if specific key missing
-                      _buildInfoRow(Icons.location_on_outlined, Translator.t('city'), user['address']?['city'] ?? 'Yaoundé'),
+                      _buildInfoRow(HugeIcons.strokeRoundedUser, Translator.t('full_name'), user['name']),
+                      _buildInfoRow(HugeIcons.strokeRoundedMail01, Translator.t('email'), user['email']),
+                      _buildInfoRow(HugeIcons.strokeRoundedCall, Translator.t('help_support'), user['phone']), // Use phone if specific key missing
+                      _buildInfoRow(HugeIcons.strokeRoundedLocation01, Translator.t('city'), user['address']?['city'] ?? 'Yaoundé'),
                     ],
                   ),
                 ),
@@ -122,10 +123,10 @@ class ProfileScreen extends StatelessWidget {
                   color: Colors.white,
                   child: Column(
                     children: [
-                      _buildMenuTile(context, Icons.analytics_outlined, Translator.t('statistics'), OrderAnalyticsScreen.routeName),
-                      _buildMenuTile(context, Icons.chat_bubble_outline, Translator.t('messages'), ActivitiesScreen.routeName, arguments: 0),
-                      _buildMenuTile(context, Icons.location_on_outlined, Translator.t('my_addresses'), AddressListScreen.routeName),
-                      _buildMenuTile(context, Icons.help_outline, Translator.t('help_support'), HelpScreen.routeName),
+                      _buildMenuTile(context, HugeIcons.strokeRoundedAnalytics01, Translator.t('statistics'), OrderAnalyticsScreen.routeName),
+                      _buildMenuTile(context, HugeIcons.strokeRoundedBubbleChatQuestion, Translator.t('messages'), ActivitiesScreen.routeName, arguments: 0),
+                      _buildMenuTile(context, HugeIcons.strokeRoundedLocation01, Translator.t('my_addresses'), AddressListScreen.routeName),
+                      _buildMenuTile(context, HugeIcons.strokeRoundedHelpCircle, Translator.t('help_support'), HelpScreen.routeName),
                     ],
                   ),
                 ),
@@ -172,7 +173,7 @@ class ProfileScreen extends StatelessWidget {
                     color: Colors.red[50],
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.logout_rounded, color: Colors.red, size: 32),
+                  child: HugeIcon(icon: HugeIcons.strokeRoundedLogout01, color: Colors.red, size: 32),
                 ),
                 const SizedBox(height: 24),
                 Text(
@@ -234,7 +235,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildQuickLink(BuildContext context, IconData icon, String label, String route, {Object? arguments}) {
+  Widget _buildQuickLink(BuildContext context, dynamic icon, String label, String route, {Object? arguments}) {
     return Expanded(
       child: GestureDetector(
         onTap: () => Navigator.pushNamed(context, route, arguments: arguments),
@@ -247,7 +248,7 @@ class ProfileScreen extends StatelessWidget {
           ),
           child: Column(
             children: [
-              Icon(icon, color: _salmon, size: 26),
+              HugeIcon(icon: icon, color: _salmon, size: 26),
               const SizedBox(height: 8),
               Text(label, textAlign: TextAlign.center, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
             ],
@@ -257,12 +258,12 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoRow(IconData icon, String label, String? value) {
+  Widget _buildInfoRow(dynamic icon, String label, String? value) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Row(
         children: [
-          Icon(icon, color: _salmon, size: 20),
+          HugeIcon(icon: icon, color: _salmon, size: 20),
           const SizedBox(width: 15),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -276,11 +277,11 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildMenuTile(BuildContext context, IconData icon, String label, String route, {Object? arguments}) {
+  Widget _buildMenuTile(BuildContext context, dynamic icon, String label, String route, {Object? arguments}) {
     return ListTile(
-      leading: Icon(icon, color: Colors.grey[700]),
+      leading: HugeIcon(icon: icon, color: Colors.grey[700], size: 24.0),
       title: Text(label, style: const TextStyle(fontWeight: FontWeight.w500)),
-      trailing: const Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey),
+      trailing: HugeIcon(icon: HugeIcons.strokeRoundedArrowRight01, size: 14, color: Colors.grey),
       onTap: () => Navigator.pushNamed(context, route, arguments: arguments),
     );
   }

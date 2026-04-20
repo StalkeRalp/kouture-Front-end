@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../backend/translator.dart';
 import '../payment/payment_processing_screen.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class CardPaymentScreen extends StatefulWidget {
   const CardPaymentScreen({super.key});
@@ -30,7 +31,7 @@ class _CardPaymentScreenState extends State<CardPaymentScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.chevron_left, color: Colors.black),
+          icon: HugeIcon(icon: HugeIcons.strokeRoundedArrowLeft01, color: Colors.black, size: 24.0),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -44,17 +45,17 @@ class _CardPaymentScreenState extends State<CardPaymentScreen> {
               _buildCreditCardPreview(),
               const SizedBox(height: 40),
               
-              _buildTextField(Translator.t('card_name'), _nameController, Icons.person_outline),
+              _buildTextField(Translator.t('card_name'), _nameController, HugeIcons.strokeRoundedUser),
               const SizedBox(height: 20),
               
-              _buildTextField(Translator.t('card_number'), _cardNumberController, Icons.credit_card, keyboardType: TextInputType.number),
+              _buildTextField(Translator.t('card_number'), _cardNumberController, HugeIcons.strokeRoundedCreditCard, keyboardType: TextInputType.number),
               const SizedBox(height: 20),
               
               Row(
                 children: [
-                   Expanded(child: _buildTextField(Translator.t('expiry'), _expiryController, Icons.calendar_today_outlined, hint: 'MM/YY')),
+                   Expanded(child: _buildTextField(Translator.t('expiry'), _expiryController, HugeIcons.strokeRoundedCalendar01, hint: 'MM/YY')),
                    const SizedBox(width: 20),
-                   Expanded(child: _buildTextField(Translator.t('cvv'), _cvvController, Icons.lock_outline, obscure: true)),
+                   Expanded(child: _buildTextField(Translator.t('cvv'), _cvvController, HugeIcons.strokeRoundedLock, obscure: true)),
                 ],
               ),
               
@@ -108,7 +109,7 @@ class _CardPaymentScreenState extends State<CardPaymentScreen> {
           const Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Icon(Icons.contactless, color: Colors.white, size: 30),
+              HugeIcon(icon: HugeIcons.strokeRoundedNfc, color: Colors.white, size: 30),
               Text('VISA', style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic)),
             ],
           ),
@@ -141,7 +142,7 @@ class _CardPaymentScreenState extends State<CardPaymentScreen> {
     );
   }
 
-  Widget _buildTextField(String label, TextEditingController controller, IconData icon, {TextInputType? keyboardType, bool obscure = false, String? hint}) {
+  Widget _buildTextField(String label, TextEditingController controller, dynamic icon, {TextInputType? keyboardType, bool obscure = false, String? hint}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -153,7 +154,7 @@ class _CardPaymentScreenState extends State<CardPaymentScreen> {
           obscureText: obscure,
           decoration: InputDecoration(
             hintText: hint,
-            prefixIcon: Icon(icon, size: 20),
+            prefixIcon: HugeIcon(icon: icon, size: 20, color: Colors.black),
             filled: true,
             fillColor: Colors.grey[50],
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide.none),

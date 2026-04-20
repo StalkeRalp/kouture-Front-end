@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import '../../backend/mock_firebase.dart';
 import '../../backend/translator.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class MeasurementsScreen extends StatefulWidget {
   const MeasurementsScreen({super.key});
@@ -187,7 +188,7 @@ class _MeasurementsScreenState extends State<MeasurementsScreen>
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Row(
           children: [
-            const Icon(Icons.check_circle, color: Colors.white, size: 20),
+            HugeIcon(icon: HugeIcons.strokeRoundedCheckmarkCircle01, color: Colors.white, size: 20),
             const SizedBox(width: 12),
             Text(Translator.t('measurements_saved'), style: const TextStyle(fontWeight: FontWeight.w600)),
           ],
@@ -259,7 +260,7 @@ class _MeasurementsScreenState extends State<MeasurementsScreen>
       elevation: 0,
       centerTitle: true,
       leading: IconButton(
-        icon: const Icon(Icons.close_rounded, color: _navy),
+        icon: HugeIcon(icon: HugeIcons.strokeRoundedCancel01, color: _navy, size: 24.0),
         onPressed: () => Navigator.pop(context),
       ),
       title: Text(Translator.t('measurements_title'),
@@ -370,10 +371,10 @@ class _MeasurementsScreenState extends State<MeasurementsScreen>
               Text(label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: _navy)),
               if (isMandatory) ...[
                 const SizedBox(width: 8),
-                const Icon(Icons.star, size: 8, color: _rose),
+                HugeIcon(icon: HugeIcons.strokeRoundedStars, size: 8, color: _rose),
               ],
               const Spacer(),
-              if (isFilled) const Icon(Icons.check_circle_rounded, size: 16, color: _rose),
+              if (isFilled) HugeIcon(icon: HugeIcons.strokeRoundedCheckmarkCircle01, size: 16, color: _rose),
             ],
           ),
           const SizedBox(height: 12),
@@ -407,7 +408,7 @@ class _MeasurementsScreenState extends State<MeasurementsScreen>
               height: 64, width: 64,
               child: IconButton(
                 onPressed: _prev,
-                icon: const Icon(Icons.arrow_back_rounded, color: _muted),
+                icon: HugeIcon(icon: HugeIcons.strokeRoundedArrowLeft01, color: _muted, size: 24.0),
                 style: IconButton.styleFrom(backgroundColor: _cream, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
               ),
             ),

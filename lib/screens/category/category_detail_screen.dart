@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../backend/mock_firebase.dart';
 import '../../backend/translator.dart';
 import '../../widgets/product_card.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class CategoryDetailScreen extends StatefulWidget {
   const CategoryDetailScreen({super.key});
@@ -78,7 +79,7 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.style_outlined, size: 80, color: Colors.grey[300]),
+                          HugeIcon(icon: HugeIcons.strokeRoundedPaintBoard, size: 80, color: Colors.grey[300]),
                           const SizedBox(height: 16),
                           Text(
                             Translator.t('no_products_found'),

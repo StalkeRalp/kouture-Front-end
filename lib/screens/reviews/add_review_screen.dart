@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../backend/mock_firebase.dart';
 import '../../backend/translator.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class AddReviewScreen extends StatefulWidget {
   final Map<String, dynamic> product;
@@ -50,7 +51,7 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Icon(Icons.check_circle, color: Color(0xFFFF8C8C), size: 64),
+        title: HugeIcon(icon: HugeIcons.strokeRoundedCheckmarkCircle01, color: Color(0xFFFF8C8C), size: 64),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -80,7 +81,7 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
             title: Text(Translator.t('add_review'), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
             centerTitle: true,
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new, size: 20),
+              icon: HugeIcon(icon: HugeIcons.strokeRoundedArrowLeft01, size: 20, color: Colors.black),
               onPressed: () => Navigator.pop(context),
             ),
           ),
@@ -156,11 +157,8 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
           onTap: () => setState(() => _rating = starValue),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: Icon(
-              starValue <= _rating ? Icons.star : Icons.star_border,
-              size: 48,
-              color: starValue <= _rating ? Colors.amber : Colors.grey[300],
-            ),
+            child: HugeIcon(icon: starValue <= _rating ? HugeIcons.strokeRoundedStars : HugeIcons.strokeRoundedStars, size: 48,
+              color: starValue <= _rating ? Colors.amber : Colors.grey[300],),
           ),
         );
       }),
@@ -205,7 +203,7 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
             borderRadius: BorderRadius.circular(20),
             border: Border.all(color: const Color(0xFFFF8C8C).withValues(alpha: 0.1)),
           ),
-          child: const Icon(Icons.add_a_photo_outlined, color: Color(0xFFFF8C8C)),
+          child: HugeIcon(icon: HugeIcons.strokeRoundedCameraAdd01, color: Color(0xFFFF8C8C), size: 24.0),
         ),
       ],
     );

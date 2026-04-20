@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../backend/mock_firebase.dart';
 import '../../widgets/auth_background.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -85,7 +86,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           elevation: 0,
           surfaceTintColor: Colors.transparent,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios_new, color: Color(0xFF0D0D26), size: 20),
+            icon: HugeIcon(icon: HugeIcons.strokeRoundedArrowLeft01, color: Color(0xFF0D0D26), size: 20),
             onPressed: () => Navigator.pop(context),
           ),
         ),
@@ -166,7 +167,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       padding: const EdgeInsets.only(top: 8),
                       child: Row(
                         children: [
-                          const Icon(Icons.error_outline, size: 14, color: Colors.red),
+                          HugeIcon(icon: HugeIcons.strokeRoundedAlertCircle, size: 14, color: Colors.red),
                           const SizedBox(width: 6),
                           Expanded(
                             child: Text(
@@ -190,7 +191,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.info_outline, size: 16, color: Color(0xFF856404)),
+                        HugeIcon(icon: HugeIcons.strokeRoundedInformationCircle, size: 16, color: Color(0xFF856404)),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
@@ -245,11 +246,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               width: 2,
                             ),
                           ),
-                          child: const Icon(
-                            Icons.mark_email_read_outlined,
-                            size: 64,
-                            color: Color(0xFFFF8C8C),
-                          ),
+                          child: HugeIcon(icon: HugeIcons.strokeRoundedMailOpen01, size: 64,
+                            color: Color(0xFFFF8C8C),),
                         ),
                         const SizedBox(height: 32),
                         SizedBox(

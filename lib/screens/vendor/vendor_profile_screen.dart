@@ -3,6 +3,7 @@ import '../../backend/mock_firebase.dart';
 import '../../backend/translator.dart';
 import '../chat/chat_detail_screen.dart';
 import './vendor_products_screen.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class VendorProfileScreen extends StatelessWidget {
   const VendorProfileScreen({super.key});
@@ -42,7 +43,7 @@ class VendorProfileScreen extends StatelessWidget {
                               const SizedBox(height: 4),
                               Row(
                                 children: [
-                                  const Icon(Icons.location_on, size: 14, color: Colors.grey),
+                                  HugeIcon(icon: HugeIcons.strokeRoundedLocation01, size: 14, color: Colors.grey),
                                   const SizedBox(width: 4),
                                   Text(vendor['location'] ?? '', style: TextStyle(color: Colors.grey[600])),
                                 ],
@@ -50,7 +51,7 @@ class VendorProfileScreen extends StatelessWidget {
                             ],
                           ),
                           if (vendor['isVerified'] == true)
-                            const Icon(Icons.verified, color: Colors.blue, size: 30),
+                            HugeIcon(icon: HugeIcons.strokeRoundedCheckmarkBadge01, color: Colors.blue, size: 30),
                         ],
                       ),
                       const SizedBox(height: 25),
@@ -89,7 +90,7 @@ class VendorProfileScreen extends StatelessWidget {
           top: 50,
           left: 10,
           child: IconButton(
-            icon: const ContainerCircle(child: Icon(Icons.chevron_left, color: Colors.black)),
+            icon: const ContainerCircle(child: HugeIcon(icon: HugeIcons.strokeRoundedArrowLeft01, color: Colors.black, size: 24.0)),
             onPressed: () => Navigator.pop(context),
           ),
         ),
@@ -102,10 +103,7 @@ class VendorProfileScreen extends StatelessWidget {
               final isFav = MockFirebase().isFavorite(vendor['id'].toString());
               return IconButton(
                 icon: ContainerCircle(
-                  child: Icon(
-                    isFav ? Icons.favorite : Icons.favorite_border,
-                    color: isFav ? _salmon : Colors.black,
-                  ),
+                  child: HugeIcon(icon: isFav ? HugeIcons.strokeRoundedFavourite : HugeIcons.strokeRoundedFavourite, color: isFav ? _salmon : Colors.black, size: 24.0),
                 ),
                 onPressed: () => MockFirebase().toggleFavorite(vendor['id'].toString()),
               );
@@ -135,20 +133,20 @@ class VendorProfileScreen extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildStatItem(vendor['rating'].toString(), Translator.t('rating_label'), Icons.star),
-          _buildStatItem(vendor['totalReviews'].toString(), Translator.t('reviews'), Icons.comment),
-          _buildStatItem(vendor['totalSales'].toString(), Translator.t('sales'), Icons.shopping_bag),
+          _buildStatItem(vendor['rating'].toString(), Translator.t('rating_label'), HugeIcons.strokeRoundedStars),
+          _buildStatItem(vendor['totalReviews'].toString(), Translator.t('reviews'), HugeIcons.strokeRoundedComment01),
+          _buildStatItem(vendor['totalSales'].toString(), Translator.t('sales'), HugeIcons.strokeRoundedShoppingBag01),
         ],
       ),
     );
   }
 
-  Widget _buildStatItem(String value, String label, IconData icon) {
+  Widget _buildStatItem(String value, String label, dynamic icon) {
     return Column(
       children: [
         Row(
           children: [
-            Icon(icon, size: 14, color: _salmon),
+            HugeIcon(icon: icon, size: 14, color: _salmon),
             const SizedBox(width: 4),
             Text(value, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
           ],
@@ -184,7 +182,7 @@ class VendorProfileScreen extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(18),
             decoration: BoxDecoration(color: _salmon, borderRadius: BorderRadius.circular(15)),
-            child: const Icon(Icons.chat_bubble_outline, color: Colors.white),
+            child: HugeIcon(icon: HugeIcons.strokeRoundedBubbleChatQuestion, color: Colors.white, size: 24.0),
           ),
         ),
       ],

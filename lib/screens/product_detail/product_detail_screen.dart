@@ -7,6 +7,13 @@ import 'product_images_screen.dart';
 import '../vendor/vendor_profile_screen.dart';
 import '../order/checkout_screen.dart';
 import '../../widgets/product_card.dart';
+import '../../widgets/responsive_helper.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:http/http.dart' as http;
+import 'dart:io';
+import 'package:path/path.dart' as path;
 
 class ProductDetailScreen extends StatefulWidget {
   final Map<String, dynamic> product;
@@ -50,6 +57,68 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     hex = hex.replaceAll('#', '');
     if (hex.length == 6) hex = 'FF$hex';
     return Color(int.parse(hex, radix: 16));
+  }
+
+  Future<void> _shareProduct(Map<String, dynamic> p) async {
+    try {
+      debugPrint('SHARE: Starting share for product ${p['id']}');
+      
+      // Show loading snackbar
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          key: const ValueKey('share_snackbar'),
+          content: Text(Translator.t('preparing_share')),
+          duration: const Duration(seconds: 4),
+          backgroundColor: _darkNavy,
+        ),
+      );
+
+      final images = p['images'] as List? ?? [];
+      final imageUrl = images.isNotEmpty ? images[0].toString() : '';
+      
+      final String shareText = "${p['name']}\n${p['price']} ${p['currency']}\n\n${Translator.t('check_this_out_on_kouture')}";
+
+      if (imageUrl.isEmpty) {
+        debugPrint('SHARE: No image found, sharing text only');
+        await Share.share(shareText, subject: p['name']);
+        return;
+      }
+
+      debugPrint('SHARE: Downloading image from $imageUrl');
+      
+      try {
+        final response = await http.get(Uri.parse(imageUrl)).timeout(const Duration(seconds: 10));
+        if (response.statusCode != 200) throw Exception('Download failed: ${response.statusCode}');
+
+        final tempDir = await getTemporaryDirectory();
+        final ext = path.extension(imageUrl).split('?')[0];
+        final fileName = 'product_${p['id']}${ext.isEmpty ? '.jpg' : ext}';
+        final file = File('${tempDir.path}/$fileName');
+        await file.writeAsBytes(response.bodyBytes);
+
+        debugPrint('SHARE: Image saved at ${file.path}, launching share sheet');
+        
+        await Share.shareXFiles(
+          [XFile(file.path, mimeType: 'image/jpeg')],
+          text: shareText,
+          subject: p['name'],
+        );
+      } catch (imageError) {
+        debugPrint('SHARE: Image sharing failed ($imageError), falling back to text only');
+        await Share.share(shareText, subject: p['name']);
+      }
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      }
+    } catch (e) {
+      debugPrint('SHARE: Global error: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error sharing: $e')),
+        );
+      }
+    }
   }
 
   @override
@@ -96,34 +165,34 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             child: Image.network(
                               mainImage,
                               width: double.infinity,
-                              height: MediaQuery.of(context).size.height * 0.55,
+                              height: context.h(450),
                               fit: BoxFit.cover,
                             ),
                           ),
                         ),
                         SafeArea(
                           child: Padding(
-                            padding: const EdgeInsets.all(16.0),
+                            padding: EdgeInsets.all(context.w(16)),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 _buildCircleButton(
-                                  icon: Icons.chevron_left,
+                                  icon: HugeIcons.strokeRoundedArrowLeft01,
                                   onTap: () => Navigator.pop(context),
                                 ),
                                 _buildCircleButton(
-                                  icon: Icons.share_outlined,
-                                  onTap: () {},
+                                  icon: HugeIcons.strokeRoundedShare01,
+                                  onTap: () => _shareProduct(p),
                                 ),
                               ],
                             ),
                           ),
                         ),
                         Positioned(
-                          bottom: 20,
-                          right: 20,
+                          bottom: context.h(20),
+                          right: context.w(20),
                           child: _buildCircleButton(
-                            icon: MockFirebase().isFavorite(p['id'].toString()) ? Icons.favorite : Icons.favorite_border,
+                            icon: MockFirebase().isFavorite(p['id'].toString()) ? HugeIcons.strokeRoundedFavourite : HugeIcons.strokeRoundedFavourite,
                             color: MockFirebase().isFavorite(p['id'].toString()) ? _salmon : Colors.grey,
                             onTap: () => MockFirebase().toggleFavorite(p['id'].toString()),
                           ),
@@ -132,7 +201,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     ),
 
                     Padding(
-                      padding: const EdgeInsets.all(20.0),
+                      padding: EdgeInsets.all(context.w(20)),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -142,7 +211,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               Expanded(
                                 child: Text(
                                   p['name'] ?? '',
-                                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                                  style: TextStyle(fontSize: context.sp(22), fontWeight: FontWeight.bold),
                                 ),
                               ),
                               _buildCartShortcut(context, p),
@@ -151,10 +220,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           const SizedBox(height: 4),
                           Text(
                             '${p['category'] ?? ''} Shirt',
-                            style: TextStyle(color: Colors.grey[600], fontSize: 14),
+                            style: TextStyle(color: Colors.grey[600], fontSize: context.sp(14)),
                           ),
                           
-                          const SizedBox(height: 16),
+                          SizedBox(height: context.h(16)),
                           
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -169,13 +238,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                       children: [
                                         Text(
                                           '$price $currency',
-                                          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: _salmon),
+                                          style: TextStyle(fontSize: context.sp(20), fontWeight: FontWeight.bold, color: _salmon),
                                         ),
                                         if (oldPrice != null)
                                           Text(
                                             '$oldPrice $currency',
-                                            style: const TextStyle(
-                                              fontSize: 16, 
+                                            style: TextStyle(
+                                              fontSize: context.sp(16), 
                                               color: Colors.grey, 
                                               decoration: TextDecoration.lineThrough
                                             ),
@@ -183,7 +252,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                         if (p['discount'] != null && p['discount'] > 0)
                                           Text(
                                             '${p['discount']}% OFF',
-                                            style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 14),
+                                            style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: context.sp(14)),
                                           ),
                                       ],
                                     ),
@@ -192,14 +261,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                       crossAxisAlignment: WrapCrossAlignment.center,
                                       spacing: 4,
                                       children: [
-                                        ...List.generate(5, (i) => Icon(
-                                          i < (p['rating']?.floor() ?? 0) ? Icons.star : Icons.star_border,
-                                          color: Colors.amber, size: 18,
-                                        )),
-                                        Text('(${p['totalReviews'] ?? 0})', style: TextStyle(color: Colors.grey[600], fontSize: 12)),
+                                        ...List.generate(5, (i) => HugeIcon(icon: i < (p['rating']?.floor() ?? 0) ? HugeIcons.strokeRoundedStars : HugeIcons.strokeRoundedStars, color: Colors.amber, size: context.w(18),)),
+                                        Text('(${p['totalReviews'] ?? 0})', style: TextStyle(color: Colors.grey[600], fontSize: context.sp(12))),
                                         GestureDetector(
                                           onTap: () => Navigator.pushNamed(context, ReviewsScreen.routeName, arguments: p),
-                                          child: Text(Translator.t('see_reviews'), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, decoration: TextDecoration.underline))
+                                          child: Text(Translator.t('see_reviews'), style: TextStyle(fontSize: context.sp(12), fontWeight: FontWeight.bold, decoration: TextDecoration.underline))
                                         ),
                                       ],
                                     ),
@@ -210,7 +276,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
-                                   Text('16hrs : 32mins', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.grey[800])),
+                                   Text('16hrs : 32mins', style: TextStyle(fontWeight: FontWeight.bold, fontSize: context.sp(13), color: Colors.grey[800])),
                                 ],
                               ),
                             ],
@@ -221,15 +287,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           GestureDetector(
                             onTap: () => Navigator.pushNamed(context, VendorProfileScreen.routeName, arguments: p['vendorId']),
                             child: Container(
-                              padding: const EdgeInsets.all(15),
+                              padding: EdgeInsets.all(context.w(15)),
                               decoration: BoxDecoration(
                                 color: Colors.grey[50],
-                                borderRadius: BorderRadius.circular(15),
+                                borderRadius: BorderRadius.circular(context.w(15)),
                               ),
                               child: Row(
                                 children: [
                                   CircleAvatar(
-                                    radius: 20,
+                                    radius: context.w(20),
                                     backgroundImage: NetworkImage('https://i.pravatar.cc/150?u=${p['vendorId']}'), 
                                   ),
                                   const SizedBox(width: 12),
@@ -238,7 +304,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(p['vendorName'] ?? Translator.t('vendor'), style: const TextStyle(fontWeight: FontWeight.bold)),
-                                        Text(Translator.t('official_shop'), style: TextStyle(color: Colors.grey[600], fontSize: 12)),
+                                        Text(Translator.t('official_shop'), style: TextStyle(color: Colors.grey[600], fontSize: context.sp(12))),
                                       ],
                                     ),
                                   ),
@@ -248,16 +314,16 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                       color: _salmon.withValues(alpha: 0.1),
                                       borderRadius: BorderRadius.circular(20),
                                     ),
-                                    child: Text(Translator.t('visit'), style: const TextStyle(color: _salmon, fontWeight: FontWeight.bold, fontSize: 12)),
+                                    child: Text(Translator.t('visit'), style: TextStyle(color: _salmon, fontWeight: FontWeight.bold, fontSize: context.sp(12))),
                                   ),
                                 ],
                               ),
                             ),
                           ),
 
-                          const SizedBox(height: 25),
+                          SizedBox(height: context.h(25)),
 
-                          Text(Translator.t('select_quantity'), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                          Text(Translator.t('select_quantity'), style: TextStyle(fontWeight: FontWeight.bold, fontSize: context.sp(16))),
                           const SizedBox(height: 12),
                           _buildQuantitySelector(),
 
@@ -267,18 +333,18 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('${Translator.t('select_size')}: $_selectedSize', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                                Text('${Translator.t('select_size')}: $_selectedSize', style: TextStyle(fontWeight: FontWeight.bold, fontSize: context.sp(16))),
                               ],
                             ),
-                            const SizedBox(height: 12),
+                            SizedBox(height: context.h(12)),
                             _buildSizeSelector(p['sizes'] as List),
                           ],
 
                           const SizedBox(height: 25),
 
                           if ((p['colors'] as List?)?.isNotEmpty ?? false) ...[
-                            Text('${Translator.t('select_color')}: ${_selectedColor != null ? "Selected" : "None"}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                            const SizedBox(height: 12),
+                            Text('${Translator.t('select_color')}: ${_selectedColor != null ? "Selected" : "None"}', style: TextStyle(fontWeight: FontWeight.bold, fontSize: context.sp(16))),
+                            SizedBox(height: context.h(12)),
                             _buildColorSelector(p['colors'] as List),
                           ],
 
@@ -294,13 +360,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                       SnackBar(content: Text(Translator.t('added_to_cart')), duration: const Duration(seconds: 1)),
                                     );
                                   },
-                                  icon: const Icon(Icons.shopping_cart_outlined),
+                                  icon: HugeIcon(icon: HugeIcons.strokeRoundedShoppingCart01, color: Colors.black, size: 24.0),
                                   label: Text(Translator.t('add_to_cart')),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: _darkNavy,
                                     foregroundColor: Colors.white,
-                                    minimumSize: const Size(0, 55),
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                                    minimumSize: Size(0, context.h(55)),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(context.w(15))),
                                   ),
                                 ),
                               ),
@@ -316,13 +382,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                     );
                                     Navigator.pushNamed(context, CheckoutScreen.routeName);
                                   },
-                                  icon: const Icon(Icons.shopping_bag_outlined),
+                                  icon: HugeIcon(icon: HugeIcons.strokeRoundedShoppingBag01, color: Colors.black, size: 24.0),
                                   label: Text(Translator.t('buy_now')),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: _salmon,
                                     foregroundColor: Colors.white,
-                                    minimumSize: const Size(0, 55),
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                                    minimumSize: Size(0, context.h(55)),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(context.w(15))),
                                   ),
                                 ),
                               ),
@@ -354,9 +420,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
                           _buildReviewsSection(p['id'].toString()),
 
-                          const SizedBox(height: 40),
+                          SizedBox(height: context.h(40)),
 
-                          Text(Translator.t('similar_products'), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                          Text(Translator.t('similar_products'), style: TextStyle(fontWeight: FontWeight.bold, fontSize: context.sp(18))),
                           const SizedBox(height: 15),
                           _buildSimilarProducts(p['id'].toString()),
                         ],
@@ -372,13 +438,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     );
   }
 
-  Widget _buildCircleButton({required IconData icon, Color? color, required VoidCallback onTap}) {
+  Widget _buildCircleButton({required dynamic icon, Color? color, required VoidCallback onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(8),
+        padding: EdgeInsets.all(context.w(8)),
         decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-        child: Icon(icon, color: color ?? Colors.black, size: 24),
+        child: HugeIcon(icon: icon, color: color ?? Colors.black, size: context.w(24)),
       ),
     );
   }
@@ -392,12 +458,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          IconButton(onPressed: _decrement, icon: const Icon(Icons.remove, size: 18)),
+          IconButton(onPressed: _decrement, icon: HugeIcon(icon: HugeIcons.strokeRoundedRemove01, size: context.w(18), color: Colors.black)),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Text('$_quantity', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            padding: EdgeInsets.symmetric(horizontal: context.w(12)),
+            child: Text('$_quantity', style: TextStyle(fontWeight: FontWeight.bold, fontSize: context.sp(16))),
           ),
-          IconButton(onPressed: _increment, icon: const Icon(Icons.add, size: 18)),
+          IconButton(onPressed: _increment, icon: HugeIcon(icon: HugeIcons.strokeRoundedAdd01, size: context.w(18), color: Colors.black)),
         ],
       ),
     );
@@ -430,6 +496,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   child: Center(
                     child: Text(size, style: TextStyle(
                       fontWeight: FontWeight.bold,
+                      fontSize: context.sp(14),
                       color: isSelected ? _salmon : Colors.black87
                     )),
                   ),
@@ -481,12 +548,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  Text(title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: context.sp(16))),
                   if (subtitle != null) ...[
-                    const SizedBox(height: 8),
+                    SizedBox(height: context.h(8)),
                     Text(
                       subtitle, 
-                      style: TextStyle(color: Colors.grey[600], fontSize: 14),
+                      style: TextStyle(color: Colors.grey[600], fontSize: context.sp(14)),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -494,7 +561,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 ],
               ),
             ),
-            const Icon(Icons.chevron_right),
+            HugeIcon(icon: HugeIcons.strokeRoundedArrowRight01, color: Colors.black, size: context.w(24)),
           ],
         ),
       ),
@@ -549,11 +616,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     Text(r['userName'] ?? '', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                     const SizedBox(height: 2),
                     Row(
-                      children: List.generate(5, (i) => Icon(
-                        Icons.star, 
-                        color: i < (r['rating'] ?? 0) ? Colors.amber : Colors.grey[300], 
-                        size: 12,
-                      )),
+                      children: List.generate(5, (i) => HugeIcon(icon: HugeIcons.strokeRoundedStars, color: i < (r['rating'] ?? 0) ? Colors.amber : Colors.grey[300], 
+                        size: 12,)),
                     ),
                   ],
                 ),
@@ -635,7 +699,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         shape: BoxShape.circle,
       ),
       child: IconButton(
-        icon: const Icon(Icons.add_shopping_cart, color: _salmon, size: 20),
+        icon: HugeIcon(icon: HugeIcons.strokeRoundedShoppingCartAdd01, color: _salmon, size: 20),
         onPressed: () {
           MockFirebase().addToCart(p, size: _selectedSize, color: _selectedColor, quantity: _quantity);
           ScaffoldMessenger.of(context).showSnackBar(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../backend/translator.dart';
 import '../../backend/mock_firebase.dart';
 import 'add_review_screen.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class ReviewsScreen extends StatefulWidget {
   final Map<String, dynamic> product;
@@ -27,7 +28,7 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
             title: Text(Translator.t('reviews'), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
             centerTitle: true,
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new, size: 20),
+              icon: HugeIcon(icon: HugeIcons.strokeRoundedArrowLeft01, size: 20, color: Colors.black),
               onPressed: () => Navigator.pop(context),
             ),
           ),
@@ -95,11 +96,8 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(5, (index) => Icon(
-                    index < avgRating ? Icons.star : Icons.star_border,
-                    color: Colors.amber,
-                    size: 16,
-                  )),
+                  children: List.generate(5, (index) => HugeIcon(icon: index < avgRating ? HugeIcons.strokeRoundedStars : HugeIcons.strokeRoundedStars, color: Colors.amber,
+                    size: 16,)),
                 ),
                 const SizedBox(height: 8),
                 Text(
@@ -212,11 +210,8 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
                 ),
               ),
               Row(
-                children: List.generate(5, (index) => Icon(
-                  Icons.star,
-                  size: 14,
-                  color: index < (review['rating'] as num) ? Colors.amber : Colors.grey[300],
-                )),
+                children: List.generate(5, (index) => HugeIcon(icon: HugeIcons.strokeRoundedStars, size: 14,
+                  color: index < (review['rating'] as num) ? Colors.amber : Colors.grey[300],)),
               ),
             ],
           ),
@@ -228,7 +223,7 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
           const SizedBox(height: 12),
           Row(
             children: [
-              const Icon(Icons.thumb_up_alt_outlined, size: 16, color: Colors.grey),
+              HugeIcon(icon: HugeIcons.strokeRoundedThumbsUp, size: 16, color: Colors.grey),
               const SizedBox(width: 6),
               Text(
                 '${review['likes']} ${Translator.t('helpful')}',
@@ -252,7 +247,7 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.rate_review_outlined, size: 64, color: Colors.grey[300]),
+          HugeIcon(icon: HugeIcons.strokeRoundedComment01, size: 64, color: Colors.grey[300]),
           const SizedBox(height: 16),
           Text(
             Translator.t('no_reviews_filter'),

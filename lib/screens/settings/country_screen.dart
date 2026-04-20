@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../backend/mock_firebase.dart';
 import '../../backend/translator.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class CountryScreen extends StatefulWidget {
   const CountryScreen({super.key});
@@ -120,7 +121,7 @@ class _CountryScreenState extends State<CountryScreen> {
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black87, size: 18),
+          icon: HugeIcon(icon: HugeIcons.strokeRoundedArrowLeft01, color: Colors.black87, size: 18),
           onPressed: () => Navigator.pop(context),
         ),
         bottom: PreferredSize(
@@ -160,7 +161,7 @@ class _CountryScreenState extends State<CountryScreen> {
                             color: Colors.grey[50],
                             shape: BoxShape.circle,
                           ),
-                          child: Icon(Icons.cloud_off, size: 48, color: Colors.grey[300]),
+                          child: HugeIcon(icon: HugeIcons.strokeRoundedCloudOff, size: 48, color: Colors.grey[300]),
                         ),
                         const SizedBox(height: 24),
                         Text(_errorMessage!, 
@@ -228,7 +229,7 @@ class _CountryScreenState extends State<CountryScreen> {
                                     color: Colors.white.withValues(alpha: 0.2),
                                     shape: BoxShape.circle,
                                   ),
-                                  child: const Icon(Icons.public, color: Colors.white, size: 24),
+                                  child: HugeIcon(icon: HugeIcons.strokeRoundedGlobe, color: Colors.white, size: 24),
                                 ),
                                 const SizedBox(width: 16),
                                 Expanded(
@@ -243,7 +244,7 @@ class _CountryScreenState extends State<CountryScreen> {
                                     ],
                                   ),
                                 ),
-                                const Icon(Icons.verified, color: Colors.white, size: 24),
+                                HugeIcon(icon: HugeIcons.strokeRoundedCheckmarkBadge01, color: Colors.white, size: 24),
                               ],
                             ),
                           ),
@@ -256,10 +257,10 @@ class _CountryScreenState extends State<CountryScreen> {
                             style: const TextStyle(fontSize: 14),
                             decoration: InputDecoration(
                               hintText: Translator.t('search_country_hint'),
-                              prefixIcon: const Icon(Icons.search, size: 20, color: Colors.grey),
+                              prefixIcon: HugeIcon(icon: HugeIcons.strokeRoundedSearch01, size: 20, color: Colors.grey),
                               suffixIcon: _searchController.text.isNotEmpty 
                                 ? IconButton(
-                                    icon: const Icon(Icons.close, size: 18, color: Colors.grey), 
+                                    icon: HugeIcon(icon: HugeIcons.strokeRoundedCancel01, size: 18, color: Colors.grey), 
                                     onPressed: () => _searchController.clear()
                                   )
                                 : null,
@@ -289,7 +290,7 @@ class _CountryScreenState extends State<CountryScreen> {
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Icon(Icons.search_off, size: 64, color: Colors.grey[200]),
+                                      HugeIcon(icon: HugeIcons.strokeRoundedSearchRemove, size: 64, color: Colors.grey[200]),
                                       const SizedBox(height: 16),
                                       Text(Translator.t('no_country_found'), 
                                         style: TextStyle(color: Colors.grey[400], fontWeight: FontWeight.w500)),
@@ -332,7 +333,7 @@ class _CountryScreenState extends State<CountryScreen> {
                                                     width: 32,
                                                     height: 22,
                                                     fit: BoxFit.cover,
-                                                    errorBuilder: (_, __, ___) => const Icon(Icons.flag, size: 24, color: Colors.grey),
+                                                    errorBuilder: (_, __, ___) => HugeIcon(icon: HugeIcons.strokeRoundedFlag01, size: 24, color: Colors.grey),
                                                   ),
                                                 ),
                                                 const SizedBox(width: 16),
@@ -345,7 +346,7 @@ class _CountryScreenState extends State<CountryScreen> {
                                                     )),
                                                 ),
                                                 if (isSelected) 
-                                                  const Icon(Icons.check_circle, color: Color(0xFFFF8C8C), size: 20),
+                                                  HugeIcon(icon: HugeIcons.strokeRoundedCheckmarkCircle01, color: Color(0xFFFF8C8C), size: 20),
                                               ],
                                             ),
                                           ),

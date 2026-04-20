@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../backend/mock_firebase.dart';
 import '../../backend/translator.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class ChatDetailScreen extends StatefulWidget {
   const ChatDetailScreen({super.key});
@@ -44,8 +47,8 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
               ],
             ),
             actions: [
-              IconButton(icon: const Icon(Icons.videocam_outlined), onPressed: () {}),
-              IconButton(icon: const Icon(Icons.call_outlined), onPressed: () {}),
+              IconButton(icon: HugeIcon(icon: HugeIcons.strokeRoundedVideo01, color: Colors.black, size: 24.0), onPressed: () {}),
+              IconButton(icon: HugeIcon(icon: HugeIcons.strokeRoundedCall, color: Colors.black, size: 24.0), onPressed: () {}),
             ],
           ),
           body: Column(
@@ -59,7 +62,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                     final messages = MockFirebase().getChatMessages(chatId);
                     final msg = messages[index];
                     final isMe = msg['senderId'] == 'u1';
-                    return _buildMessageBubble(msg['text'], msg['time'], isMe);
+                    return _buildMessageBubble(msg, isMe);
                   },
                 ),
               ),
@@ -71,7 +74,11 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     );
   }
 
-  Widget _buildMessageBubble(String text, String time, bool isMe) {
+  Widget _buildMessageBubble(Map<String, dynamic> msg, bool isMe) {
+    final String? text = msg['text'];
+    final String? imageUrl = msg['imageUrl'];
+    final String time = msg['time'] ?? '';
+
     return Align(
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
@@ -90,7 +97,34 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
         child: Column(
           crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           children: [
-            Text(text, style: TextStyle(color: isMe ? Colors.white : Colors.black87, fontSize: 14, height: 1.4)),
+            if (imageUrl != null)
+              Container(
+                margin: const EdgeInsets.only(bottom: 8),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: imageUrl.startsWith('http') 
+                    ? Image.network(
+                        imageUrl, 
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          padding: const EdgeInsets.all(20),
+                          color: Colors.grey[200],
+                          child: const Icon(Icons.broken_image, color: Colors.grey),
+                        ),
+                      )
+                    : Image.file(
+                        File(imageUrl), 
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          padding: const EdgeInsets.all(20),
+                          color: Colors.grey[200],
+                          child: const Icon(Icons.broken_image, color: Colors.grey),
+                        ),
+                      ),
+                ),
+              ),
+            if (text != null && text.isNotEmpty)
+              Text(text, style: TextStyle(color: isMe ? Colors.white : Colors.black87, fontSize: 14, height: 1.4)),
             const SizedBox(height: 4),
             Text(time, style: TextStyle(color: isMe ? Colors.white70 : Colors.grey, fontSize: 10)),
           ],
@@ -108,6 +142,17 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
       ),
       child: Row(
         children: [
+          IconButton(
+            onPressed: () async {
+              final ImagePicker picker = ImagePicker();
+              final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+              if (image != null) {
+                await MockFirebase().sendMessage(chatId, null, imageUrl: image.path);
+                _scrollToBottom();
+              }
+            },
+            icon: HugeIcon(icon: HugeIcons.strokeRoundedImageAdd01, color: _darkNavy, size: 24),
+          ),
           Expanded(
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -119,27 +164,38 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                   border: InputBorder.none,
                   contentPadding: const EdgeInsets.symmetric(vertical: 12),
                 ),
+                onSubmitted: (_) => _handleSend(chatId),
               ),
             ),
           ),
           const SizedBox(width: 10),
           GestureDetector(
-            onTap: () async {
-              if (_msgController.text.trim().isNotEmpty) {
-                final txt = _msgController.text;
-                _msgController.clear();
-                await MockFirebase().sendMessage(chatId, txt);
-                _scrollController.animateTo(_scrollController.position.maxScrollExtent + 100, duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
-              }
-            },
+            onTap: () => _handleSend(chatId),
             child: Container(
               padding: const EdgeInsets.all(12),
               decoration: const BoxDecoration(color: _darkNavy, shape: BoxShape.circle),
-              child: const Icon(Icons.send, color: Colors.white, size: 20),
+              child: HugeIcon(icon: HugeIcons.strokeRoundedSent, color: Colors.white, size: 20),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  void _handleSend(String chatId) async {
+    if (_msgController.text.trim().isNotEmpty) {
+      final txt = _msgController.text;
+      _msgController.clear();
+      await MockFirebase().sendMessage(chatId, txt);
+      _scrollToBottom();
+    }
+  }
+
+  void _scrollToBottom() {
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent + 200, 
+      duration: const Duration(milliseconds: 300), 
+      curve: Curves.easeOut
     );
   }
 }

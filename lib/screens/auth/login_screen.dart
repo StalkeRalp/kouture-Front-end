@@ -6,6 +6,8 @@ import '../../widgets/auth_background.dart';
 import '../main_navigation_screen.dart';
 import 'forgot_password_screen.dart';
 import 'register_screen.dart';
+import '../../widgets/responsive_helper.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -98,7 +100,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
         body: AuthBackground(
           child: SafeArea(
             child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
+            padding: EdgeInsets.symmetric(horizontal: context.w(24)),
             child: FadeTransition(
               opacity: _fadeAnimation,
               child: Form(
@@ -106,29 +108,29 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 60),
+                    SizedBox(height: context.h(60)),
                     
                     // 🏷️ Header Design matching Login.jpg
                     Text(
                       Translator.t('welcome_back'),
-                      style: const TextStyle(
-                        fontSize: 32,
+                      style: TextStyle(
+                        fontSize: context.sp(32),
                         fontWeight: FontWeight.w900,
                         color: Color(0xFF0D0D26),
                         letterSpacing: -0.5,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: context.h(8)),
                     Text(
                       _errorMessage ?? Translator.t('search_hint').replaceFirst('...', ''),
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: context.sp(16),
                         color: _errorMessage != null ? Colors.red : Colors.grey[600],
                         fontWeight: _errorMessage != null ? FontWeight.w600 : FontWeight.normal,
                       ),
                     ),
                     
-                    const SizedBox(height: 48),
+                    SizedBox(height: context.h(48)),
                     
                     // 📧 Email Field
                     _buildFieldLabel(Translator.t('email')),
@@ -143,7 +145,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                       },
                     ),
                     
-                    const SizedBox(height: 24),
+                    SizedBox(height: context.h(24)),
                     
                     // 🔒 Password Field
                     _buildFieldLabel(Translator.t('password')),
@@ -157,23 +159,23 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                       },
                     ),
                     
-                    const SizedBox(height: 12),
+                    SizedBox(height: context.h(12)),
                     
                     // 🔄 Forgot Password
                     Row(
                       children: [
                         Text(
                           '${Translator.t('forgot_password')} ',
-                          style: TextStyle(color: Colors.grey[600], fontSize: 13),
+                          style: TextStyle(color: Colors.grey[600], fontSize: context.sp(13)),
                         ),
                         GestureDetector(
                           onTap: () => Navigator.pushNamed(context, ForgotPasswordScreen.routeName),
                           child: Text(
                             Translator.t('retry'),
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: Color(0xFF0D0D26),
                               fontWeight: FontWeight.bold,
-                              fontSize: 13,
+                              fontSize: context.sp(13),
                               decoration: TextDecoration.underline,
                             ),
                           ),
@@ -181,24 +183,24 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                       ],
                     ),
                     
-                    const SizedBox(height: 16),
+                    SizedBox(height: context.h(16)),
 
                     // 💡 Hint de simulation
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                      padding: EdgeInsets.symmetric(horizontal: context.w(12), vertical: context.h(10)),
                       decoration: BoxDecoration(
                         color: const Color(0xFFFFF3CD),
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(context.w(10)),
                         border: Border.all(color: const Color(0xFFFFD700).withValues(alpha: 0.5)),
                       ),
                       child: Row(
                         children: [
-                          const Icon(Icons.info_outline, size: 16, color: Color(0xFF856404)),
-                          const SizedBox(width: 8),
+                          HugeIcon(icon: HugeIcons.strokeRoundedInformationCircle, size: context.w(16), color: Color(0xFF856404)),
+                          SizedBox(width: context.w(8)),
                           Expanded(
                             child: RichText(
-                              text: const TextSpan(
-                                style: TextStyle(fontSize: 12, color: Color(0xFF664D03)),
+                              text: TextSpan(
+                                style: TextStyle(fontSize: context.sp(12), color: Color(0xFF664D03)),
                                 children: [
                                   TextSpan(text: 'Simulation — Email : '),
                                   TextSpan(
@@ -218,12 +220,12 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                       ),
                     ),
 
-                    const SizedBox(height: 24),
+                    SizedBox(height: context.h(24)),
 
                     // 🚀 Login Button (Signature Rose / Primary Style)
                     SizedBox(
                       width: double.infinity,
-                      height: 56,
+                      height: context.h(56),
                       child: ElevatedButton(
                         onPressed: _isLoading ? null : _handleLogin,
                         style: ElevatedButton.styleFrom(
@@ -231,7 +233,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                           foregroundColor: Colors.white,
                           elevation: 0,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(28),
+                            borderRadius: BorderRadius.circular(context.w(28)),
                           ),
                         ),
                         child: _isLoading
@@ -240,27 +242,27 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                 width: 20,
                                 child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                               )
-                            : const Text(
+                            : Text(
                                 'Login',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 16,
+                                  fontSize: context.sp(16),
                                 ),
                               ),
                       ),
                     ),
                     
-                    const SizedBox(height: 32),
+                    SizedBox(height: context.h(32)),
                     
                     // ➖ Or Divider
                     Row(
                       children: [
                         const Expanded(child: Divider()),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          padding: EdgeInsets.symmetric(horizontal: context.w(16)),
                           child: Text(
                             'Or',
-                            style: TextStyle(color: Colors.grey[400], fontSize: 13),
+                            style: TextStyle(color: Colors.grey[400], fontSize: context.sp(13)),
                           ),
                         ),
                         const Expanded(child: Divider()),
@@ -272,13 +274,13 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                     // 📱 Social Buttons
                     _buildSocialButton(
                       label: 'Login with Google',
-                      icon: Icons.g_mobiledata,
+                      icon: HugeIcons.strokeRoundedSmartPhone01,
                       color: const Color(0xFFDB4437),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: context.h(16)),
                     _buildSocialButton(
                       label: 'Login with Facebook',
-                      icon: Icons.facebook,
+                      icon: HugeIcons.strokeRoundedFacebook01,
                       color: const Color(0xFF4267B2),
                       isFilled: true,
                     ),
@@ -292,24 +294,24 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                         children: [
                           Text(
                             'Don\'t have an account? ',
-                            style: TextStyle(color: Colors.grey[600], fontSize: 14),
+                            style: TextStyle(color: Colors.grey[600], fontSize: context.sp(14)),
                           ),
                           GestureDetector(
                             onTap: () => Navigator.pushNamed(context, RegisterScreen.routeName),
-                            child: const Text(
+                            child: Text(
                               'Join',
                               style: TextStyle(
-                                color: Color(0xFF0D0D26),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
-                                decoration: TextDecoration.underline,
-                              ),
+                              color: Color(0xFF0D0D26),
+                              fontWeight: FontWeight.bold,
+                              fontSize: context.sp(14),
+                              decoration: TextDecoration.underline,
+                            ),
                             ),
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 40),
+                    SizedBox(height: context.h(40)),
                   ],
                 ),
               ),
@@ -326,9 +328,9 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
       padding: const EdgeInsets.only(bottom: 8),
       child: Text(
         label,
-        style: const TextStyle(
+        style: TextStyle(
           fontWeight: FontWeight.bold,
-          fontSize: 16,
+          fontSize: context.sp(16),
           color: Color(0xFF0D0D26),
         ),
       ),
@@ -349,22 +351,19 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
       obscureText: isPassword && !_isPasswordVisible,
       validator: validator,
       keyboardType: keyboardType,
-      style: const TextStyle(fontSize: 16),
+      style: TextStyle(fontSize: context.sp(16)),
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle: TextStyle(color: Colors.grey[400], fontSize: 15),
+        hintStyle: TextStyle(color: Colors.grey[400], fontSize: context.sp(15)),
         suffixIcon: isPassword
             ? IconButton(
-                icon: Icon(
-                  _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
-                  color: Colors.grey[400],
-                ),
+                icon: HugeIcon(icon: _isPasswordVisible ? HugeIcons.strokeRoundedViewOff : HugeIcons.strokeRoundedView, color: Colors.grey[400], size: context.w(24)),
                 onPressed: () => setState(() => _isPasswordVisible = !_isPasswordVisible),
               )
             : null,
         filled: true,
         fillColor: Colors.white,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        contentPadding: EdgeInsets.symmetric(horizontal: context.w(16), vertical: context.h(16)),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: hasError ? Colors.red : Colors.grey[300]!),
@@ -384,13 +383,13 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
 
   Widget _buildSocialButton({
     required String label,
-    required IconData icon,
+    required dynamic icon,
     required Color color,
     bool isFilled = false,
   }) {
     return SizedBox(
       width: double.infinity,
-      height: 56,
+      height: context.h(56),
       child: OutlinedButton(
         onPressed: () {},
         style: OutlinedButton.styleFrom(
@@ -398,19 +397,19 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
           foregroundColor: isFilled ? Colors.white : Colors.black,
           side: isFilled ? BorderSide.none : BorderSide(color: Colors.grey[300]!),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(28),
+            borderRadius: BorderRadius.circular(context.w(28)),
           ),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 24, color: isFilled ? Colors.white : color),
-            const SizedBox(width: 12),
+            HugeIcon(icon: icon, size: context.w(24), color: isFilled ? Colors.white : color),
+            SizedBox(width: context.w(12)),
             Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 16,
+                fontSize: context.sp(16),
               ),
             ),
           ],

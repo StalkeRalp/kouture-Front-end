@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../backend/translator.dart';
 import '../payment/payment_processing_screen.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class OrangeMoneyScreen extends StatefulWidget {
   const OrangeMoneyScreen({super.key});
@@ -27,7 +28,7 @@ class _OrangeMoneyScreenState extends State<OrangeMoneyScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.chevron_left, color: Colors.black),
+          icon: HugeIcon(icon: HugeIcons.strokeRoundedArrowLeft01, color: Colors.black, size: 24.0),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -46,7 +47,7 @@ class _OrangeMoneyScreenState extends State<OrangeMoneyScreen> {
                     color: _orange.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Icon(Icons.phone_android_outlined, size: 50, color: _orange),
+                  child: HugeIcon(icon: HugeIcons.strokeRoundedSmartPhone01, size: 50, color: _orange),
                 ),
               ),
               const SizedBox(height: 30),
@@ -66,7 +67,7 @@ class _OrangeMoneyScreenState extends State<OrangeMoneyScreen> {
                 decoration: InputDecoration(
                   labelText: Translator.t('phone_number'),
                   hintText: Translator.t('phone_number_hint'),
-                  prefixIcon: const Icon(Icons.phone),
+                  prefixIcon: HugeIcon(icon: HugeIcons.strokeRoundedCall, color: Colors.black, size: 24.0),
                   filled: true,
                   fillColor: Colors.grey[50],
                   border: OutlineInputBorder(
@@ -126,7 +127,7 @@ class _OrangeMoneyScreenState extends State<OrangeMoneyScreen> {
         children: [
           Row(
             children: [
-              const Icon(Icons.info_outline, color: _orange, size: 20),
+              HugeIcon(icon: HugeIcons.strokeRoundedInformationCircle, color: _orange, size: 20),
               const SizedBox(width: 10),
               Text(Translator.t('instructions'), style: const TextStyle(fontWeight: FontWeight.bold, color: _orange)),
             ],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../backend/mock_firebase.dart';
 import '../../backend/translator.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class PaymentFailureScreen extends StatelessWidget {
   const PaymentFailureScreen({super.key});
@@ -28,7 +29,7 @@ class PaymentFailureScreen extends StatelessWidget {
                       color: Colors.red.withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(Icons.error_outline, size: 80, color: Colors.red),
+                    child: HugeIcon(icon: HugeIcons.strokeRoundedAlertCircle, size: 80, color: Colors.red),
                   ),
                   const SizedBox(height: 40),
                   Text(

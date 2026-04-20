@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-
+import 'package:hugeicons/hugeicons.dart';
+import 'responsive_helper.dart';
 class NavItem {
   final String label;
-  final IconData icon;
-  final IconData activeIcon;
+  final dynamic icon;
+  final dynamic activeIcon;
 
   const NavItem({
     required this.label,
@@ -29,7 +30,7 @@ class CurvedNavBar extends StatefulWidget {
     this.backgroundColor = Colors.white,
     this.activeColor = const Color(0xFFFF8C8C), // Signature Rose
     this.inactiveColor = const Color(0xFF9E9E9E), // Grey 400
-    this.height = 75.0,
+    this.height = 75.0, // Default base height
   });
 
   @override
@@ -84,7 +85,7 @@ class _CurvedNavBarState extends State<CurvedNavBar> with SingleTickerProviderSt
 
     return Container(
       color: Colors.transparent,
-      height: widget.height, // Exactement la taille de la barre, plus de débordement
+      height: context.h(widget.height), // Exactly the responsive size of the bar
       child: AnimatedBuilder(
         animation: _animController,
         builder: (context, child) {
@@ -102,14 +103,14 @@ class _CurvedNavBarState extends State<CurvedNavBar> with SingleTickerProviderSt
                     bottom: 0,
                     left: 0,
                     right: 0,
-                    height: widget.height,
+                    height: context.h(widget.height),
                     child: CustomPaint(
                       painter: _NavCustomPainter(
                         loc: locCenter,
                         color: widget.backgroundColor,
                       ),
                       child: Container(
-                        height: widget.height,
+                        height: context.h(widget.height),
                         // Padding to render standard tabs evenly
                         padding: EdgeInsets.zero,
                       ),
@@ -121,7 +122,7 @@ class _CurvedNavBarState extends State<CurvedNavBar> with SingleTickerProviderSt
                     bottom: 0,
                     left: 0,
                     right: 0,
-                    height: widget.height,
+                    height: context.h(widget.height),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: List.generate(widget.items.length, (index) {
@@ -157,17 +158,14 @@ class _CurvedNavBarState extends State<CurvedNavBar> with SingleTickerProviderSt
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(
-                                    item.icon,
-                                    color: widget.inactiveColor,
-                                    size: 26,
-                                  ),
-                                  const SizedBox(height: 4),
+                                  HugeIcon(icon: item.icon, color: widget.inactiveColor,
+                                    size: context.w(26)),
+                                  SizedBox(height: context.h(4)),
                                   Text(
                                     item.label,
                                     style: TextStyle(
                                       color: widget.inactiveColor,
-                                      fontSize: 11,
+                                      fontSize: context.sp(10),
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
@@ -182,11 +180,11 @@ class _CurvedNavBarState extends State<CurvedNavBar> with SingleTickerProviderSt
 
                   // ─── L'Icône Active (La Boule Encastrée) ───
                   Positioned(
-                    bottom: 20, // Avec height=75, bottom=20 veut dire que le bas de la boule est à Y=55. Top de la boule à Y=3.
-                    left: locCenter - 25, // diameter 50, radius 25
+                    bottom: context.h(20), // Responsive bottom positioning
+                    left: locCenter - context.w(25), // diameter responsive, radius responsive
                     child: Container(
-                      width: 50,
-                      height: 50,
+                      width: context.w(50),
+                      height: context.w(50),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: widget.activeColor,
@@ -203,12 +201,9 @@ class _CurvedNavBarState extends State<CurvedNavBar> with SingleTickerProviderSt
                               child: FadeTransition(opacity: animation, child: child),
                             );
                           },
-                          child: Icon(
-                            widget.items[_animation.value.round()].activeIcon,
-                            key: ValueKey<int>(_animation.value.round()),
+                          child: HugeIcon(icon: widget.items[_animation.value.round()].activeIcon, key: ValueKey<int>(_animation.value.round()),
                             color: Colors.white,
-                            size: 24,
-                          ),
+                            size: context.w(24),),
                         ),
                       ),
                     ),
@@ -241,8 +236,8 @@ class _NavCustomPainter extends CustomPainter {
     final height = size.height;
 
     // Cutout parameters : un creux de la hauteur exacte de la boule
-    const curveWidth = 76.0;
-    const curveDepth = 55.0; // La boule va jusqu'à Y=55
+    final double curveWidth = Responsive.w(76.0);
+    final double curveDepth = Responsive.h(55.0); // La boule va jusqu'à Y=55 responsive
 
     path.moveTo(0, 0);
 

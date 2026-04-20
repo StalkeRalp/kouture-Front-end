@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../backend/mock_firebase.dart';
 import '../../backend/translator.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class LanguageScreen extends StatefulWidget {
   const LanguageScreen({super.key});
@@ -127,7 +128,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black87, size: 18),
+          icon: HugeIcon(icon: HugeIcons.strokeRoundedArrowLeft01, color: Colors.black87, size: 18),
           onPressed: () => Navigator.pop(context),
         ),
         bottom: PreferredSize(
@@ -171,7 +172,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
                         color: Colors.white.withValues(alpha: 0.2),
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.language, color: Colors.white, size: 24),
+                      child: HugeIcon(icon: HugeIcons.strokeRoundedInternet, color: Colors.white, size: 24),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
@@ -186,7 +187,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
                         ],
                       ),
                     ),
-                    const Icon(Icons.check_circle, color: Colors.white, size: 28),
+                    HugeIcon(icon: HugeIcons.strokeRoundedCheckmarkCircle01, color: Colors.white, size: 28),
                   ],
                 ),
               ),
@@ -199,9 +200,9 @@ class _LanguageScreenState extends State<LanguageScreen> {
                   style: const TextStyle(fontSize: 14),
                   decoration: InputDecoration(
                     hintText: Translator.t('search_language'),
-                    prefixIcon: const Icon(Icons.search, size: 20, color: Colors.grey),
+                    prefixIcon: HugeIcon(icon: HugeIcons.strokeRoundedSearch01, size: 20, color: Colors.grey),
                     suffixIcon: _searchController.text.isNotEmpty 
-                      ? IconButton(icon: const Icon(Icons.close, size: 18), onPressed: () => _searchController.clear())
+                      ? IconButton(icon: HugeIcon(icon: HugeIcons.strokeRoundedCancel01, size: 18, color: Colors.black), onPressed: () => _searchController.clear())
                       : null,
                     filled: true,
                     fillColor: Colors.grey[50],
@@ -290,7 +291,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
                                           )),
                                       ),
                                       if (isSelected) 
-                                        const Icon(Icons.check_circle, color: Color(0xFFFF8C8C), size: 22),
+                                        HugeIcon(icon: HugeIcons.strokeRoundedCheckmarkCircle01, color: Color(0xFFFF8C8C), size: 22),
                                     ],
                                   ),
                                 ),

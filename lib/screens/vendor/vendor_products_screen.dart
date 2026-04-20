@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../backend/mock_firebase.dart';
 import '../../widgets/product_card.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class VendorProductsScreen extends StatelessWidget {
   const VendorProductsScreen({super.key});
@@ -18,7 +19,7 @@ class VendorProductsScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.chevron_left, color: Colors.black),
+          icon: HugeIcon(icon: HugeIcons.strokeRoundedArrowLeft01, color: Colors.black, size: 24.0),
           onPressed: () => Navigator.pop(context),
         ),
       ),

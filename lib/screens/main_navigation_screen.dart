@@ -7,6 +7,7 @@ import 'favorites/favorites_screen.dart';
 import 'activities/activities_screen.dart';
 import 'profile/profile_screen.dart';
 import '../widgets/curved_nav_bar.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   final int initialIndex;
@@ -60,28 +61,28 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
               items: [
                 NavItem(
                   label: Translator.t('home'),
-                  icon: Icons.home_outlined,
-                  activeIcon: Icons.home,
+                  icon: HugeIcons.strokeRoundedHome01,
+                  activeIcon: HugeIcons.strokeRoundedHome01,
                 ),
                 NavItem(
                   label: Translator.t('shop'),
-                  icon: Icons.grid_view_outlined,
-                  activeIcon: Icons.grid_view_rounded,
+                  icon: HugeIcons.strokeRoundedGridView,
+                  activeIcon: HugeIcons.strokeRoundedGridView,
                 ),
                 NavItem(
                   label: Translator.t('favorites'),
-                  icon: Icons.favorite_outline,
-                  activeIcon: Icons.favorite,
+                  icon: HugeIcons.strokeRoundedFavourite,
+                  activeIcon: HugeIcons.strokeRoundedFavourite,
                 ),
                 NavItem(
                   label: Translator.t('activities'),
-                  icon: Icons.forum_outlined,
-                  activeIcon: Icons.forum,
+                  icon: HugeIcons.strokeRoundedMessage01,
+                  activeIcon: HugeIcons.strokeRoundedMessage01,
                 ),
                 NavItem(
                   label: Translator.t('profile'),
-                  icon: Icons.person_outline,
-                  activeIcon: Icons.person,
+                  icon: HugeIcons.strokeRoundedUser,
+                  activeIcon: HugeIcons.strokeRoundedUser,
                 ),
               ],
             ),

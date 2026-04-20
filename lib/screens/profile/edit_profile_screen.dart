@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../backend/mock_firebase.dart';
 import '../../backend/translator.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -138,7 +139,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             backgroundColor: Colors.white,
             elevation: 0,
             leading: IconButton(
-              icon: const Icon(Icons.close, color: Colors.black),
+              icon: HugeIcon(icon: HugeIcons.strokeRoundedCancel01, color: Colors.black, size: 24.0),
               onPressed: () => Navigator.pop(context),
             ),
             actions: [
@@ -181,7 +182,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                       color: _darkNavy,
                                       shape: BoxShape.circle,
                                     ),
-                                    child: const Icon(Icons.camera_alt, color: Colors.white, size: 18),
+                                    child: HugeIcon(icon: HugeIcons.strokeRoundedCamera01, color: Colors.white, size: 18),
                                   ),
                                 ),
                               ),
@@ -192,14 +193,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         _buildTextField(
                           controller: _nameController,
                           label: Translator.t('full_name'),
-                          icon: Icons.person_outline,
+                          icon: HugeIcons.strokeRoundedUser,
                           validator: (v) => v!.isEmpty ? Translator.t('name_required') : null,
                         ),
                         const SizedBox(height: 20),
                         _buildTextField(
                           controller: _emailController,
                           label: Translator.t('email'),
-                          icon: Icons.email_outlined,
+                          icon: HugeIcons.strokeRoundedMail01,
                           keyboardType: TextInputType.emailAddress,
                           validator: (v) {
                             if (v!.isEmpty) return Translator.t('email_required');
@@ -211,7 +212,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         _buildTextField(
                           controller: _phoneController,
                           label: Translator.t('phone'),
-                          icon: Icons.phone_outlined,
+                          icon: HugeIcons.strokeRoundedCall,
                           keyboardType: TextInputType.phone,
                           validator: (v) => v!.isEmpty ? Translator.t('phone_required') : null,
                         ),
@@ -258,7 +259,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           ],
           onChanged: (v) => setState(() => _selectedGender = v!),
           decoration: InputDecoration(
-            prefixIcon: const Icon(Icons.wb_sunny_outlined, color: _salmon, size: 22),
+            prefixIcon: HugeIcon(icon: HugeIcons.strokeRoundedSun01, color: _salmon, size: 22),
             filled: true,
             fillColor: Colors.grey[50],
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide(color: Colors.grey[200]!)),
@@ -288,7 +289,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             ),
             child: Row(
               children: [
-                const Icon(Icons.calendar_today_outlined, color: _salmon, size: 22),
+                HugeIcon(icon: HugeIcons.strokeRoundedCalendar01, color: _salmon, size: 22),
                 const SizedBox(width: 12),
                 Text(
                   _selectedDate == null ? Translator.t('select') : _formatDate(_selectedDate!),
@@ -305,7 +306,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Widget _buildTextField({
     required TextEditingController controller,
     required String label,
-    required IconData icon,
+    required dynamic icon,
     TextInputType? keyboardType,
     String? Function(String?)? validator,
   }) {
@@ -319,7 +320,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           keyboardType: keyboardType,
           style: const TextStyle(fontWeight: FontWeight.w500),
           decoration: InputDecoration(
-            prefixIcon: Icon(icon, color: _salmon, size: 22),
+            prefixIcon: HugeIcon(icon: icon, color: _salmon, size: 22),
             filled: true,
             fillColor: Colors.grey[50],
             border: OutlineInputBorder(

@@ -1,10 +1,12 @@
-import 'package:flutter/material.dart';
-import 'app_router.dart';
-import 'backend/mock_firebase.dart';
+import 'core/backend/supabase_config.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialiser les Backends
   await MockFirebase().initialize();
+  await SupabaseConfig.initialize();
+  
   runApp(const MyApp());
 }
 

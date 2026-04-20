@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../backend/translator.dart';
 import '../backend/mock_firebase.dart';
 import '../screens/product_detail/product_detail_screen.dart';
+import '../widgets/responsive_helper.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class ProductCard extends StatelessWidget {
   final Map<String, dynamic> product;
@@ -59,16 +61,16 @@ class ProductCard extends StatelessWidget {
                       child: Hero(
                         tag: '${heroPrefix}_product_$id',
                         child: ClipPath(
-                          clipper: ProductCardClipper(),
+                          clipper: ProductCardClipper(cutoutRadius: context.w(26)),
                           child: Image.network(
                             img,
                             fit: BoxFit.cover,
                             errorBuilder: (_, __, ___) => Container(
                               decoration: BoxDecoration(
-                                color: Colors.grey[200],
+                                 color: Colors.grey[200],
                                 borderRadius: BorderRadius.circular(32),
                               ),
-                              child: const Icon(Icons.image_not_supported_outlined, color: Colors.grey),
+                              child: HugeIcon(icon: HugeIcons.strokeRoundedImageNotFound01, color: Colors.grey, size: context.w(24)),
                             ),
                           ),
                         ),
@@ -85,8 +87,8 @@ class ProductCard extends StatelessWidget {
                           if (onFavoriteTap != null) onFavoriteTap!();
                         },
                         child: Container(
-                          width: 42,
-                          height: 42,
+                          width: context.w(28),
+                          height: context.w(28),
                           decoration: BoxDecoration(
                             color: Colors.white.withValues(alpha: 0.8),
                             shape: BoxShape.circle,
@@ -98,18 +100,15 @@ class ProductCard extends StatelessWidget {
                               ),
                             ],
                           ),
-                          child: Icon(
-                            MockFirebase().isFavorite(id) ? Icons.favorite : Icons.favorite_border,
-                            color: MockFirebase().isFavorite(id) ? _salmon : _darkNavy,
-                            size: 22,
-                          ),
+                          child: HugeIcon(icon: MockFirebase().isFavorite(id) ? HugeIcons.strokeRoundedFavourite : HugeIcons.strokeRoundedFavourite, color: MockFirebase().isFavorite(id) ? _salmon : _darkNavy,
+                            size: context.w(13),),
                         ),
                       ),
                     ),
                     
                     // The "Pop-out" Cart Button
                     Positioned(
-                      bottom: -25,
+                      bottom: context.h(-18),
                       left: 0,
                       right: 0,
                       child: Center(
@@ -131,8 +130,8 @@ class ProductCard extends StatelessWidget {
                             );
                           },
                           child: Container(
-                            width: 50,
-                            height: 50,
+                            width: context.w(36),
+                            height: context.w(36),
                             decoration: BoxDecoration(
                               color: _salmon,
                               shape: BoxShape.circle,
@@ -144,11 +143,8 @@ class ProductCard extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            child: const Icon(
-                              Icons.shopping_bag_outlined,
-                              color: Colors.white,
-                              size: 24,
-                            ),
+                            child: HugeIcon(icon: HugeIcons.strokeRoundedShoppingBag01, color: Colors.white,
+                              size: context.w(15),),
                           ),
                         ),
                       ),
@@ -157,7 +153,7 @@ class ProductCard extends StatelessWidget {
                 ),
               ),
               
-              const SizedBox(height: 35),
+              SizedBox(height: context.h(35)),
               
               // ─── Product Details ───
               Padding(
@@ -166,8 +162,8 @@ class ProductCard extends StatelessWidget {
                   children: [
                     Text(
                       name,
-                      style: const TextStyle(
-                        fontSize: 16,
+                      style: TextStyle(
+                        fontSize: context.sp(14),
                         fontWeight: FontWeight.w600,
                         color: _darkNavy,
                         height: 1.2,
@@ -179,9 +175,9 @@ class ProductCard extends StatelessWidget {
                     const SizedBox(height: 6),
                     Text(
                       displayPrice,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.w900,
-                        fontSize: 20,
+                        fontSize: context.sp(18),
                         color: _darkNavy,
                         letterSpacing: -0.5,
                       ),
@@ -200,10 +196,13 @@ class ProductCard extends StatelessWidget {
 
 /// A custom clipper to create the concave "vague" cutout at the bottom center.
 class ProductCardClipper extends CustomClipper<Path> {
+  final double cutoutRadius;
+  ProductCardClipper({required this.cutoutRadius});
+
   @override
   Path getClip(Size size) {
     const double radius = 32.0;
-    const double cutoutRadius = 38.0; // Size of the concave cutout
+    // Removed fixed cutoutRadius
     
     final Path path = Path()
       // Start at top-left
@@ -223,7 +222,7 @@ class ProductCardClipper extends CustomClipper<Path> {
       // Concave arc
       ..arcToPoint(
         Offset(size.width / 2 - cutoutRadius, size.height),
-        radius: const Radius.circular(cutoutRadius),
+        radius: Radius.circular(cutoutRadius),
         clockwise: false, // Concave effect
       )
       
@@ -236,7 +235,7 @@ class ProductCardClipper extends CustomClipper<Path> {
   }
 
   @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
+  bool shouldReclip(ProductCardClipper oldClipper) => oldClipper.cutoutRadius != cutoutRadius;
 }
 
 

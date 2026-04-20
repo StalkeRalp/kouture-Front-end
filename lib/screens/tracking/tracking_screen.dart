@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../backend/translator.dart';
 import '../../backend/mock_firebase.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class TrackingScreen extends StatelessWidget {
   const TrackingScreen({super.key});
@@ -22,7 +23,7 @@ class TrackingScreen extends StatelessWidget {
             backgroundColor: Colors.white,
             elevation: 0,
             leading: IconButton(
-              icon: const Icon(Icons.chevron_left, color: Colors.black),
+              icon: HugeIcon(icon: HugeIcons.strokeRoundedArrowLeft01, color: Colors.black, size: 24.0),
               onPressed: () => Navigator.pop(context),
             ),
           ),
@@ -76,13 +77,13 @@ class TrackingScreen extends StatelessWidget {
                   Text(order['id'], style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                 ],
               ),
-              const Icon(Icons.qr_code, size: 40, color: Colors.black87),
+              HugeIcon(icon: HugeIcons.strokeRoundedQrCode01, size: 40, color: Colors.black87),
             ],
           ),
           const Divider(height: 40),
           Row(
             children: [
-              const Icon(Icons.location_on, color: _salmon, size: 20),
+              HugeIcon(icon: HugeIcons.strokeRoundedLocation01, color: _salmon, size: 20),
               const SizedBox(width: 10),
               Expanded(child: Text(order['shippingAddress'] ?? '', style: const TextStyle(fontSize: 14))),
             ],
@@ -94,11 +95,11 @@ class TrackingScreen extends StatelessWidget {
 
   Widget _buildTimeline(String currentStatus) {
     final statuses = [
-      {'label': Translator.t('status_placed'), 'desc': Translator.t('status_placed_desc'), 'icon': Icons.shopping_bag_outlined},
-      {'label': Translator.t('status_accepted'), 'desc': Translator.t('status_accepted_desc'), 'icon': Icons.check_circle_outline},
-      {'label': Translator.t('status_confection'), 'desc': Translator.t('status_confection_desc'), 'icon': Icons.cut_outlined},
-      {'label': Translator.t('status_shipped'), 'desc': Translator.t('status_shipped_desc'), 'icon': Icons.local_shipping_outlined},
-      {'label': Translator.t('status_delivered'), 'desc': Translator.t('status_delivered_desc'), 'icon': Icons.home_outlined},
+      {'label': Translator.t('status_placed'), 'desc': Translator.t('status_placed_desc'), 'icon': HugeIcons.strokeRoundedShoppingBag01},
+      {'label': Translator.t('status_accepted'), 'desc': Translator.t('status_accepted_desc'), 'icon': HugeIcons.strokeRoundedCheckmarkCircle01},
+      {'label': Translator.t('status_confection'), 'desc': Translator.t('status_confection_desc'), 'icon': HugeIcons.strokeRoundedScissor},
+      {'label': Translator.t('status_shipped'), 'desc': Translator.t('status_shipped_desc'), 'icon': HugeIcons.strokeRoundedTruck},
+      {'label': Translator.t('status_delivered'), 'desc': Translator.t('status_delivered_desc'), 'icon': HugeIcons.strokeRoundedHome01},
     ];
 
     int currentIndex = _getStatusIndex(currentStatus);
@@ -121,7 +122,7 @@ class TrackingScreen extends StatelessWidget {
                     color: isCompleted ? _salmon : Colors.grey[100],
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(s['icon'] as IconData, size: 20, color: isCompleted ? Colors.white : Colors.grey),
+                  child: HugeIcon(icon: s['icon'] as dynamic, size: 20, color: isCompleted ? Colors.white : Colors.grey),
                 ),
                 if (!isLast)
                   Container(
